@@ -27,6 +27,7 @@ yarn-error.log*
 
 # local env files
 .env*.local
+.env
 
 # vercel
 .vercel
@@ -42,3 +43,17 @@ next-env.d.ts
 # OS
 .DS_Store
 Thumbs.db
+
+# Firebase
+/functions/lib/
+/functions/node_modules/
+serviceAccount*.json
+firebase-debug.log
+.firebase/
+
+# Secrets (CRITICAL - never commit)
+*.key
+*.pem
+*.p12
+.env.production
+.env.development

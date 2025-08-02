@@ -22,6 +22,7 @@ export default function Header() {
 
   const navigation = [
     { name: 'Domů', href: '/' },
+    { name: 'Dashboard', href: '/dashboard' },
     { name: 'O nás', href: '/o-nas' },
     { name: 'Kontakt', href: '/kontakt' },
   ]

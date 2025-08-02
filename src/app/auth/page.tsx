@@ -1,7 +1,9 @@
 'use client'
 
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
+import { useRouter } from 'next/navigation'
 import Layout from '@/components/Layout'
+import { useAuth } from '@/contexts/AuthContext'
 import { 
   Eye, 
   EyeOff, 
@@ -11,7 +13,8 @@ import {
   Shield,
   ArrowRight,
   Chrome,
-  Github
+  Github,
+  AlertCircle
 } from 'lucide-react'
 
 export default function AuthPage() {
@@ -26,6 +29,17 @@ export default function AuthPage() {
     company: ''
   })
   const [isLoading, setIsLoading] = useState(false)
+  const [error, setError] = useState<string | null>(null)
+  
+  const { signIn, signUp, user, loading } = useAuth()
+  const router = useRouter()
+
+  // Přesměrování pokud je uživatel již přihlášen
+  useEffect(() => {
+    if (!loading && user) {
+      router.push('/dashboard')
+    }
+  }, [user, loading, router])
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData({
@@ -37,17 +51,69 @@ export default function AuthPage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setIsLoading(true)
+    setError(null)
     
-    // TODO: Implementovat Firebase autentizaci
-    setTimeout(() => {
+    try {
+      if (isLogin) {
+        // Přihlášení
+        await signIn(formData.email, formData.password)
+      } else {
+        // Registrace
+        if (formData.password !== formData.confirmPassword) {
+          throw new Error('Hesla se neshodují')
+        }
+        
+        if (formData.password.length < 6) {
+          throw new Error('Heslo musí mít alespoň 6 znaků')
+        }
+        
+        await signUp(formData.email, formData.password)
+      }
+      
+      // Přesměrování se provede automaticky přes useEffect
+    } catch (error: any) {
+      console.error('Auth error:', error)
+      
+      // Překládat Firebase chybové zprávy
+      let errorMessage = 'Nastala neočekávaná chyba'
+      
+      if (error.code === 'auth/user-not-found') {
+        errorMessage = 'Uživatel s tímto emailem neexistuje'
+      } else if (error.code === 'auth/wrong-password') {
+        errorMessage = 'Nesprávné heslo'
+      } else if (error.code === 'auth/email-already-in-use') {
+        errorMessage = 'Email je již používán jiným účtem'
+      } else if (error.code === 'auth/weak-password') {
+        errorMessage = 'Heslo je příliš slabé'
+      } else if (error.code === 'auth/invalid-email') {
+        errorMessage = 'Neplatný email'
+      } else if (error.message) {
+        errorMessage = error.message
+      }
+      
+      setError(errorMessage)
+    } finally {
       setIsLoading(false)
-      console.log(isLogin ? 'Login' : 'Register', formData)
-    }, 2000)
+    }
   }
 
   const handleSocialAuth = (provider: string) => {
     // TODO: Implementovat Firebase social auth
     console.log('Social auth with:', provider)
+  }
+
+  // Zobrazit loading během kontroly autentifikace
+  if (loading) {
+    return (
+      <Layout showFooter={false}>
+        <div className="min-h-screen flex items-center justify-center">
+          <div className="text-center">
+            <div className="security-spinner w-8 h-8 mx-auto mb-4"></div>
+            <p className="text-gray-400">Ověřuji přihlášení...</p>
+          </div>
+        </div>
+      </Layout>
+    )
   }
 
   return (
@@ -83,7 +149,10 @@ export default function AuthPage() {
           {/* Auth toggles */}
           <div className="flex bg-dark-surface rounded-lg p-1">
             <button
-              onClick={() => setIsLogin(true)}
+              onClick={() => {
+                setIsLogin(true)
+                setError(null)
+              }}
               className={`flex-1 py-2 px-4 rounded-md font-medium transition-all duration-300 ${
                 isLogin 
                   ? 'bg-security-blue-600 text-white shadow-lg' 
@@ -93,7 +162,10 @@ export default function AuthPage() {
               Přihlášení
             </button>
             <button
-              onClick={() => setIsLogin(false)}
+              onClick={() => {
+                setIsLogin(false)
+                setError(null)
+              }}
               className={`flex-1 py-2 px-4 rounded-md font-medium transition-all duration-300 ${
                 !isLogin 
                   ? 'bg-security-blue-600 text-white shadow-lg' 
@@ -103,6 +175,14 @@ export default function AuthPage() {
               Registrace
             </button>
           </div>
+
+          {/* Error message */}
+          {error && (
+            <div className="bg-red-600/10 border border-red-600/20 rounded-lg p-4 flex items-center space-x-3">
+              <AlertCircle className="w-5 h-5 text-red-400 flex-shrink-0" />
+              <p className="text-red-400 text-sm">{error}</p>
+            </div>
+          )}
 
           {/* Form */}
           <form onSubmit={handleSubmit} className="space-y-6">

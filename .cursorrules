@@ -1,0 +1,408 @@
+# 🛡️ SecureHero — **Cursor Project Rules (v1.2 – 2 Aug 2025)**
+
+## 0 / Purpose of this file
+
+This single `.cursorrules` document gives the Cursor Agent *every piece of context it must know* to collaborate on the SecureHero codebase without ever breaking the project or stepping on another developer's toes. **Anything not written here is out of scope.**
+
+> **Golden rule 🔒** Never touch code that belongs to someone else. If you need to *read* another area for context, do so in read-only mode.
+
+---
+
+## 1 / Mission statement
+
+> Build the most engaging, data-driven security-awareness SaaS for SMB & Enterprise. Core pillars: adaptive micro-lessons, real-time phishing simulations, human-risk analytics, VirusTotal & OSINT scanners, gamified XP/Level, AI copilot, and deep integrations (Slack, Teams, Stripe, Shodan, HIBP, urlscan.io).
+
+---
+
+## 2 / Team ownership matrix
+
+| Area / Directory prefix                                                                                            | **Owner**                    | What *is* allowed                                | What *is NOT* allowed                    |
+| ------------------------------------------------------------------------------------------------------------------ | ---------------------------- | ------------------------------------------------ | ---------------------------------------- |
+| `src/app/dashboard/**`, `src/components/dashboard/**`, `src/components/ui/**`                                      | **Kubca**                    | Add/edit dashboard pages, widgets, hooks, styles | All landing/auth code, global layouts    |
+| `src/app/page.tsx`, `src/app/auth/**`, `src/components/Header.tsx`, `src/components/Footer.tsx`, marketing content | **El.Daniel**                  | Landing, auth, SEO, 3D hero sections            | Dashboard or any admin pages             |
+| `contexts/`, `lib/`, `functions/src/`, CI/CD, type defs                                                            | **Shared (review required)** | Extend without breaking existing APIs            | Secrets in code, breaking API signatures |
+
+**If you must change a shared file:** create PR → request review from the other owner → merge *only* after approval.
+
+---
+
+## 3 / Folder structure (canonical)
+
+```text
+src/
+├── app/                  # Next.js App Router entries
+│   ├── layout.tsx        #   ⚠ shared, minimal edits
+│   ├── globals.css       #   ⚠ only additive edits
+│   ├── page.tsx          #   Landing  (El.Daniel)
+│   ├── auth/             #   Auth flow (El.Daniel)
+│   └── dashboard/        #   Dashboard (Kubca)
+│       ├── page.tsx
+│       └── components/
+├── components/
+│   ├── Header.tsx, Footer.tsx         # Landing  (El.Daniel)
+│   ├── ui/                            # Re-exported shadcn components (Kubca)
+│   └── dashboard/                     # Dashboard-specific (Kubca)
+├── contexts/      # Shared React contexts (Auth etc.)
+├── lib/           # Firebase clients, helpers, util libs
+├── functions/     # Firebase Functions source
+│   └── src/       #   CF01-CF08 etc. (see §6)
+├── public/        # Static assets only
+├── locales/       # i18next translation files
+│   ├── cs/        #   Czech translations (default for .cz domain)
+│   └── en/        #   English translations (global default)
+└── types/         # Zod & TS interfaces shared everywhere
+```
+
+To add a **new module** create a top-level folder under your area. Never rename or move another dev's code without prior agreement.
+
+---
+
+## 4 / Internationalization (i18n) system
+
+### URL & Language Detection Strategy
+- **Base domain** (e.g., `securehero.com`) → English by default
+- **Czech domain** (e.g., `securehero.com/cz`) → Czech content
+- **IP-based detection** → auto-redirect to `/cz` for Czech IPs
+- **Manual switcher** → user can override language preference
+
+### Translation System Architecture
+```typescript
+// locales/cs/common.ts
+export const cs = {
+  ENHANCED_CAR: "Krasny den",
+  DASHBOARD_TITLE: "Bezpecnostni panel",
+  XP_EARNED: "Ziskano XP",
+  // ... all Czech strings
+}
+
+// locales/en/common.ts  
+export const en = {
+  ENHANCED_CAR: "Beautiful day",
+  DASHBOARD_TITLE: "Security Dashboard", 
+  XP_EARNED: "XP Earned",
+  // ... all English strings
+}
+
+// Usage in components:
+import { useTranslation } from 'next-i18next';
+const { t } = useTranslation('common');
+<h1>{t('DASHBOARD_TITLE')}</h1>
+```
+
+### Translation File Structure
+```text
+locales/
+├── cs/
+│   ├── common.ts         # Shared UI strings
+│   ├── dashboard.ts      # Dashboard-specific (Kubca)
+│   ├── landing.ts        # Landing-specific (El.Daniel)
+│   ├── auth.ts          # Auth flow (El.Daniel)
+│   └── lessons.ts       # Security lessons content
+└── en/
+    ├── common.ts         # Same structure for English
+    ├── dashboard.ts
+    ├── landing.ts
+    ├── auth.ts
+    └── lessons.ts
+```
+
+### Rules for Adding New Translations
+1. **ALWAYS** add both CS and EN versions simultaneously
+2. Use **SCREAMING_SNAKE_CASE** for translation keys
+3. Keep keys descriptive: `PHISHING_SIMULATION_START` not `BTN_START`
+4. Group related strings in appropriate namespace files
+5. For dynamic content (lessons, emails), store in Firestore with `locale` field
+
+---
+
+## 5 / Technology stack (locked-in)
+
+| Layer             | Library / Service                                                                                                                 | Version / Notes                                                    |
+| ----------------- | --------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------ |
+| **Frontend**      | Next.js 15 • React 18 • TypeScript 5 • Tailwind 3 • shadcn/ui • framer-motion                                                     | RSC + App Router only; no pages dir                                |
+| **State / Data**  | Firebase Auth • Firestore • Cloud Functions • Cloud Storage                                                                       | Service account JSON = Base64 in `FIREBASE_SERVICE_ACCOUNT_BASE64` |
+| **AI**            | OpenAI o3 (GPT-4o)                                                                                                                | Stream as text/event-stream via Server Actions                     |
+| **Security APIs** | VirusTotal v3 (`VT_API_KEY`) • Have I Been Pwned v3 (`HIBP_API_KEY`) • urlscan.io (`URLSCAN_API_KEY`) • Shodan (`SHODAN_API_KEY`) | Respect free-tier rate limits (doc in §8)                          |
+| **Payments**      | Stripe Billing & Checkout                                                                                                         | Plans Free / Pro / Ent with metered usage                          |
+| **i18n**          | next-i18next • react-i18next                                                                                                      | CS/EN support with smart URL routing                              |
+| **CI/CD**         | GitHub Actions → Firebase Hosting/Functions deploy                                                                                | Trivy scan: fail build on CVSS > 7                                 |
+| **Tooling**       | pnpm • ESLint strict • Prettier • Vitest • React Query                                                                           | All code must pass `pnpm lint && pnpm test` before commit          |
+
+---
+
+## 6 / Data model (Firestore collections)
+
+```typescript
+companies/{companyId} {
+  name: string;
+  createdAt: Timestamp;
+  locale: 'cs' | 'en';  // Default language for company
+}
+
+users/{uid} {
+  companyId: string;
+  displayName: string;
+  email: string;
+  photoURL?: string;
+  role: 'admin' | 'user';
+  level: number;   // gamification
+  xp: number;      // accumulated XP
+  locale: 'cs' | 'en';  // User language preference
+}
+  ├── lessonProgress/{docId} {
+      lessonId: string;
+      completedAt: Timestamp;
+      score: number;
+      xpEarned: number;
+      locale: string;  // Language lesson was taken in
+    }
+  ├── riskEvents/{docId}
+  ├── riskScores/{periodId}
+  ├── vtScans/{fileId}
+  ├── breaches/{breachId}
+  ├── urlScans/{scanId}
+  ├── badges/{badgeId}
+  └── exposures/{scanId}
+
+// Global-level
+lessons/{lessonId} {
+  title: { cs: string; en: string; };
+  content: { cs: string; en: string; };
+  durationMin: number;
+  category: string;
+  levelRequired: number;
+}
+
+missions/{missionId} {
+  name: { cs: string; en: string; };
+  description: { cs: string; en: string; };
+  season: string;
+  start: Timestamp;
+  end: Timestamp;
+  xpReward: number;
+}
+
+badgesCatalog/{badgeId} {
+  name: { cs: string; en: string; };
+  description: { cs: string; en: string; };
+  icon: string;
+  criteriaJSON: string;
+}
+
+phishingCampaigns/{campaignId}
+vtCache/{sha256}
+threatFeed/{itemId} {
+  title: { cs: string; en: string; };
+  description: { cs: string; en: string; };
+  timestamp: Timestamp;
+  severity: 'low' | 'medium' | 'high' | 'critical';
+}
+```
+
+`deletedAt` soft-delete on every mutable document.
+
+---
+
+## 7 / Backend modules (Cloud Functions)
+
+| ID       | Trigger                | Path / Name                       | Responsibility                                          |
+| -------- | ---------------------- | --------------------------------- | ------------------------------------------------------- |
+| **CF01** | storage.onFinalize     | `vtScanOnUpload`                  | Send ≤32 MB file to VirusTotal; save `analysisId`       |
+| **CF02** | pubSub (*/2 min)      | `pollVtResult`                    | Fetch verdict, update `vtScans`                         |
+| **CF03** | scheduled daily        | `computeRiskScore`                | Aggregate awareness/behaviour/culture into `riskScores` |
+| **CF04** | doc.onCreate           | `onLessonCompleted`               | Award XP & badges (transactions!)                       |
+| **CF05** | HTTPS callable         | `launchPhishingCampaign`          | Schedule campaign tasks                                 |
+| **CF06** | HTTPS + Stripe webhook | `checkoutSession`                 | Billing & customClaims plan sync                        |
+| **CF07** | HTTPS callable         | `getLeaderboard`                  | Return top-N users (XP) per company                     |
+| **CF08** | HTTPS callable         | `exportComplianceReport`          | PDF/CSV export for audits                               |
+| **CF09** | HTTPS callable         | `checkPwnedEmail`                 | HIBP email breach fetch • saves `breaches`              |
+| **CF10** | scheduled daily        | `checkDomainBreaches`             | HIBP domain breach monitor                              |
+| **CF11** | HTTPS callable         | `urlscanSubmit` / `urlscanResult` | URL sandbox integration                                 |
+| **CF12** | HTTPS callable         | `scanCompanyExposure`             | Shodan exposure scan (Admin)                            |
+
+Every function **must**:
+1. Verify Firebase ID token & plan quota.
+2. Validate input via zod.
+3. Log structured JSON (`functions.logger.info`).
+4. Return typed response or throw `HttpsError`.
+5. Support locale parameter for localized responses.
+
+---
+
+## 8 / Gamification system
+
+### XP table
+
+| Action                     | XP                       |
+| -------------------------- | ------------------------ |
+| Micro-lesson ≥80 %         | `5 × lesson.durationMin` |
+| Phishing simulation passed | +20                      |
+| Report real threat         | +15                      |
+| VirusTotal «malicious»     | +10                      |
+| Daily login streak ≥5      | +n                       |
+| URL sandbox finished       | +10                      |
+| New HIBP breach detected   | +5                       |
+| Shodan exposure fixed      | +20                      |
+| Attack Replay success      | +25                      |
+
+### Level formula
+
+`level = floor( sqrt(xp / 25) ) + 1`
+
+### Gating
+
+If `user.level < levelRequired` → return HTTP 403 & show lock overlay with localized message.
+
+---
+
+## 9 / Plan quotas & API limits
+
+| Plan | Users | VT scans/mo | AI queries/mo | HIBP calls/mo | Shodan scans |
+| ---- | ----- | ----------- | ------------- | ------------- | ------------ |
+| FREE | ≤30   | 20          | 100           | 20            | 0            |
+| PRO  | ≤500  | 500         | 5,000         | 500           | 4 / month    |
+| ENT  | 10k+  | custom      | custom        | custom        | 5 / day      |
+
+The middleware `checkQuota(plan, action)` lives in `lib/quota.ts`. If quota exceeded → throw `HttpsError('resource-exhausted')` and surface localized toast "Upgrade plan".
+
+VirusTotal free key = **4 requests/minute & 32 MB/file**. HIBP free key = **1 request/sec**. urlscan.io public key = **60 scans/day**. Shodan free key = **100 req/min**. Code must implement polite exponential back-off & cache results (see `vtCache`, `hibpCache`).
+
+---
+
+## 10 / Coding conventions (AI & humans)
+
+### Security
+- **NEVER** hardcode secrets - always `process.env.*`
+- All env variables in `.env.local` (git ignore)
+- Firebase service account as Base64 string
+- `.env.local` NEVER in git
+
+### Code Quality
+- TypeScript **strict** everywhere; no `any`
+- React Server Components by default; mark client components with `'use client'`
+- Use React Query for client data; always unsubscribe in `useEffect` cleanup
+- All new code **MUST** pass `pnpm lint && pnpm test`
+- Firestore batch writes for XP (prevent race conditions)
+- Realtime listeners: unsubscribe on component unmount
+
+### Performance
+- Bundle ≤ 250 kB gzipped
+- Large deps (d3, pdf-lib) → dynamic `import()` (code-splitting)
+- Optimize images via Next.js Image
+- Lazy-load heavy dependencies
+
+### UI/UX
+- Animations only via framer-motion
+- No custom colors in charts - use Tailwind palette only
+- Mobile-first responsive design
+- Accessibility (a11y) friendly
+- ALL user-facing text must use i18next translations
+
+### File Naming & Organization
+```
+├── PascalCase.tsx          # React components
+├── camelCase.ts            # utility functions
+├── kebab-case.css          # styles
+├── SCREAMING_SNAKE_CASE.md # constants/config
+```
+
+---
+
+## 11 / Git workflow
+
+### Branch naming
+```
+main                        # production
+development                 # development
+kubca/dashboard-feature     # Kubca dashboard work
+el-daniel/landing-feature   # El.Daniel landing work
+hotfix/critical-bug         # urgent fixes
+```
+
+### Commit messages
+```
+feat(dashboard): add XP progress bar
+fix(auth): resolve Firebase token refresh
+docs(readme): update installation steps
+style(ui): improve button hover states
+refactor(api): optimize Firestore queries
+i18n(common): add Czech translations for dashboard
+```
+
+### Pull Request checklist
+- [ ] Description of what this PR does
+- [ ] Screenshots if UI changes
+- [ ] Local testing passed
+- [ ] Build passes without errors (`pnpm build`)
+- [ ] No lint errors (`pnpm lint`)
+- [ ] All translations added (CS + EN)
+- [ ] No breaking changes to shared APIs
+- [ ] Reviewer assigned
+
+---
+
+## 12 / AI Agent rules of engagement
+
+* **Always** respect ownership matrix (§2). Modify only your area unless PR approved.
+* Generate code that compiles & passes tests. If not sure, run `pnpm dev` and fix.
+* When adding a Cloud Function: register name in table §7.
+* Update Firestore rules & index files when adding new collections.
+* Keep bundle ≤250 kB gzipped; tree-shake UI libs.
+* Never commit `.env*`, `serviceAccount*.json` or `*.key`.
+* Document every new function/hook at top of file (JSDoc).
+* **ALWAYS** add both Czech and English translations for any new text.
+* When creating new Firestore documents, include locale fields where appropriate.
+* If facing ambiguity, ask in the PR description; **never guess** secrets or business logic.
+
+---
+
+## 13 / Current focus (August 2025)
+
+### Kubca (Dashboard)
+- ✅ Dashboard reorganization complete
+- 🟡 Implement XP/Level system with UI components
+- 🟡 VT scanner widget + CF01/CF02 integration
+- 🟡 HIBP Breach Monitor (CF09/CF10)
+- 🟡 Hook new XP actions into Gamification engine
+- 🟡 Add Czech translations for all dashboard components
+
+### El.Daniel (Landing)
+- 🔄 Landing page SEO & 3D hero animations
+- 🔄 Auth flow improvements with federated login
+- 🔄 Header/Footer enhancements
+- 🔄 Marketing sections optimization
+- 🔄 Czech/English language switcher implementation
+
+---
+
+## 14 / Conflict resolution protocol
+
+### If conflict occurs:
+1. **STOP** - don't continue working
+2. **Communicate** - message the other developer
+3. **Screen share** - resolve together
+4. **Document** - write solution in this file
+5. **Prevention** - update rules to prevent recurrence
+
+### Emergency contact
+- Discord/Telegram: [communication channel]
+- GitHub Issues: for documented problems
+- Google Meet: for complex consultations
+
+---
+
+## 15 / Quick links
+
+* Firebase console → `<project>`
+* VirusTotal docs → [https://developers.virustotal.com/reference](https://developers.virustotal.com/reference)
+* HIBP API → [https://haveibeenpwned.com/API/v3](https://haveibeenpwned.com/API/v3)
+* urlscan docs → [https://urlscan.io/about-api/](https://urlscan.io/about-api/)
+* Stripe dashboard → [https://dashboard.stripe.com/](https://dashboard.stripe.com/)
+* Project Kanban → `<link>`
+
+---
+
+**"Code together, profit together — but never break prod." 🚀**
+
+*Version: 1.2 | Last update: 2 Aug 2025*
+*For updates to this file, consult with the entire team*
