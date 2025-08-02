@@ -3,7 +3,7 @@
  * Owner: Shared - internationalization system
  */
 
-import { useRouter } from 'next/router';
+import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { 
   translations, 
@@ -40,9 +40,9 @@ export function useTranslation(namespace: TranslationNamespaces = 'common') {
   const [locale, setLocale] = useState<SupportedLocale>(defaultLocale);
   
   useEffect(() => {
-    const detectedLocale = getLocaleFromPath(router.asPath);
+    const detectedLocale = getLocaleFromPath(window.location.pathname);
     setLocale(detectedLocale);
-  }, [router.asPath]);
+  }, []);
   
   const t = (key: string, interpolations?: Record<string, string>): string => {
     let translation = getTranslation(locale, namespace, key);
@@ -58,7 +58,7 @@ export function useTranslation(namespace: TranslationNamespaces = 'common') {
   };
   
   const changeLocale = (newLocale: SupportedLocale) => {
-    const newPath = addLocaleToPath(router.asPath, newLocale);
+    const newPath = addLocaleToPath(window.location.pathname, newLocale);
     router.push(newPath);
   };
   

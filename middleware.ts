@@ -11,7 +11,6 @@ export async function middleware(request: NextRequest) {
   
   // Get country from headers (Vercel provides this automatically)
   const country = request.headers.get('x-vercel-ip-country') || 
-                  request.geo?.country || 
                   request.headers.get('cf-ipcountry') // Cloudflare
   
   // Auto-redirect Czech users to /cz if not already there
