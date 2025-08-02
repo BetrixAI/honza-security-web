@@ -2,6 +2,104 @@
 @tailwind components;
 @tailwind utilities;
 
+/* CSS Variables pro redesign podle UI-REDESIGN SPECIFIKACE */
+:root {
+  /* Brand Palette */
+  --brand-light: #42A5FF;
+  --brand-mid: #2E8BFF;
+  --brand-dark: #1C6CFD;
+  --accent-pink: #FF5CEE;
+  --accent-cyan: #3CE6E6;
+  
+  /* Background & Text */
+  --bg-card: #141A23;
+  --bg-card-alt: #1B222C;
+  --txt-primary: #FFFFFF;
+  --txt-muted: #9CA4B3;
+  
+  /* Legacy compatibility */
+  --color-bg-page: #0B0E13;
+  --color-bg-card: var(--bg-card);
+  --color-bg-card-alt: var(--bg-card-alt);
+  --color-border-subtle: #2A3240;
+  --color-txt-primary: var(--txt-primary);
+  --color-txt-secondary: var(--txt-muted);
+  --color-brand: var(--brand-mid);
+  --color-success: #3CCB7F;
+  --color-warning: #EAC54F;
+  --color-danger: #FF6B6B;
+  --color-bg-accent: #1C2940;
+  
+  /* Gradients */
+  --gradient-brand: linear-gradient(90deg, var(--brand-dark) 0%, var(--brand-light) 100%);
+  --gradient-progress: linear-gradient(90deg, var(--accent-cyan), var(--brand-light));
+  
+  /* Shadows */
+  --shadow-card: 0 4px 16px rgba(0, 0, 0, 0.35);
+  --shadow-emboss: 0 0 4px #000;
+  
+  /* Icons */
+  --icon-duo-stroke: var(--txt-muted);
+  --icon-duo-fill: #2E8BFF40;
+}
+
+/* Global gradient background podle specifikace */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  background: 
+    radial-gradient(
+      1200px circle at 80% -200px,
+      #1148AA55 0%, transparent 70%
+    ), #0B0E13;
+  pointer-events: none;
+}
+
+/* Custom utilities */
+.hover\:tilt-3d:hover {
+  transform: perspective(1000px) rotateX(3deg);
+}
+
+/* Keyline between sidebar and content */
+.keyline-right {
+  box-shadow: 1px 0 0 0 rgba(42, 50, 64, 0.4);
+}
+
+/* Duotone ikony podle ETAPA 2 specifikace */
+.icon-duotone {
+  stroke: var(--icon-duo-stroke);
+  fill: var(--icon-duo-fill);
+  transition: all 0.2s ease;
+}
+
+.icon-duotone:hover {
+  fill: rgba(46, 139, 255, 0.4); /* brand-mid/40% */
+}
+
+.icon-duotone.active {
+  stroke: var(--brand-mid);
+  fill: rgba(46, 139, 255, 0.25); /* brand-mid/25% */
+}
+
+/* Optimalizace pro 60fps animace podle ETAPA 4 */
+@media (prefers-reduced-motion: no-preference) {
+  .animate-smooth {
+    will-change: transform, opacity;
+    transform: translateZ(0);
+    backface-visibility: hidden;
+  }
+  
+  .hover-lift {
+    transition: transform 200ms cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  
+  .hover-lift:hover {
+    transform: translateY(-3px) scale(1.015) translateZ(0);
+  }
+}
+
 /* Černé pozadí s jemnými modrými detaily a flíčky */
 body {
   background-color: #000000;
@@ -554,4 +652,77 @@ html {
 }
 .scrollbar-hide::-webkit-scrollbar { 
   display: none;  /* Safari and Chrome */
+}
+
+/* ETAPA 11: Active nav item bar with better spacing - bez zakulacení */
+.nav-item-active::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 4px;
+  height: 100%;
+  background: var(--brand-mid);
+  border-radius: 0;
+  box-shadow: 0 0 8px rgba(46, 139, 255, 0.4);
+}
+
+/* 🚀 COSMIC DASHBOARD EFFECTS */
+@keyframes cosmic-float {
+  0%, 100% { transform: translateY(0px) rotate(0deg); }
+  33% { transform: translateY(-10px) rotate(1deg); }
+  66% { transform: translateY(-5px) rotate(-1deg); }
+}
+
+@keyframes cosmic-glow {
+  0%, 100% { box-shadow: 0 0 20px rgba(66, 165, 255, 0.3); }
+  50% { box-shadow: 0 0 30px rgba(66, 165, 255, 0.6), 0 0 40px rgba(66, 165, 255, 0.3); }
+}
+
+@keyframes cosmic-pulse {
+  0%, 100% { opacity: 0.6; transform: scale(1); }
+  50% { opacity: 1; transform: scale(1.05); }
+}
+
+@keyframes cosmic-shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+.cosmic-float {
+  animation: cosmic-float 6s ease-in-out infinite;
+}
+
+.cosmic-glow {
+  animation: cosmic-glow 3s ease-in-out infinite;
+}
+
+.cosmic-pulse {
+  animation: cosmic-pulse 2s ease-in-out infinite;
+}
+
+.cosmic-shimmer {
+  background: linear-gradient(90deg, transparent, rgba(66, 165, 255, 0.4), transparent);
+  background-size: 200% 100%;
+  animation: cosmic-shimmer 2s ease-in-out infinite;
+}
+
+/* Gradient text efekt */
+.cosmic-text {
+  background: linear-gradient(135deg, var(--brand-light), var(--accent-cyan), var(--brand-dark));
+  background-size: 200% 200%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: cosmic-shimmer 3s ease-in-out infinite;
+}
+
+/* Icon glow effects */
+.icon-glow {
+  filter: drop-shadow(0 0 8px currentColor);
+  transition: filter 0.3s ease;
+}
+
+.icon-glow:hover {
+  filter: drop-shadow(0 0 12px currentColor) drop-shadow(0 0 20px currentColor);
 } 

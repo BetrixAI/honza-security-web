@@ -128,20 +128,22 @@ export interface Mission {
 
 export interface VTScanResult {
   id: string;
-  userId: string;
+  uid: string;
   fileName: string;
-  fileHash: string;
+  fileHash?: string;
   status: VTScanStatus;
+  vtUrl?: string;
   analysisId?: string;
   verdict?: VTVerdict;
   detections?: number;
   totalEngines?: number;
-  scanDate: Timestamp;
+  createdAt: Timestamp;
   resultDate?: Timestamp;
+  cfRequestId?: string;
   xpAwarded?: number;
 }
 
-export type VTScanStatus = 'uploading' | 'scanning' | 'completed' | 'error';
+export type VTScanStatus = 'queued' | 'running' | 'done' | 'error';
 export type VTVerdict = 'clean' | 'suspicious' | 'malicious';
 
 export interface HIBPBreach {

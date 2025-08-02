@@ -10,6 +10,39 @@ module.exports = {
   theme: {
     extend: {
       colors: {
+        // Brand Palette podle UI-REDESIGN SPECIFIKACE
+        brand: {
+          light: '#42A5FF',
+          mid: '#2E8BFF', 
+          dark: '#1C6CFD',
+          DEFAULT: '#2E8BFF',
+        },
+        accent: {
+          pink: '#FF5CEE',
+          cyan: '#3CE6E6',
+          DEFAULT: '#1C2940',
+        },
+        
+        // Background & Text
+        bg: {
+          page: '#0B0E13',
+          card: '#141A23',
+          'card-alt': '#1B222C'
+        },
+        txt: {
+          primary: '#FFFFFF',
+          muted: '#9CA4B3',
+          secondary: '#9CA4B3' // legacy compatibility
+        },
+        border: {
+          subtle: '#2A3240'
+        },
+        
+        // Status colors
+        success: '#3CCB7F',
+        warning: '#EAC54F',
+        danger: '#FF6B6B',
+        
         // Tmavé pozadí
         'dark-bg': '#0a0a0a',
         'dark-card': '#111111',
@@ -56,6 +89,9 @@ module.exports = {
         'glow': 'glow 2s ease-in-out infinite alternate',
         'slide-up': 'slideUp 0.5s ease-out',
         'fade-in': 'fadeIn 0.5s ease-out',
+        'shimmer': 'shimmer 2s ease-in-out infinite',
+        'tilt': 'tilt 10s infinite linear',
+        'bounce-subtle': 'bounceSubtle 2s ease-in-out infinite',
       },
       
       keyframes: {
@@ -75,12 +111,33 @@ module.exports = {
           '0%': { opacity: '0' },
           '100%': { opacity: '1' },
         },
+        shimmer: {
+          '0%': { backgroundPosition: '-200% 0' },
+          '100%': { backgroundPosition: '200% 0' },
+        },
+        tilt: {
+          '0%, 50%, 100%': { transform: 'rotate(0deg)' },
+          '25%': { transform: 'rotate(1deg)' },
+          '75%': { transform: 'rotate(-1deg)' },
+        },
+        bounceSubtle: {
+          '0%, 100%': { transform: 'translateY(0)' },
+          '50%': { transform: 'translateY(-5px)' },
+        },
       },
       
       boxShadow: {
+        'card': '0 4px 16px rgba(0, 0, 0, 0.35)',
+        'emboss': '0 0 4px #000',
+        'glow-brand': '0 0 12px #42A5FF88',
         'glow-blue': '0 0 20px rgba(59, 130, 246, 0.5)',
         'glow-red': '0 0 20px rgba(239, 68, 68, 0.5)',
         'card-dark': '0 4px 6px -1px rgba(0, 0, 0, 0.5), 0 2px 4px -1px rgba(0, 0, 0, 0.3)',
+      },
+      
+      backgroundImage: {
+        'gradient-brand': 'linear-gradient(90deg, var(--brand-dark) 0%, var(--brand-light) 100%)',
+        'gradient-progress': 'linear-gradient(90deg, var(--accent-cyan), var(--brand-light))',
       },
     },
   },
