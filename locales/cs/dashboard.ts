@@ -25,13 +25,21 @@ export const dashboardCs = {
   LEADERBOARD: "Žebříček",
   
   // Stats Cards
-  SECURITY_SCORE: "Security Score",
-  COURSES_COMPLETED: "Dokončená školení",
+  SECURITY_SCORE: "Bezpečnostní Skóre",
+  COMPLETED_TRAINING: "Dokončená Školení",
+  PHISHING_SUCCESS: "Phishing Úspěšnost", 
   PHISHING_DETECTED: "Odhalené phishing útoky",
-  CERTIFICATIONS: "Certifikáty",
+  LEVEL: "Level",
   SUCCESS_RATE: "úspěšnost",
   THIS_MONTH: "tento měsíc",
-  GOLD_LEVEL: "Gold level",
+  LAST_WEEK: "z minulého týdne",
+  NEXT_LEVEL_XP: "XP do dalšího",
+  
+  // Activity & Courses
+  RECENT_ACTIVITY: "Nedávná aktivita",
+  RECOMMENDED_COURSES: "Doporučené kurzy",
+  VIEW_ALL: "Zobrazit vše", 
+  EXPLORE: "Prozkoumat",
   
   // Risk Score
   RISK_SCORE: "Bezpečnostní Skóre",

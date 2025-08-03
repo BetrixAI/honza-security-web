@@ -26,12 +26,20 @@ export const dashboardEn = {
   
   // Stats Cards
   SECURITY_SCORE: "Security Score",
-  COURSES_COMPLETED: "Courses Completed",
-  PHISHING_DETECTED: "Phishing Attacks Detected",
-  CERTIFICATIONS: "Certifications",
+  COMPLETED_TRAINING: "Completed Training",
+  PHISHING_SUCCESS: "Phishing Success",
+  PHISHING_DETECTED: "Phishing Attacks Detected", 
+  LEVEL: "Level",
   SUCCESS_RATE: "success rate",
   THIS_MONTH: "this month",
-  GOLD_LEVEL: "Gold level",
+  LAST_WEEK: "from last week",
+  NEXT_LEVEL_XP: "XP to next",
+  
+  // Activity & Courses
+  RECENT_ACTIVITY: "Recent Activity",
+  RECOMMENDED_COURSES: "Recommended Courses",
+  VIEW_ALL: "View All",
+  EXPLORE: "Explore",
   
   // Risk Score
   RISK_SCORE: "Risk Score",

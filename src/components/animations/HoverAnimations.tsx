@@ -30,28 +30,35 @@ export function AnimatedCard({
     scale: {
       whileHover: { 
         scale: 1.02,
-        transition: { duration: 0.2, ease: 'easeOut' }
+        y: -4,
+        boxShadow: '0 8px 25px rgba(0, 0, 0, 0.25)',
+        transition: { duration: 0.3, ease: 'easeOut' }
       },
       whileTap: { scale: 0.98 }
     },
     glow: {
       whileHover: { 
-        boxShadow: '0 0 20px rgba(66, 165, 255, 0.3)',
-        transition: { duration: 0.3 }
+        scale: 1.01,
+        boxShadow: '0 0 25px rgba(66, 165, 255, 0.4), 0 0 50px rgba(66, 165, 255, 0.1)',
+        transition: { duration: 0.4, ease: 'easeOut' }
       }
     },
     tilt: {
       whileHover: { 
-        rotateY: 5,
-        rotateX: 5,
-        transition: { duration: 0.3 }
+        scale: 1.01,
+        rotateY: 3,
+        rotateX: 3,
+        y: -6,
+        boxShadow: '0 12px 30px rgba(0, 0, 0, 0.2)',
+        transition: { duration: 0.4, ease: 'easeOut' }
       }
     },
     lift: {
       whileHover: { 
         y: -8,
-        boxShadow: '0 20px 40px rgba(0, 0, 0, 0.15)',
-        transition: { duration: 0.3 }
+        scale: 1.01,
+        boxShadow: '0 20px 40px rgba(0, 0, 0, 0.25)',
+        transition: { duration: 0.3, ease: 'easeOut' }
       }
     }
   }
@@ -219,3 +226,6 @@ export function ScrollReveal({
     </motion.div>
   )
 }
+ 
+
+

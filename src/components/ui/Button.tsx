@@ -64,9 +64,7 @@ export default function Button({
       {children}
     </button>
   )
-}
-
-// Export také jednotlivé varianty pro snadné použití
+}// Export také jednotlivé varianty pro snadné použití
 export const PrimaryButton = (props: Omit<ButtonProps, 'variant'>) => (
   <Button variant="primary" {...props} />
 )
@@ -74,3 +72,4 @@ export const PrimaryButton = (props: Omit<ButtonProps, 'variant'>) => (
 export const SecondaryButton = (props: Omit<ButtonProps, 'variant'>) => (
   <Button variant="secondary" {...props} />
 )
+

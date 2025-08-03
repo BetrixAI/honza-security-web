@@ -663,66 +663,6 @@ html {
   width: 4px;
   height: 100%;
   background: var(--brand-mid);
-  border-radius: 0;
+  border-radius: 0 4px 4px 0;
   box-shadow: 0 0 8px rgba(46, 139, 255, 0.4);
-}
-
-/* 🚀 COSMIC DASHBOARD EFFECTS */
-@keyframes cosmic-float {
-  0%, 100% { transform: translateY(0px) rotate(0deg); }
-  33% { transform: translateY(-10px) rotate(1deg); }
-  66% { transform: translateY(-5px) rotate(-1deg); }
-}
-
-@keyframes cosmic-glow {
-  0%, 100% { box-shadow: 0 0 20px rgba(66, 165, 255, 0.3); }
-  50% { box-shadow: 0 0 30px rgba(66, 165, 255, 0.6), 0 0 40px rgba(66, 165, 255, 0.3); }
-}
-
-@keyframes cosmic-pulse {
-  0%, 100% { opacity: 0.6; transform: scale(1); }
-  50% { opacity: 1; transform: scale(1.05); }
-}
-
-@keyframes cosmic-shimmer {
-  0% { background-position: -200% 0; }
-  100% { background-position: 200% 0; }
-}
-
-.cosmic-float {
-  animation: cosmic-float 6s ease-in-out infinite;
-}
-
-.cosmic-glow {
-  animation: cosmic-glow 3s ease-in-out infinite;
-}
-
-.cosmic-pulse {
-  animation: cosmic-pulse 2s ease-in-out infinite;
-}
-
-.cosmic-shimmer {
-  background: linear-gradient(90deg, transparent, rgba(66, 165, 255, 0.4), transparent);
-  background-size: 200% 100%;
-  animation: cosmic-shimmer 2s ease-in-out infinite;
-}
-
-/* Gradient text efekt */
-.cosmic-text {
-  background: linear-gradient(135deg, var(--brand-light), var(--accent-cyan), var(--brand-dark));
-  background-size: 200% 200%;
-  -webkit-background-clip: text;
-  background-clip: text;
-  -webkit-text-fill-color: transparent;
-  animation: cosmic-shimmer 3s ease-in-out infinite;
-}
-
-/* Icon glow effects */
-.icon-glow {
-  filter: drop-shadow(0 0 8px currentColor);
-  transition: filter 0.3s ease;
-}
-
-.icon-glow:hover {
-  filter: drop-shadow(0 0 12px currentColor) drop-shadow(0 0 20px currentColor);
 } 

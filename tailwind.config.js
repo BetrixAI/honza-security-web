@@ -10,10 +10,10 @@ module.exports = {
   theme: {
     extend: {
       colors: {
-        // Brand Palette podle UI-REDESIGN SPECIFIKACE
+        // Redesign Brand Colors podle UI-REDESIGN SPECIFIKACE
         brand: {
           light: '#42A5FF',
-          mid: '#2E8BFF', 
+          mid: '#2E8BFF',
           dark: '#1C6CFD',
           DEFAULT: '#2E8BFF',
         },
@@ -22,8 +22,6 @@ module.exports = {
           cyan: '#3CE6E6',
           DEFAULT: '#1C2940',
         },
-        
-        // Background & Text
         bg: {
           page: '#0B0E13',
           card: '#141A23',
@@ -37,13 +35,11 @@ module.exports = {
         border: {
           subtle: '#2A3240'
         },
-        
-        // Status colors
         success: '#3CCB7F',
         warning: '#EAC54F',
         danger: '#FF6B6B',
         
-        // Tmavé pozadí
+        // Legacy barvy pro zpětnou kompatibilitu
         'dark-bg': '#0a0a0a',
         'dark-card': '#111111',
         'dark-surface': '#1a1a1a',
@@ -141,5 +137,8 @@ module.exports = {
       },
     },
   },
-  plugins: [],
+  plugins: [
+    require('@tailwindcss/typography'),
+    require('@tailwindcss/container-queries'),
+  ],
 } 
