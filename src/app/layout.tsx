@@ -2,6 +2,7 @@ import type { Metadata } from 'next'
 import { Inter } from 'next/font/google'
 import './globals.css'
 import { AuthProvider } from '@/contexts/AuthContext'
+import { LanguageProvider } from '@/contexts/LanguageContext'
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -28,11 +29,13 @@ export default function RootLayout({
         <script type="module" src="https://unpkg.com/@splinetool/viewer@1.10.38/build/spline-viewer.js"></script>
       </head>
       <body className={`${inter.className} text-white antialiased`}>
-        <AuthProvider>
-          <div className="min-h-screen flex flex-col">
-            {children}
-          </div>
-        </AuthProvider>
+        <LanguageProvider>
+          <AuthProvider>
+            <div className="min-h-screen flex flex-col">
+              {children}
+            </div>
+          </AuthProvider>
+        </LanguageProvider>
       </body>
     </html>
   )

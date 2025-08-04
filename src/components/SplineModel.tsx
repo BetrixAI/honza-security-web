@@ -1,44 +1,39 @@
 'use client'
 
-import React, { Suspense } from 'react'
-import dynamic from 'next/dynamic'
+import { Suspense, useEffect, useState } from 'react'
+import Spline from '@splinetool/react-spline'
 
-// Dynamický import Spline komponenty
-const Spline = dynamic(() => import('@splinetool/react-spline'), {
-  ssr: false,
-  loading: () => (
-    <div className="w-full h-full flex items-center justify-center">
-      <div className="security-spinner"></div>
-    </div>
-  )
-})
+export default function SplineModel() {
+  const [isClient, setIsClient] = useState(false)
 
-interface SplineModelProps {
-  scene: string
-  className?: string
-  fallback?: React.ReactNode
-}
+  useEffect(() => {
+    setIsClient(true)
+  }, [])
 
-export default function SplineModel({ scene, className = '', fallback }: SplineModelProps) {
-  const defaultFallback = (
-    <div className={`w-full h-full flex items-center justify-center bg-dark-card rounded-lg ${className}`}>
-      <div className="text-center space-y-4">
-        <div className="security-spinner mx-auto"></div>
-        <p className="text-gray-400 text-sm">Načítání 3D modelu...</p>
+  if (!isClient) {
+    return (
+      <div className="w-full h-full flex items-center justify-center">
+        <div className="text-gray-400 text-lg">Loading 3D model...</div>
       </div>
-    </div>
-  )
+    )
+  }
 
   return (
-    <div className={`relative ${className}`}>
-      <Suspense fallback={fallback || defaultFallback}>
+    <Suspense fallback={
+      <div className="w-full h-full flex items-center justify-center">
+        <div className="text-gray-400 text-lg">Loading 3D model...</div>
+      </div>
+    }>
+      <div className="absolute inset-0 w-full h-full">
         <Spline 
-          scene={scene}
-          className="w-full h-full"
-          onLoad={() => console.log('Spline model loaded')}
-          onError={(error) => console.error('Spline model error:', error)}
+          scene={process.env.NEXT_PUBLIC_SPLINE_HERO_MODEL_URL || ''} 
+          style={{
+            width: '100%',
+            height: '100%',
+            pointerEvents: 'auto'
+          }}
         />
-      </Suspense>
-    </div>
+      </div>
+    </Suspense>
   )
-} 
+}
