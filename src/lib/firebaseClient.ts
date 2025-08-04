@@ -16,9 +16,9 @@ const firebaseConfig = {
 
 // Lazy initialization Firebase App
 let app: FirebaseApp
-let auth: Auth
-let firestore: Firestore
-let storage: FirebaseStorage
+let authInstance: Auth
+let firestoreInstance: Firestore
+let storageInstance: FirebaseStorage
 
 const initializeFirebase = () => {
   // Kontrola zda je Firebase již inicializován
@@ -34,19 +34,19 @@ const initializeFirebase = () => {
   }
   
   // Inicializace služeb pouze pokud ještě nejsou inicializované
-  if (!auth) {
-    auth = getAuth(app)
+  if (!authInstance) {
+    authInstance = getAuth(app)
   }
   
-  if (!firestore) {
-    firestore = getFirestore(app)
+  if (!firestoreInstance) {
+    firestoreInstance = getFirestore(app)
   }
   
-  if (!storage) {
-    storage = getStorage(app)
+  if (!storageInstance) {
+    storageInstance = getStorage(app)
   }
   
-  return { app, auth, firestore, storage }
+  return { app, auth: authInstance, firestore: firestoreInstance, storage: storageInstance }
 }
 
 // Lazy gettery pro Firebase služby
@@ -58,25 +58,30 @@ export const getFirebaseApp = (): FirebaseApp => {
 }
 
 export const getFirebaseAuth = (): Auth => {
-  if (!auth) {
+  if (!authInstance) {
     initializeFirebase()
   }
-  return auth
+  return authInstance
 }
 
 export const getFirebaseFirestore = (): Firestore => {
-  if (!firestore) {
+  if (!firestoreInstance) {
     initializeFirebase()
   }
-  return firestore
+  return firestoreInstance
 }
 
 export const getFirebaseStorage = (): FirebaseStorage => {
-  if (!storage) {
+  if (!storageInstance) {
     initializeFirebase()
   }
-  return storage
+  return storageInstance
 }
+
+// Export zkratek pro jednodušší použití
+export const auth = getFirebaseAuth
+export const db = getFirebaseFirestore
+export const storage = getFirebaseStorage
 
 // Default export pro kompatibilitu
 export default getFirebaseApp

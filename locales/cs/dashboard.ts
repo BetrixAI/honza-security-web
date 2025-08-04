@@ -11,14 +11,35 @@ export const dashboardCs = {
   DASHBOARD_TRAINING: "Školení",
   DASHBOARD_PHISHING: "Phishing",
   
-  // XP & Gamification
+  // XP & Gamification System
+  GAMIFICATION_SYSTEM: "Gamifikační Systém",
   XP_EARNED: "Získáno XP",
   XP_TOTAL: "Celkem XP",
-  LEVEL_CURRENT: "Aktuální Level",
+  XP_TO_NEXT_LEVEL: "XP do Level",
+  LEVEL_CURRENT: "Level",
   LEVEL_NEXT: "Další Level",
   LEVEL_PROGRESS: "Postup",
   BADGES_EARNED: "Získané Odznaky",
+  BADGES_TITLE: "Získané Odznaky",
+  BADGES_NONE: "Zatím žádné odznaky",
   LEADERBOARD: "Žebříček",
+  
+  // Stats Cards
+  SECURITY_SCORE: "Bezpečnostní Skóre",
+  COMPLETED_TRAINING: "Dokončená Školení",
+  PHISHING_SUCCESS: "Phishing Úspěšnost", 
+  PHISHING_DETECTED: "Odhalené phishing útoky",
+  LEVEL: "Level",
+  SUCCESS_RATE: "úspěšnost",
+  THIS_MONTH: "tento měsíc",
+  LAST_WEEK: "z minulého týdne",
+  NEXT_LEVEL_XP: "XP do dalšího",
+  
+  // Activity & Courses
+  RECENT_ACTIVITY: "Nedávná aktivita",
+  RECOMMENDED_COURSES: "Doporučené kurzy",
+  VIEW_ALL: "Zobrazit vše", 
+  EXPLORE: "Prozkoumat",
   
   // Risk Score
   RISK_SCORE: "Bezpečnostní Skóre",

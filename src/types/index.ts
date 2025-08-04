@@ -20,6 +20,7 @@ export interface User {
   locale: SupportedLocale;
   createdAt: Timestamp;
   lastLoginAt?: Timestamp;
+  geolocation?: UserGeolocation;
 }
 
 export type UserRole = 'admin' | 'user';
@@ -128,20 +129,22 @@ export interface Mission {
 
 export interface VTScanResult {
   id: string;
-  userId: string;
+  uid: string;
   fileName: string;
-  fileHash: string;
+  fileHash?: string;
   status: VTScanStatus;
+  vtUrl?: string;
   analysisId?: string;
   verdict?: VTVerdict;
   detections?: number;
   totalEngines?: number;
-  scanDate: Timestamp;
+  createdAt: Timestamp;
   resultDate?: Timestamp;
+  cfRequestId?: string;
   xpAwarded?: number;
 }
 
-export type VTScanStatus = 'uploading' | 'scanning' | 'completed' | 'error';
+export type VTScanStatus = 'queued' | 'running' | 'done' | 'error';
 export type VTVerdict = 'clean' | 'suspicious' | 'malicious';
 
 export interface HIBPBreach {
@@ -327,4 +330,57 @@ export interface AnalyticsEvent {
   companyId?: string;
   properties?: Record<string, any>;
   timestamp: Timestamp;
+}
+
+// ===== IP GEOLOCATION =====
+
+export interface IPGeolocationResponse {
+  ip: string;
+  continent_code: string;
+  continent_name: string;
+  country_code2: string;
+  country_code3: string;
+  country_name: string;
+  country_capital: string;
+  state_prov: string;
+  district: string;
+  city: string;
+  zipcode: string;
+  latitude: string;
+  longitude: string;
+  is_eu: boolean;
+  calling_code: string;
+  country_tld: string;
+  languages: string;
+  country_flag: string;
+  geoname_id: string;
+  isp: string;
+  connection_type: string;
+  organization: string;
+  currency: {
+    code: string;
+    name: string;
+    symbol: string;
+  };
+  time_zone: {
+    name: string;
+    offset: number;
+    current_time: string;
+    current_time_unix: number;
+    is_dst: boolean;
+    dst_savings: number;
+  };
+}
+
+export interface UserGeolocation {
+  country: string;
+  countryCode: string;
+  city: string;
+  region: string;
+  ip: string;
+  timezone: string;
+  currency: string;
+  language: string;
+  detectedAt: Timestamp;
+  autoLocaleSet?: boolean;
 }

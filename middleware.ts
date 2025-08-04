@@ -9,15 +9,43 @@ export async function middleware(request: NextRequest) {
   const hasLocalePrefix = pathname.startsWith('/cz')
   const cleanPathname = hasLocalePrefix ? pathname.slice(3) : pathname
   
-  // Get country from headers (Vercel provides this automatically)
+  // Get geolocation data from headers (Vercel/Cloudflare provides this)
   const country = request.headers.get('x-vercel-ip-country') || 
                   request.headers.get('cf-ipcountry') // Cloudflare
+  const city = request.headers.get('x-vercel-ip-city') || 
+               request.headers.get('cf-ipcity')
+  const region = request.headers.get('x-vercel-ip-country-region') ||
+                 request.headers.get('cf-region')
+  const ip = request.ip || request.headers.get('x-forwarded-for') || 
+             request.headers.get('x-real-ip')
   
-  // Auto-redirect Czech users to /cz if not already there
-  if (!hasLocalePrefix && country === 'CZ') {
+  // Czech and Slovak users -> Czech locale
+  const czechCountries = ['CZ', 'SK']
+  const shouldUseCzechLocale = czechCountries.includes(country || '')
+  
+  // Auto-redirect Czech/Slovak users to /cz if not already there
+  if (!hasLocalePrefix && shouldUseCzechLocale) {
     const url = request.nextUrl.clone()
     url.pathname = `/cz${pathname}`
-    return NextResponse.redirect(url)
+    
+    // Add geolocation headers for client-side detection
+    const response = NextResponse.redirect(url)
+    response.headers.set('x-detected-country', country || 'unknown')
+    response.headers.set('x-detected-city', city || 'unknown')
+    response.headers.set('x-detected-region', region || 'unknown')
+    response.headers.set('x-user-ip', ip || 'unknown')
+    response.headers.set('x-auto-locale', 'cs')
+    
+    return response
+  }
+  
+  // Add geolocation headers to all responses for client-side use
+  const geoHeaders = {
+    'x-detected-country': country || 'unknown',
+    'x-detected-city': city || 'unknown', 
+    'x-detected-region': region || 'unknown',
+    'x-user-ip': ip || 'unknown',
+    'x-auto-locale': shouldUseCzechLocale ? 'cs' : 'en'
   }
   
   // ===== AUTHENTICATION =====
@@ -57,7 +85,15 @@ export async function middleware(request: NextRequest) {
     }
   }
 
-  return NextResponse.next()
+  // Allow other requests to continue and add geolocation headers
+  const response = NextResponse.next()
+  
+  // Add geolocation headers to all responses
+  Object.entries(geoHeaders).forEach(([key, value]) => {
+    response.headers.set(key, value)
+  })
+  
+  return response
 }
 
 export const config = {

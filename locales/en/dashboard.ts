@@ -6,19 +6,40 @@
 export const dashboardEn = {
   // Dashboard Overview
   DASHBOARD_WELCOME: "Welcome to SecureHero",
-  DASHBOARD_OVERVIEW: "Overview", 
+  DASHBOARD_OVERVIEW: "Overview",
   DASHBOARD_STATS: "Statistics",
   DASHBOARD_TRAINING: "Training",
   DASHBOARD_PHISHING: "Phishing",
   
-  // XP & Gamification
+  // XP & Gamification System
+  GAMIFICATION_SYSTEM: "Gamification System",
   XP_EARNED: "XP Earned",
   XP_TOTAL: "Total XP",
-  LEVEL_CURRENT: "Current Level",
-  LEVEL_NEXT: "Next Level", 
+  XP_TO_NEXT_LEVEL: "XP to Level",
+  LEVEL_CURRENT: "Level",
+  LEVEL_NEXT: "Next Level",
   LEVEL_PROGRESS: "Progress",
   BADGES_EARNED: "Badges Earned",
+  BADGES_TITLE: "Earned Badges",
+  BADGES_NONE: "No badges yet",
   LEADERBOARD: "Leaderboard",
+  
+  // Stats Cards
+  SECURITY_SCORE: "Security Score",
+  COMPLETED_TRAINING: "Completed Training",
+  PHISHING_SUCCESS: "Phishing Success",
+  PHISHING_DETECTED: "Phishing Attacks Detected", 
+  LEVEL: "Level",
+  SUCCESS_RATE: "success rate",
+  THIS_MONTH: "this month",
+  LAST_WEEK: "from last week",
+  NEXT_LEVEL_XP: "XP to next",
+  
+  // Activity & Courses
+  RECENT_ACTIVITY: "Recent Activity",
+  RECOMMENDED_COURSES: "Recommended Courses",
+  VIEW_ALL: "View All",
+  EXPLORE: "Explore",
   
   // Risk Score
   RISK_SCORE: "Risk Score",

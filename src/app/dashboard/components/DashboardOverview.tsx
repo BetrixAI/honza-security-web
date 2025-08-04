@@ -3,6 +3,7 @@
 import React from 'react'
 import DashboardStats from './DashboardStats'
 import Button from '@/components/ui/Button'
+import VirusTotalWidget from '@/components/dashboard/VirusTotalWidget'
 import { Eye, CheckCircle, Mail, Award, Play, Plus, ChevronRight } from 'lucide-react'
 
 export default function DashboardOverview() {
@@ -100,6 +101,17 @@ export default function DashboardOverview() {
               </div>
             ))}
           </div>
+        </div>
+      </div>
+
+      {/* Security Widgets */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+        <VirusTotalWidget />
+        
+        {/* Placeholder for HIBP Widget */}
+        <div className="security-card">
+          <h3 className="text-lg font-semibold text-white mb-4">HIBP Monitor</h3>
+          <p className="text-gray-400">Coming soon...</p>
         </div>
       </div>
     </div>
