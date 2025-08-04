@@ -25,6 +25,8 @@ import { Disclosure, Transition } from '@headlessui/react'
 import { useAuth } from '@/contexts/AuthContext'
 import { useSidebar } from '@/contexts/SidebarContext'
 import clsx from 'clsx'
+import LanguageSwitcher from '@/components/ui/LanguageSwitcher'
+import { useTranslation } from '@/hooks/useTranslation'
 
 interface SidebarItem {
   id: string
@@ -112,6 +114,7 @@ export default function Sidebar({ className = '' }: Omit<SidebarProps, 'isCollap
   const router = useRouter()
   const { user, signOut } = useAuth()
   const { isCollapsed, toggle } = useSidebar()
+  const { t } = useTranslation('dashboard')
 
   const handleSignOut = async () => {
     try {
@@ -233,7 +236,7 @@ export default function Sidebar({ className = '' }: Omit<SidebarProps, 'isCollap
                     >
                       <Wrench className="w-5 h-5 flex-shrink-0 icon-duotone transition-transform duration-300 group-hover:rotate-12" />
                       <span className="font-medium tracking-wide truncate flex-1">
-                        Bezpečnostní nástroje
+                        {t('SECURITY_TOOLS')}
                       </span>
                       <ChevronDown 
                         className={clsx(
@@ -323,6 +326,13 @@ export default function Sidebar({ className = '' }: Omit<SidebarProps, 'isCollap
         </ul>
       </nav>
       
+      {/* Language Switcher */}
+      <div className={`border-t border-border-subtle/40 shrink-0 ${isCollapsed ? 'p-2' : 'p-3'}`}>
+        <div className={`flex items-center ${isCollapsed ? 'justify-center' : 'justify-center'}`}>
+          <LanguageSwitcher isCollapsed={isCollapsed} />
+        </div>
+      </div>
+
       {/* User Profile - shrink-0 podle specifikace */}
       <div className={`border-t border-border-subtle shrink-0 ${isCollapsed ? 'p-2' : 'p-3'}`}>
         <div className={`flex items-center ${isCollapsed ? 'justify-center' : 'justify-between'}`}>

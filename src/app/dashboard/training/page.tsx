@@ -5,35 +5,38 @@ import Container from '@/components/layout/Container'
 import DashboardGrid from '@/components/layout/DashboardGrid'
 import Card, { CardHeader, CardContent, CardTitle, CardDescription } from '@/components/card/Card'
 import ProgressBar from '@/components/progress/ProgressBar'
+import { useTranslation } from '@/hooks/useTranslation'
 import { BookOpen, Clock, Trophy, TrendingUp, Play, CheckCircle } from 'lucide-react'
 
 export default function TrainingPage() {
+  const { t } = useTranslation('dashboard')
+  
   const courses = [
     {
       id: '1',
-      title: 'Základy kybernetické bezpečnosti',
-      description: 'Naučte se základní principy ochrany dat a bezpečného chování online',
+      title: t('CYBERSEC_BASICS_TITLE'),
+      description: t('CYBERSEC_BASICS_DESC'),
       progress: 75,
       duration: '45 min',
-      level: 'Začátečník',
+      level: t('BEGINNER'),
       xp: 100
     },
     {
       id: '2', 
-      title: 'Phishing a sociální inženýrství',
-      description: 'Rozpoznejte podvodné emaily a techniky manipulace',
+      title: t('PHISHING_TITLE'),
+      description: t('PHISHING_DESC'),
       progress: 30,
       duration: '60 min',
-      level: 'Středně pokročilý',
+      level: t('INTERMEDIATE'),
       xp: 150
     },
     {
       id: '3',
-      title: 'Bezpečnost hesel a 2FA',
-      description: 'Správa hesel a dvoufaktorová autentizace',
+      title: t('PASSWORD_TITLE'),
+      description: t('PASSWORD_DESC'),
       progress: 0,
       duration: '30 min',
-      level: 'Začátečník',
+      level: t('BEGINNER'),
       xp: 80
     }
   ]
@@ -50,10 +53,10 @@ export default function TrainingPage() {
       <div className="space-y-8">
         <div>
           <h1 className="text-3xl font-bold text-txt-primary mb-2">
-            Školení a kurzy
+            {t('TRAINING_AND_COURSES')}
           </h1>
           <p className="text-txt-secondary">
-            Zvyšte svou úroveň bezpečnostního povědomí pomocí interaktivních kurzů
+            {t('EXPAND_CYBERSEC_KNOWLEDGE')}
           </p>
         </div>
 
@@ -62,39 +65,39 @@ export default function TrainingPage() {
           <Card className="hover:tilt-3d transition-transform duration-300">
             <CardContent className="p-6 text-center">
               <CheckCircle className="w-8 h-8 text-success mx-auto mb-3" />
-              <div className="text-2xl font-bold text-txt-primary">{stats.completed}</div>
-              <div className="text-sm text-txt-secondary">Dokončené kurzy</div>
+                          <div className="text-2xl font-bold text-txt-primary">{stats.completed}</div>
+            <div className="text-sm text-txt-secondary">{t('COMPLETED_COURSES')}</div>
             </CardContent>
           </Card>
 
           <Card className="hover:tilt-3d transition-transform duration-300">
             <CardContent className="p-6 text-center">
               <Clock className="w-8 h-8 text-warning mx-auto mb-3" />
-              <div className="text-2xl font-bold text-txt-primary">{stats.inProgress}</div>
-              <div className="text-sm text-txt-secondary">Rozpracované</div>
+                          <div className="text-2xl font-bold text-txt-primary">{stats.inProgress}</div>
+            <div className="text-sm text-txt-secondary">{t('IN_PROGRESS')}</div>
             </CardContent>
           </Card>
 
           <Card className="hover:tilt-3d transition-transform duration-300">
             <CardContent className="p-6 text-center">
               <Trophy className="w-8 h-8 text-brand mx-auto mb-3" />
-              <div className="text-2xl font-bold text-txt-primary">{stats.totalXp}</div>
-              <div className="text-sm text-txt-secondary">Celkem XP</div>
+                          <div className="text-2xl font-bold text-txt-primary">{stats.totalXp}</div>
+            <div className="text-sm text-txt-secondary">{t('TOTAL_XP')}</div>
             </CardContent>
           </Card>
 
           <Card className="hover:tilt-3d transition-transform duration-300">
             <CardContent className="p-6 text-center">
               <TrendingUp className="w-8 h-8 text-danger mx-auto mb-3" />
-              <div className="text-2xl font-bold text-txt-primary">{stats.streak} dní</div>
-              <div className="text-sm text-txt-secondary">Série</div>
+                          <div className="text-2xl font-bold text-txt-primary">{stats.streak} {t('STREAK_DAYS')}</div>
+            <div className="text-sm text-txt-secondary">{t('STREAK')}</div>
             </CardContent>
           </Card>
         </DashboardGrid>
 
         {/* Courses */}
         <div>
-          <h2 className="text-xl font-semibold text-txt-primary mb-6">Vaše kurzy</h2>
+          <h2 className="text-xl font-semibold text-txt-primary mb-6">{t('YOUR_COURSES')}</h2>
           <div className="space-y-4">
             {courses.map(course => (
               <Card key={course.id} className="group hover:scale-[1.01] transition-transform duration-200">
@@ -118,8 +121,8 @@ export default function TrainingPage() {
                           {course.duration}
                         </span>
                         <span className={`px-2 py-1 rounded-full text-xs font-medium ${
-                          course.level === 'Začátečník' ? 'bg-success/20 text-success' :
-                          course.level === 'Středně pokročilý' ? 'bg-warning/20 text-warning' :
+                                                course.level === t('BEGINNER') ? 'bg-success/20 text-success' :
+                      course.level === t('INTERMEDIATE') ? 'bg-warning/20 text-warning' :
                           'bg-danger/20 text-danger'
                         }`}>
                           {course.level}
@@ -148,5 +151,6 @@ export default function TrainingPage() {
     </Container>
   )
 }
+ 
  
  

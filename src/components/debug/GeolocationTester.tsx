@@ -16,7 +16,7 @@ import Button from '@/components/ui/Button'
 
 export default function GeolocationTester() {
   const { geolocation, isLoading, error, detectAndSetLocale, refreshGeolocation } = useGeolocation()
-  const { t, locale } = useTranslation()
+  const { t, locale } = useTranslation('dashboard')
   const [showDetails, setShowDetails] = useState(false)
 
   const handleDetectLocation = async () => {
@@ -41,12 +41,12 @@ export default function GeolocationTester() {
         <CardHeader>
           <CardTitle level="h3" className="flex items-center gap-2">
             <Globe className="w-5 h-5" />
-            Geolocation Tester
+            {t('GEOLOCATION_TESTER')}
           </CardTitle>
         </CardHeader>
         <CardContent>
           <div className="text-center space-y-4">
-            <p className="text-txt-muted">Click to detect your location</p>
+            <p className="text-txt-muted">{t('DETECT_LOCATION')}</p>
             <Button 
               variant="primary" 
               onClick={handleDetectLocation}
@@ -55,12 +55,12 @@ export default function GeolocationTester() {
               {isLoading ? (
                 <>
                   <RefreshCw className="w-4 h-4 animate-spin mr-2" />
-                  Detecting...
+                  {t('DETECTING')}
                 </>
               ) : (
                 <>
                   <MapPin className="w-4 h-4 mr-2" />
-                  Detect Location
+                  {t('DETECT_LOCATION')}
                 </>
               )}
             </Button>
@@ -74,12 +74,12 @@ export default function GeolocationTester() {
     return (
       <Card className="max-w-md mx-auto border-danger/20">
         <CardHeader>
-          <CardTitle level="h3" className="text-danger">Location Error</CardTitle>
+          <CardTitle level="h3" className="text-danger">{t('LOCATION_ERROR')}</CardTitle>
         </CardHeader>
         <CardContent>
           <p className="text-danger text-sm mb-4">{error}</p>
           <Button variant="secondary" onClick={handleDetectLocation}>
-            Try Again
+            {t('TRY_AGAIN')}
           </Button>
         </CardContent>
       </Card>
@@ -91,7 +91,7 @@ export default function GeolocationTester() {
       <Card className="max-w-md mx-auto">
         <CardContent className="text-center py-8">
           <RefreshCw className="w-8 h-8 animate-spin mx-auto mb-4 text-brand-mid" />
-          <p className="text-txt-muted">Detecting location...</p>
+          <p className="text-txt-muted">{t('DETECTING_LOCATION')}</p>
         </CardContent>
       </Card>
     )
@@ -104,7 +104,7 @@ export default function GeolocationTester() {
       <CardHeader>
         <CardTitle level="h3" className="flex items-center gap-2">
           <Globe className="w-5 h-5" />
-          Location Detected
+          {t('LOCATION_DETECTED')}
         </CardTitle>
       </CardHeader>
       <CardContent className="space-y-4">
@@ -121,7 +121,7 @@ export default function GeolocationTester() {
         <div className="flex items-center justify-between p-3 bg-brand-mid/10 rounded-lg border border-brand-mid/20">
           <div className="flex items-center gap-2">
             <Flag className="w-4 h-4 text-brand-mid" />
-            <span className="text-sm font-medium">Current Language:</span>
+            <span className="text-sm font-medium">{t('CURRENT_LANGUAGE')}:</span>
           </div>
           <span className="px-2 py-1 bg-brand-mid text-white text-xs rounded font-mono uppercase">
             {locale}
@@ -132,25 +132,25 @@ export default function GeolocationTester() {
         {showDetails && (
           <div className="space-y-2 p-3 bg-bg-card-alt rounded-lg text-sm">
             <div className="flex justify-between">
-              <span className="text-txt-muted">Region:</span>
+              <span className="text-txt-muted">{t('REGION')}:</span>
               <span className="text-txt-primary">{geolocation.region}</span>
             </div>
             <div className="flex justify-between">
-              <span className="text-txt-muted">Timezone:</span>
+              <span className="text-txt-muted">{t('TIMEZONE')}:</span>
               <span className="text-txt-primary">{geolocation.timezone}</span>
             </div>
             <div className="flex justify-between">
-              <span className="text-txt-muted">Currency:</span>
+              <span className="text-txt-muted">{t('CURRENCY')}:</span>
               <span className="text-txt-primary">{geolocation.currency}</span>
             </div>
             <div className="flex justify-between">
-              <span className="text-txt-muted">Detected:</span>
+              <span className="text-txt-muted">{t('DETECTED_AT')}:</span>
               <span className="text-txt-primary">{displayData.lastDetected}</span>
             </div>
             <div className="flex justify-between">
-              <span className="text-txt-muted">Auto Locale:</span>
+              <span className="text-txt-muted">{t('AUTO_LOCALE')}:</span>
               <span className={geolocation.autoLocaleSet ? 'text-success' : 'text-txt-muted'}>
-                {geolocation.autoLocaleSet ? 'Yes' : 'No'}
+                {geolocation.autoLocaleSet ? t('YES') : t('NO')}
               </span>
             </div>
           </div>
@@ -163,7 +163,7 @@ export default function GeolocationTester() {
             size="sm"
             onClick={() => setShowDetails(!showDetails)}
           >
-            {showDetails ? 'Hide' : 'Show'} Details
+            {showDetails ? t('HIDE') : t('SHOW')} {t('DETAILS')}
           </Button>
           <Button 
             variant="secondary" 
@@ -176,14 +176,13 @@ export default function GeolocationTester() {
             ) : (
               <RefreshCw className="w-3 h-3" />
             )}
-            Refresh
+            {t('REFRESH')}
           </Button>
         </div>
 
         {/* Development info */}
         <div className="text-xs text-txt-muted bg-bg-card-alt p-2 rounded border-l-2 border-warning">
-          <strong>Dev Info:</strong> This component shows IP geolocation detection for automatic language switching. 
-          Czech/Slovak IPs → Czech locale, others → English locale.
+          <strong>{t('DEV_INFO')}:</strong> {t('GEOLOCATION_DESC')}
         </div>
       </CardContent>
     </Card>

@@ -6,8 +6,13 @@ export async function middleware(request: NextRequest) {
   // ===== I18N HANDLING =====
   
   // Check if request already has locale prefix
-  const hasLocalePrefix = pathname.startsWith('/cz')
-  const cleanPathname = hasLocalePrefix ? pathname.slice(3) : pathname
+  const hasCzPrefix = pathname.startsWith('/cz')
+  const hasEnPrefix = pathname.startsWith('/en')
+  const hasLocalePrefix = hasCzPrefix || hasEnPrefix
+  
+  const cleanPathname = hasCzPrefix ? pathname.slice(3) : 
+                       hasEnPrefix ? pathname.slice(3) : 
+                       pathname
   
   // Get geolocation data from headers (Vercel/Cloudflare provides this)
   const country = request.headers.get('x-vercel-ip-country') || 
@@ -22,6 +27,22 @@ export async function middleware(request: NextRequest) {
   // Czech and Slovak users -> Czech locale
   const czechCountries = ['CZ', 'SK']
   const shouldUseCzechLocale = czechCountries.includes(country || '')
+  
+  // Auto-redirect non-Czech users to /en if not already there
+  if (!hasLocalePrefix && !shouldUseCzechLocale) {
+    const url = request.nextUrl.clone()
+    url.pathname = `/en${pathname}`
+    
+    // Add geolocation headers for client-side detection
+    const response = NextResponse.redirect(url)
+    response.headers.set('x-detected-country', country || 'unknown')
+    response.headers.set('x-detected-city', city || 'unknown')
+    response.headers.set('x-detected-region', region || 'unknown')
+    response.headers.set('x-user-ip', ip || 'unknown')
+    response.headers.set('x-auto-locale', 'en')
+    
+    return response
+  }
   
   // Auto-redirect Czech/Slovak users to /cz if not already there
   if (!hasLocalePrefix && shouldUseCzechLocale) {
@@ -63,7 +84,9 @@ export async function middleware(request: NextRequest) {
     if (!authToken?.value) {
       // Redirect to auth with proper locale
       const url = request.nextUrl.clone()
-      const authPath = hasLocalePrefix ? '/cz/auth' : '/auth'
+      const authPath = hasCzPrefix ? '/cz/auth' : 
+                      hasEnPrefix ? '/en/auth' : 
+                      shouldUseCzechLocale ? '/cz/auth' : '/en/auth'
       url.pathname = authPath
       url.searchParams.set('redirect', pathname)
       return NextResponse.redirect(url)
@@ -79,7 +102,9 @@ export async function middleware(request: NextRequest) {
     
     if (authToken?.value) {
       const url = request.nextUrl.clone()
-      const dashboardPath = hasLocalePrefix ? '/cz/dashboard' : '/dashboard'
+      const dashboardPath = hasCzPrefix ? '/cz/dashboard' : 
+                           hasEnPrefix ? '/en/dashboard' : 
+                           shouldUseCzechLocale ? '/cz/dashboard' : '/en/dashboard'
       url.pathname = dashboardPath
       return NextResponse.redirect(url)
     }

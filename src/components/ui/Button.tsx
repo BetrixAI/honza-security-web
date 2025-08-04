@@ -72,4 +72,3 @@ export const PrimaryButton = (props: Omit<ButtonProps, 'variant'>) => (
 export const SecondaryButton = (props: Omit<ButtonProps, 'variant'>) => (
   <Button variant="secondary" {...props} />
 )
-

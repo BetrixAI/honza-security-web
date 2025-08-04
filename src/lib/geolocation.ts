@@ -22,6 +22,8 @@ export async function getIPGeolocation(ip?: string): Promise<IPGeolocationRespon
       return null;
     }
 
+    console.log('🔑 API Key configured:', IPGEOLOCATION_API_KEY ? 'Yes' : 'No');
+
     const params = new URLSearchParams({
       apiKey: IPGEOLOCATION_API_KEY,
       fields: 'geo,time_zone,currency',
@@ -32,6 +34,7 @@ export async function getIPGeolocation(ip?: string): Promise<IPGeolocationRespon
     }
 
     const url = `${IPGEOLOCATION_BASE_URL}/ipgeo?${params.toString()}`;
+    console.log('🌐 API URL:', url.replace(IPGEOLOCATION_API_KEY, '***HIDDEN***'));
     
     const response = await fetch(url, {
       method: 'GET',
@@ -40,11 +43,16 @@ export async function getIPGeolocation(ip?: string): Promise<IPGeolocationRespon
       },
     });
 
+    console.log('📡 API Response status:', response.status);
+
     if (!response.ok) {
+      const errorText = await response.text();
+      console.error('❌ API Error response:', errorText);
       throw new Error(`IP Geolocation API error: ${response.status} ${response.statusText}`);
     }
 
     const data: IPGeolocationResponse = await response.json();
+    console.log('✅ API Response data:', data);
     return data;
   } catch (error) {
     console.error('Failed to get IP geolocation:', error);
@@ -80,9 +88,9 @@ export function mapToUserGeolocation(
     city: geoData.city,
     region: geoData.state_prov,
     ip: geoData.ip,
-    timezone: geoData.time_zone.name,
-    currency: geoData.currency.code,
-    language: geoData.languages.split(',')[0] || 'en',
+    timezone: geoData.time_zone?.name || 'UTC',
+    currency: geoData.currency?.code || 'USD',
+    language: geoData.languages?.split(',')[0] || 'en',
     detectedAt: serverTimestamp() as any,
     autoLocaleSet,
   };
