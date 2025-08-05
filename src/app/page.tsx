@@ -2,43 +2,323 @@
 
 import React, { useState, useEffect } from 'react'
 import Layout from '@/components/Layout'
+import { motion, AnimatePresence, useScroll, useTransform } from 'framer-motion'
+import GalaxyBackground from '@/components/GalaxyBackground'
 import SplineModel from '@/components/SplineModel'
+import { useLanguage } from '@/contexts/LanguageContext'
 import { 
   Shield, 
-  Users, 
-  Video, 
-  CheckCircle, 
-  ArrowRight, 
-  Play,
   Lock,
   Eye,
-  TrendingUp,
-  Award,
-  Star,
-  Quote
+  GraduationCap,
+  Target,
+  Activity,
+  Database,
+  ChevronRight,
+  Check,
+  ArrowRight,
+  Zap,
+  Globe,
+  Users,
+  BarChart3,
+  FileSearch,
+  Cpu,
+  Cloud,
+  Layers,
+  GitBranch,
+  Terminal,
+  Code,
+  Sparkles
 } from 'lucide-react'
+
+
+
+// 3D Testimonials Carousel komponenta
+function TestimonialsCarousel() {
+  const [currentIndex, setCurrentIndex] = useState(0)
+
+  const { t } = useLanguage()
+
+  const testimonials = [
+    {
+      name: t('TESTIMONIAL_1_NAME'),
+      role: t('TESTIMONIAL_1_ROLE'),
+      company: t('TESTIMONIAL_1_COMPANY'),
+      image: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=100&h=100&fit=crop",
+      text: t('TESTIMONIAL_1_TEXT')
+    },
+    {
+      name: t('TESTIMONIAL_2_NAME'), 
+      role: t('TESTIMONIAL_2_ROLE'),
+      company: t('TESTIMONIAL_2_COMPANY'),
+      image: "https://images.unsplash.com/photo-1494790108755-2616b612b734?w=100&h=100&fit=crop",
+      text: t('TESTIMONIAL_2_TEXT')
+    },
+    {
+      name: t('TESTIMONIAL_3_NAME'),
+      role: t('TESTIMONIAL_3_ROLE'), 
+      company: t('TESTIMONIAL_3_COMPANY'),
+      image: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&h=100&fit=crop",
+      text: t('TESTIMONIAL_3_TEXT')
+    },
+    {
+      name: t('TESTIMONIAL_4_NAME'),
+      role: t('TESTIMONIAL_4_ROLE'),
+      company: t('TESTIMONIAL_4_COMPANY'),
+      image: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=100&h=100&fit=crop", 
+      text: t('TESTIMONIAL_4_TEXT')
+    },
+    {
+      name: t('TESTIMONIAL_5_NAME'),
+      role: t('TESTIMONIAL_5_ROLE'),
+      company: t('TESTIMONIAL_5_COMPANY'),
+      image: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=100&h=100&fit=crop",
+      text: t('TESTIMONIAL_5_TEXT')
+    },
+    {
+      name: t('TESTIMONIAL_6_NAME'),
+      role: t('TESTIMONIAL_6_ROLE'),
+      company: t('TESTIMONIAL_6_COMPANY'), 
+      image: "https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?w=100&h=100&fit=crop",
+      text: t('TESTIMONIAL_6_TEXT')
+    },
+    {
+      name: t('TESTIMONIAL_7_NAME'),
+      role: t('TESTIMONIAL_7_ROLE'),
+      company: t('TESTIMONIAL_7_COMPANY'),
+      image: "https://images.unsplash.com/photo-1494790108755-2616b612b734?w=120&h=120&fit=crop",
+      text: t('TESTIMONIAL_7_TEXT')
+    },
+    {
+      name: t('TESTIMONIAL_8_NAME'),
+      role: t('TESTIMONIAL_8_ROLE'),
+      company: t('TESTIMONIAL_8_COMPANY'),
+      image: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=120&h=120&fit=crop",
+      text: t('TESTIMONIAL_8_TEXT')
+    }
+  ]
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrentIndex((prev) => (prev + 1) % testimonials.length)
+    }, 4000)
+    return () => clearInterval(interval)
+  }, [])
+
+  return (
+    <div className="relative h-[400px] w-full flex items-center justify-center overflow-hidden z-10" style={{ perspective: '1200px' }}>
+      {testimonials.map((testimonial, index) => {
+        const offset = index - currentIndex
+        const totalCards = testimonials.length
+        
+        // Normalizace offsetu pro 8 karet
+        let normalizedOffset = offset
+        if (offset > totalCards / 2) normalizedOffset -= totalCards
+        if (offset < -totalCards / 2) normalizedOffset += totalCards
+        
+        const isCenter = normalizedOffset === 0
+        const distance = Math.abs(normalizedOffset)
+        
+        // Pozice pro 8 karet v kruhu
+        const angle = (normalizedOffset / totalCards) * 360
+        const radius = 320
+        const x = Math.sin((angle * Math.PI) / 180) * radius
+        const z = Math.cos((angle * Math.PI) / 180) * radius
+        
+        const scale = isCenter ? 1.1 : Math.max(0.5, 1 - distance * 0.2)
+        const opacity = isCenter ? 1 : Math.max(0.2, 1 - distance * 0.3)
+        const blur = isCenter ? 0 : Math.min(12, distance * 3)
+        const zIndex = isCenter ? 100 : Math.max(1, 50 - distance * 10)
+
+        return (
+          <motion.div
+            key={index}
+            animate={{
+              x: x,
+              z: z,
+              scale: scale,
+              opacity: opacity,
+              rotateY: -angle,
+              filter: `blur(${blur}px)`
+            }}
+            transition={{ duration: 0.8, ease: "easeInOut" }}
+            className={`absolute w-80 h-48 rounded-xl p-4 ${
+              isCenter 
+                ? 'border border-white/20 bg-white/10 backdrop-blur-md shadow-2xl shadow-black/30 z-50' 
+                : 'border border-white/5 bg-white/5 backdrop-blur-sm z-10'
+            }`}
+            style={{ 
+              transformStyle: "preserve-3d",
+              zIndex: zIndex
+            }}
+          >
+            <div className="flex items-start gap-3 mb-3">
+              <img 
+                src={testimonial.image}
+                alt={testimonial.name}
+                className={`rounded-full border-2 flex-shrink-0 ${
+                  isCenter 
+                    ? 'w-10 h-10 border-white/30' 
+                    : 'w-8 h-8 border-white/20'
+                }`}
+              />
+              <div className="flex-1 min-w-0">
+                <h4 className={`font-medium leading-tight ${
+                  isCenter 
+                    ? 'text-white text-sm' 
+                    : 'text-white/80 text-xs'
+                }`}>
+                  {testimonial.name}
+                </h4>
+                <p className={`leading-tight ${
+                  isCenter 
+                    ? 'text-gray-300 text-xs' 
+                    : 'text-gray-400 text-xs'
+                }`}>
+                  {testimonial.role}
+                </p>
+                <p className={`font-medium leading-tight ${
+                  isCenter 
+                    ? 'text-gray-300 text-xs' 
+                    : 'text-gray-400/70 text-xs'
+                }`}>
+                  {testimonial.company}
+                </p>
+              </div>
+            </div>
+            
+            <p className={`italic leading-snug ${
+              isCenter 
+                ? 'text-white text-sm font-light' 
+                : 'text-gray-300/60 text-xs'
+            }`}>
+              "{testimonial.text}"
+            </p>
+          </motion.div>
+        )
+      })}
+    </div>
+  )
+}
+
+// Typewriter Text komponenta
+function TypewriterText() {
+  const [currentTextIndex, setCurrentTextIndex] = useState(0)
+  const [currentText, setCurrentText] = useState('')
+  const [isTyping, setIsTyping] = useState(true)
+  const [isVisible, setIsVisible] = useState(true)
+  const { t } = useLanguage()
+
+  const texts = [
+    t('HERO_TYPEWRITER_1'),
+    t('HERO_TYPEWRITER_2'), 
+    t('HERO_TYPEWRITER_3')
+  ]
+
+  useEffect(() => {
+    const currentFullText = texts[currentTextIndex]
+
+    if (isTyping && currentText.length < currentFullText.length) {
+      // Píše znak po znaku
+      const timeout = setTimeout(() => {
+        setCurrentText(currentFullText.substring(0, currentText.length + 1))
+      }, 100)
+      return () => clearTimeout(timeout)
+    } 
+    
+    if (isTyping && currentText === currentFullText) {
+      // Text je dokončen, pause a pak rozpuštění
+      const timeout = setTimeout(() => {
+        setIsTyping(false)
+        setIsVisible(false)
+      }, 3000)
+      return () => clearTimeout(timeout)
+    }
+
+    if (!isTyping && !isVisible) {
+      // Po rozpuštění začni nový text
+      const timeout = setTimeout(() => {
+        setCurrentText('')
+        setCurrentTextIndex((prev) => (prev + 1) % texts.length)
+        setIsTyping(true)
+        setIsVisible(true)
+      }, 1000)
+      return () => clearTimeout(timeout)
+    }
+  }, [currentText, isTyping, isVisible, currentTextIndex, texts])
+
+  return (
+    <div className="text-center mt-24">
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.8 }}
+        className="mb-16"
+      >
+        <div className="text-blue-400 text-sm font-bold tracking-widest uppercase mb-8">
+          {t('HERO_PLATFORM_TAG')}
+        </div>
+        <div className="text-center min-h-[200px] flex flex-col justify-center">
+          <h1 className="text-6xl lg:text-8xl xl:text-9xl font-black text-white mb-6 leading-tight">
+            {t('HERO_BRAND_NAME')}
+          </h1>
+          <div className="text-3xl lg:text-4xl xl:text-5xl font-light text-blue-400 leading-relaxed min-h-[100px] flex items-center justify-center">
+            <motion.span 
+              animate={{ 
+                opacity: isVisible ? 1 : 0,
+                scale: isVisible ? 1 : 0.8,
+                filter: isVisible ? "blur(0px)" : "blur(4px)"
+              }}
+              transition={{ duration: 0.8, ease: "easeInOut" }}
+              className="inline-block"
+            >
+              {currentText}
+            </motion.span>
+            {isTyping && (
+              <motion.span
+                animate={{ opacity: [0, 1, 0] }}
+                transition={{ duration: 1, repeat: Infinity }}
+                className="ml-2"
+              >
+                |
+              </motion.span>
+            )}
+          </div>
+        </div>
+        <p className="text-gray-400 text-xl max-w-4xl mx-auto leading-relaxed mt-8">
+          {t('HERO_DESCRIPTION')}
+        </p>
+      </motion.div>
+
+      {/* CTA tlačítka */}
+      <motion.div
+        initial={{ opacity: 0, y: 30 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 1.2, duration: 0.8 }}
+        className="flex flex-col sm:flex-row gap-6 justify-center mb-16 sm:mb-24 md:mb-32 lg:mb-40 xl:mb-48"
+      >
+        <button className="backdrop-blur-md bg-blue-500/20 hover:bg-blue-500/30 border border-blue-400/30 hover:border-blue-400/50 text-white px-10 py-4 rounded-xl font-semibold text-lg transition-all duration-300 hover:shadow-lg hover:shadow-blue-500/25">
+          {t('HERO_CTA_PRIMARY')} →
+        </button>
+        <button className="backdrop-blur-md bg-white/5 hover:bg-white/10 border border-white/20 hover:border-white/30 text-white px-10 py-4 rounded-xl font-semibold text-lg transition-all duration-300">
+          {t('HERO_CTA_SECONDARY')}
+        </button>
+      </motion.div>
+    </div>
+  )
+}
 
 export default function HomePage() {
   const [isVisible, setIsVisible] = useState(false)
   const [visibleSections, setVisibleSections] = useState<Set<string>>(new Set())
-  const [scrollY, setScrollY] = useState(0)
+  const [openFAQs, setOpenFAQs] = useState<Set<number>>(new Set())
+  const { scrollYProgress } = useScroll()
+  const backgroundY = useTransform(scrollYProgress, [0, 1], ['0%', '100%'])
+  const { t } = useLanguage()
 
   useEffect(() => {
     setIsVisible(true)
     
-    // Optimalizovaný scroll tracking s throttling pro lepší výkon
-    let ticking = false
-    const handleScroll = () => {
-      if (!ticking) {
-        requestAnimationFrame(() => {
-          setScrollY(window.scrollY)
-          ticking = false
-        })
-        ticking = true
-      }
-    }
-
-    // Intersection Observer pro scroll animace
     const observer = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
@@ -52,877 +332,1023 @@ export default function HomePage() {
       },
       {
         threshold: 0.1,
-        rootMargin: '0px 0px -50px 0px'
+        rootMargin: '0px 0px -100px 0px'
       }
     )
 
-    // Najít všechny sekce s data-section atributem
     const sections = document.querySelectorAll('[data-section]')
     sections.forEach(section => observer.observe(section))
 
-    // Přidat scroll event listener s optimalizací
-    window.addEventListener('scroll', handleScroll, { passive: true })
-
     return () => {
-      window.removeEventListener('scroll', handleScroll)
       sections.forEach(section => observer.unobserve(section))
     }
   }, [])
 
   const features = [
     {
-      icon: Video,
-      title: 'Exkluzivní vzdělávací videa',
-      description: 'Profesionálně natočená videa s nejnovějšími trendy v kybernetické bezpečnosti',
-      stats: '50+ videí',
-      details: {
-        title: 'Vzdělávací videa nejvyšší kvality',
-        subtitle: 'Komplexní video knihovna pro moderní kybernetickou bezpečnost',
-        content: [
-          'Profesionálně natočená HD videa s českými titulky',
-          'Nejnovější trendy a hrozby v kybernetické bezpečnosti',
-          'Praktické příklady z reálného prostředí',
-          'Interaktivní kvízy a testy po každém videu',
-          'Mobilní aplikace pro vzdělávání kdykoliv',
-          'Certifikace po dokončení kurzů'
-        ],
-        features: [
-          '50+ hodin video obsahu',
-          '15 specializovaných kategorií',
-          'Měsíční aktualizace obsahu',
-          'Offline přehrávání'
-        ]
-      }
-    },
-    {
-      icon: Users,
-      title: 'Firemní školení',
-      description: 'Komplexní školení pro vaše zaměstnance s praktickými příklady',
-      stats: '1000+ školených',
-      details: {
-        title: 'Firemní školení na míru',
-        subtitle: 'Přizpůsobte školení potřebám vaší organizace',
-        content: [
-          'Školení přímo ve vaší firmě nebo online',
-          'Přizpůsobené obsahu specifickým potřebám',
-          'Certifikovaní lektoři s praxí',
-          'Interaktivní workshopy a simulace',
-          'Materiály v češtině i angličtině',
-          'Následná podpora a konzultace'
-        ],
-        features: [
-          '1000+ spokojených účastníků',
-          '50+ realizovaných projektů',
-          '98% míra spokojenosti',
-          '24/7 technická podpora'
-        ]
-      }
+      icon: GraduationCap,
+      title: t('FEATURE_TRAINING_TITLE'),
+      description: t('FEATURE_TRAINING_DESC'),
+      metric: t('FEATURE_TRAINING_METRIC'),
+      metricLabel: t('FEATURE_TRAINING_METRIC_LABEL')
     },
     {
       icon: Shield,
-      title: 'Security Awareness',
-      description: 'Zvyšte povědomí o bezpečnosti ve vaší organizaci',
-      stats: '99% úspěšnost',
-      details: {
-        title: 'Zvyšte povědomí o bezpečnosti',
-        subtitle: 'Transformujte vaše zaměstnance na první linii obrany',
-        content: [
-          'Komplexní program awareness kampaní',
-          'Phishing simulace s reálnými scénáři',
-          'Měření a reportování pokroku',
-          'Gamifikace pro vyšší angažovanost',
-          'Personalizované vzdělávací cesty',
-          'Integrace s existujícími systémy'
-        ],
-        features: [
-          '99% úspěšnost programů',
-          '70% snížení incidentů',
-          'ROI do 6 měsíců',
-          'Mezinárodní certifikace'
-        ]
-      }
+      title: t('FEATURE_REALTIME_TITLE'),
+      description: t('FEATURE_REALTIME_DESC'),
+      metric: t('FEATURE_REALTIME_METRIC'),
+      metricLabel: t('FEATURE_REALTIME_METRIC_LABEL')
     },
     {
-      icon: TrendingUp,
-      title: 'Měřitelné výsledky',
-      description: 'Sledujte pokrok a efektivitu vašich bezpečnostních opatření',
-      stats: '85% zlepšení',
-      details: {
-        title: 'Měřitelné a ověřitelné výsledky',
-        subtitle: 'Data-driven přístup k cybersecurity vzdělávání',
-        content: [
-          'Pokročilé analytické dashboardy',
-          'Real-time monitoring pokroku',
-          'Detailní reporty pro management',
-          'Benchmarking s odvětvím',
-          'Prediktivní analýzy rizik',
-          'Automatizované doporučení'
-        ],
-        features: [
-          '85% průměrné zlepšení',
-          '12 měsíců sledování',
-          'AI-powered insights',
-          'Export do všech formátů'
-        ]
-      }
+      icon: Target,
+      title: t('FEATURE_PHISHING_TITLE'),
+      description: t('FEATURE_PHISHING_DESC'),
+      metric: t('FEATURE_PHISHING_METRIC'),
+      metricLabel: t('FEATURE_PHISHING_METRIC_LABEL')
+    },
+    {
+      icon: Activity,
+      title: t('FEATURE_ANALYTICS_TITLE'),
+      description: t('FEATURE_ANALYTICS_DESC'),
+      metric: t('FEATURE_ANALYTICS_METRIC'),
+      metricLabel: t('FEATURE_ANALYTICS_METRIC_LABEL')
     }
   ]
 
-  const videoCategories = [
-    {
-      title: 'Phishing útoky',
-      description: 'Naučte se rozpoznat a předcházet phishingovým útokům',
-      price: '2 990 Kč',
-      duration: '45 min',
-      level: 'Začátečník',
-      image: '/api/placeholder/400/300'
-    },
-    {
-      title: 'Sociální inženýrství',
-      description: 'Pochopte taktiky útočníků a efektivní obranné strategie',
-      price: '3 490 Kč',
-      duration: '60 min',
-      level: 'Pokročilý',
-      image: '/api/placeholder/400/300'
-    },
-    {
-      title: 'Bezpečnost hesel',
-      description: 'Best practices pro vytváření a správu bezpečných hesel',
-      price: '1 990 Kč',
-      duration: '30 min',
-      level: 'Začátečník',
-      image: '/api/placeholder/400/300'
-    }
-  ]
-
-  // State pro carousel testimonials
-  const [currentTestimonial, setCurrentTestimonial] = useState(0)
-  
-  // State pro modální okna
-  const [openModal, setOpenModal] = useState<number | null>(null)
-  const [isModalAnimating, setIsModalAnimating] = useState(false)
-
-  const testimonials = [
-    {
-      text: "Díky SecurityShield jsme výrazně zlepšili bezpečnostní povědomí našich zaměstnanců. Videa jsou velmi kvalitní a praktická.",
-      author: "Jan Novák",
-      position: "IT Manager",
-      company: "TechCorp s.r.o.",
-      rating: 5,
-      companyLogo: "https://images.unsplash.com/photo-1560179707-f14e90ef3623?w=200&h=200&fit=crop",
-      avatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=80&h=80&fit=crop&crop=face",
-      color: "from-blue-600 to-purple-600"
-    },
-    {
-      text: "Investice do security awareness se nám rychle vrátila. Počet bezpečnostních incidentů se snížil o 70%.",
-      author: "Marie Svobodová",
-      position: "CISO",
-      company: "SecureBank a.s.",
-      rating: 5,
-      companyLogo: "https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=200&h=200&fit=crop",
-      avatar: "https://images.unsplash.com/photo-1494790108755-2616b612b977?w=80&h=80&fit=crop&crop=face",
-      color: "from-green-600 to-teal-600"
-    },
-    {
-      text: "Skvělé školení, naši zaměstnanci si konečně uvědomili důležitost kybernetické bezpečnosti. Doporučuji každé firmě!",
-      author: "Petr Dvořák",
-      position: "CEO",
-      company: "InnovateTech Ltd.",
-      rating: 5,
-      companyLogo: "https://images.unsplash.com/photo-1497366216548-37526070297c?w=200&h=200&fit=crop",
-      avatar: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=80&h=80&fit=crop&crop=face",
-      color: "from-orange-600 to-red-600"
-    },
-    {
-      text: "Profesionální přístup a kvalitní obsah. SecurityShield nám pomohl vybudovat silnou bezpečnostní kulturu.",
-      author: "Anna Procházková",
-      position: "HR Director",
-      company: "MegaCorp a.s.",
-      rating: 5,
-      companyLogo: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=200&h=200&fit=crop",
-      avatar: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=80&h=80&fit=crop&crop=face",
-      color: "from-pink-600 to-purple-600"
-    },
-    {
-      text: "Návratnost investice byla rychlejší než jsme očekávali. Výborné video materiály a skvělá podpora.",
-      author: "Tomáš Krejčí",
-      position: "Security Manager",
-      company: "FinanceHub s.r.o.",
-      rating: 5,
-      companyLogo: "https://images.unsplash.com/photo-1554774853-719586f82d77?w=200&h=200&fit=crop",
-      avatar: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=80&h=80&fit=crop&crop=face",
-      color: "from-indigo-600 to-blue-600"
-    }
-  ]
-
-  // Funkce pro animované otevření modálu
-  const openModalWithAnimation = (index: number) => {
-    setIsModalAnimating(false)
-    setOpenModal(index)
+  const galleryImages = {
+    row1: [
+      'https://images.unsplash.com/photo-1550751827-4bd374c3f58b?w=400&h=300&fit=crop',
+      'https://images.unsplash.com/photo-1563986768609-322da13575f3?w=400&h=300&fit=crop',
+      'https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?w=400&h=300&fit=crop',
+      'https://images.unsplash.com/photo-1558494949-ef010cbdcc31?w=400&h=300&fit=crop',
+      'https://images.unsplash.com/photo-1516321318423-f06f85e504b3?w=400&h=300&fit=crop',
+      'https://images.unsplash.com/photo-1555949963-aa79dcee981c?w=400&h=300&fit=crop'
+    ],
+    row2: [
+      'https://images.unsplash.com/photo-1504639725590-34d0984388bd?w=400&h=300&fit=crop',
+      'https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?w=400&h=300&fit=crop',
+      'https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?w=400&h=300&fit=crop',
+      'https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=400&h=300&fit=crop',
+      'https://images.unsplash.com/photo-1560732488-6b0df240254a?w=400&h=300&fit=crop',
+      'https://images.unsplash.com/photo-1510915228340-29c85a43dcfe?w=400&h=300&fit=crop'
+    ]
   }
-
-  // Funkce pro animované zavření modálu
-  const closeModalWithAnimation = () => {
-    setIsModalAnimating(false)
-    setTimeout(() => {
-      setOpenModal(null)
-    }, 300) // Doba animace
-  }
-
-  // Automatická rotace testimonials
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setCurrentTestimonial((prev) => (prev + 1) % testimonials.length)
-    }, 4000) // Každé 4 sekundy
-
-    return () => clearInterval(interval)
-  }, [testimonials.length])
-
-  // Spustí animaci po otevření modálu
-  useEffect(() => {
-    if (openModal !== null) {
-      setTimeout(() => {
-        setIsModalAnimating(true)
-      }, 10) // Malé zpoždění pro smooth animaci
-    }
-  }, [openModal])
 
   return (
     <Layout>
-      {/* Hero sekce */}
-      <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
+      {/* Animated Background */}
+      <div className="fixed inset-0 -z-10">
+        <div className="absolute inset-0 bg-gradient-to-br from-black via-blue-950/50 to-black" />
+        <motion.div 
+          className="absolute inset-0 bg-gradient-to-t from-blue-500/10 to-transparent"
+          style={{ y: backgroundY }}
+        />
+        <div className="absolute inset-0 bg-[url('/grid.svg')] opacity-5" />
+      </div>
 
-        <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-            
-            {/* Levá strana - text */}
-            <div className={`space-y-8 transition-all duration-1000 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`}>
-              <div className="space-y-6">
-                <h1 className="text-5xl lg:text-7xl font-bold leading-tight">
-                  <span className="gradient-text-blue">Security</span>
-                  <br />
-                  <span className="text-white">Awareness</span>
-                  <br />
-                                            <span className="gradient-text-blue">Platform</span>
-                </h1>
-                
-                <p className="text-xl text-gray-300 leading-relaxed max-w-2xl">
-                  Moderní platforma pro vzdělávání v oblasti kybernetické bezpečnosti. 
-                  Získejte exkluzivní vzdělávací videa a chraňte svou firmu před kybernetickými hrozbami.
-                </p>
-              </div>
+        {/* Galaxie pozadí */}
+        <GalaxyBackground />
 
-              <div className="flex flex-col sm:flex-row gap-4">
-                <button className="btn-security-primary group">
-                  Prozkoumat videa
-                  <ArrowRight className="w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform duration-300" />
-                </button>
-                <button className="btn-security-outline group">
-                  <Play className="w-5 h-5 mr-2" />
-                  Sledovat demo
-                </button>
-              </div>
-
-              {/* Statistiky */}
-              <div className="grid grid-cols-3 gap-6 pt-8">
-                {[
-                  { value: '50+', label: 'Vzdělávacích videí' },
-                  { value: '1000+', label: 'Spokojených klientů' },
-                  { value: '99%', label: 'Úspěšnost školení' }
-                ].map((stat, index) => (
-                  <div key={index} className="text-center">
-                    <div className="text-2xl font-bold gradient-text-blue">{stat.value}</div>
-                    <div className="text-sm text-gray-400">{stat.label}</div>
-                  </div>
-                ))}
-              </div>
-            </div>
-
-            {/* Pravá strana - Spline 3D model */}
-            <div className={`relative transition-all duration-1000 delay-300 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`}>
-              <div className="relative w-full h-[500px] lg:h-[600px] flex items-start justify-center">
-                {/* Spline 3D model - ideální velikost a pozice */}
-                <div className="w-full h-full rounded-2xl relative" style={{transform: 'scale(0.9)'}}>
-                  <spline-viewer 
-                    url="https://prod.spline.design/tKrswD8O3N6iPASY/scene.splinecode"
-                    style={{
-                      width: '100%', 
-                      height: '100%',
-                      position: 'absolute',
-                      top: '0',
-                      left: '0',
-                      pointerEvents: 'none',
-                      userSelect: 'none'
-                    }}
-                    mouseControls={false}
-                    touchControls={false}
-                    loading-anim-type="spinner-small-dark"
-                  ></spline-viewer>
-                </div>
-              </div>
-            </div>
+      {/* Hero sekce - Glass morphism */}
+      <section className="relative min-h-screen flex flex-col items-center justify-start overflow-hidden pt-16 pb-32" data-section="hero">
+                 {/* Ještě větší černý pruh dole pro úplné zadelání mezery */}
+         <div className="absolute -bottom-16 left-0 right-0 pointer-events-none z-50">
+           <div className="w-full h-32 bg-black"></div>
+         </div>
+        <div className="absolute bottom-0 left-0 right-0 pointer-events-none z-50 overflow-hidden">
+          <svg 
+            className="w-[120%] h-[600px] -ml-[10%]" 
+            viewBox="0 0 3600 2338" 
+            preserveAspectRatio="none"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <filter id="filter1" x="0" y="0" width="3600" height="2338" filterUnits="userSpaceOnUse" primitiveUnits="userSpaceOnUse" colorInterpolationFilters="sRGB">
+              <feGaussianBlur stdDeviation="100"/>
+            </filter>
+            <g id="Group" filter="url(#filter1)">
+              <filter id="filter2" x="0" y="0" width="3600" height="2338" filterUnits="userSpaceOnUse" primitiveUnits="userSpaceOnUse" colorInterpolationFilters="sRGB">
+                <feGaussianBlur stdDeviation="100"/>
+                <feOffset dx="0" dy="0" result="offsetblur"/>
+                <feFlood floodColor="#000000" floodOpacity="1"/>
+                <feComposite in2="offsetblur" operator="in"/>
+                <feMerge>
+                  <feMergeNode/>
+                  <feMergeNode in="SourceGraphic"/>
+                </feMerge>
+              </filter>
+              <path id="Rounded-Corner-copy" fill="#000000" fillRule="evenodd" stroke="none" filter="url(#filter2)" d="M 1800 2474.016846 C -524.988831 2474.016846 -2409.778076 589.227661 -2409.778076 -1735.760986 L -1593.929565 -1735.760986 C -1593.929565 138.648682 -74.409813 1658.168457 1800 1658.168457 Z"/>
+              <filter id="filter3" x="0" y="0" width="3600" height="2338" filterUnits="userSpaceOnUse" primitiveUnits="userSpaceOnUse" colorInterpolationFilters="sRGB">
+                <feGaussianBlur stdDeviation="100"/>
+                <feOffset dx="0" dy="0" result="offsetblur"/>
+                <feFlood floodColor="#000000" floodOpacity="1"/>
+                <feComposite in2="offsetblur" operator="in"/>
+                <feMerge>
+                  <feMergeNode/>
+                  <feMergeNode in="SourceGraphic"/>
+                </feMerge>
+              </filter>
+              <path id="Rounded-Corner-copy-2" fill="#000000" fillRule="evenodd" stroke="none" filter="url(#filter3)" d="M 1800.222046 2474.016846 C 4125.210938 2474.016846 6010 589.227661 6010 -1735.760986 L 5194.151367 -1735.760986 C 5194.151367 138.648682 3674.631836 1658.168457 1800.222046 1658.168457 Z"/>
+            </g>
+          </svg>
+        </div>
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-20 text-center flex-1 flex items-center justify-center">
+          {/* Animovaný typewriter text */}
+          <div className="w-full">
+            <TypewriterText />
           </div>
         </div>
       </section>
 
-      {/* Features sekce - posunutá výše s modály */}
-      <section className="py-16" data-section="features">
-        <div className={`max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 transition-opacity duration-500 ${
-          visibleSections.has('features') 
-            ? 'opacity-100' 
-            : 'opacity-0'
-        }`}>
-          <div className="text-center mb-12">
-            <h2 className="text-4xl font-bold text-white mb-6">
-              Proč si vybrat <span className="gradient-text-blue">SecurityShield</span>?
-            </h2>
-            <p className="text-xl text-gray-400 max-w-3xl mx-auto">
-              Naše platforma poskytuje komplexní řešení pro zvýšení security awareness ve vaší organizaci
-            </p>
+      {/* Oddělovač #1: Hero → Features */}
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
+        <div className="h-px bg-gradient-to-r from-transparent via-white/20 to-transparent"></div>
+        <div className="absolute left-4 -top-2 text-xs text-white/50 bg-black/50 px-2 py-1 rounded">
+          #1: Hero → Features
+        </div>
+      </div>
+
+      {/* Features sekce - Glass cards */}
+      <section className="py-20 relative bg-black" data-section="features">
+        
+        {/* Ještě větší černý pruh nahoru pro úplné zadelání mezery */}
+        <div className="absolute -top-16 left-0 right-0 pointer-events-none z-10">
+          <div className="w-full h-32 bg-black"></div>
+        </div>
+        
+        {/* SVG otočené o 180° dolů od #2 - posazené na malém černém kousku */}
+        <div className="absolute top-4 left-0 right-0 pointer-events-none z-10 overflow-hidden">
+          <svg 
+            className="w-[120%] h-[600px] -ml-[10%] rotate-180" 
+            viewBox="0 0 3600 2338" 
+            preserveAspectRatio="none"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <filter id="filter1-features" x="0" y="0" width="3600" height="2338" filterUnits="userSpaceOnUse" primitiveUnits="userSpaceOnUse" colorInterpolationFilters="sRGB">
+              <feGaussianBlur stdDeviation="100"/>
+            </filter>
+            <g id="Group-features" filter="url(#filter1-features)">
+              <filter id="filter2-features" x="0" y="0" width="3600" height="2338" filterUnits="userSpaceOnUse" primitiveUnits="userSpaceOnUse" colorInterpolationFilters="sRGB">
+                <feGaussianBlur stdDeviation="100"/>
+                <feOffset dx="0" dy="0" result="offsetblur"/>
+                <feFlood floodColor="#000000" floodOpacity="1"/>
+                <feComposite in2="offsetblur" operator="in"/>
+                <feMerge>
+                  <feMergeNode/>
+                  <feMergeNode in="SourceGraphic"/>
+                </feMerge>
+              </filter>
+              <path id="Rounded-Corner-copy-features" fill="#000000" fillRule="evenodd" stroke="none" filter="url(#filter2-features)" d="M 1800 2474.016846 C -524.988831 2474.016846 -2409.778076 589.227661 -2409.778076 -1735.760986 L -1593.929565 -1735.760986 C -1593.929565 138.648682 -74.409813 1658.168457 1800 1658.168457 Z"/>
+              <filter id="filter3-features" x="0" y="0" width="3600" height="2338" filterUnits="userSpaceOnUse" primitiveUnits="userSpaceOnUse" colorInterpolationFilters="sRGB">
+                <feGaussianBlur stdDeviation="100"/>
+                <feOffset dx="0" dy="0" result="offsetblur"/>
+                <feFlood floodColor="#000000" floodOpacity="1"/>
+                <feComposite in2="offsetblur" operator="in"/>
+                <feMerge>
+                  <feMergeNode/>
+                  <feMergeNode in="SourceGraphic"/>
+                </feMerge>
+              </filter>
+              <path id="Rounded-Corner-copy-2-features" fill="#000000" fillRule="evenodd" stroke="none" filter="url(#filter3-features)" d="M 1800.222046 2474.016846 C 4125.210938 2474.016846 6010 589.227661 6010 -1735.760986 L 5194.151367 -1735.760986 C 5194.151367 138.648682 3674.631836 1658.168457 1800.222046 1658.168457 Z"/>
+            </g>
+          </svg>
+        </div>
+        
+        {/* Oddělovač #2: Features Start */}
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-16 relative z-20">
+          <div className="h-px bg-gradient-to-r from-transparent via-white/10 to-transparent"></div>
+          <div className="absolute left-4 -top-2 text-xs text-white/40 bg-black/50 px-2 py-1 rounded">
+            #2: Features Start
           </div>
+        </div>
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-20">
+          <motion.div 
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: "-50px" }}
+            transition={{ 
+              duration: 0.8, 
+              ease: [0.25, 0.46, 0.45, 0.94],
+              type: "spring",
+              stiffness: 80,
+              damping: 20
+            }}
+            className="text-center mb-16"
+          >
+            <div className="text-blue-400 text-sm font-medium tracking-widest uppercase mb-4">
+              {t('FEATURES_BADGE')}
+            </div>
+            <h2 className="text-3xl lg:text-5xl font-light text-white mb-4">
+              {t('FEATURES_TITLE')} <span className="italic">{t('FEATURES_TITLE_ITALIC')}</span>
+            </h2>
+            <p className="text-gray-500 text-lg">
+              {t('FEATURES_SUBTITLE')}
+            </p>
+          </motion.div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
             {features.map((feature, index) => (
-              <div 
+              <motion.div
                 key={index} 
-                className="security-card security-card-hover group cursor-pointer"
-                onClick={() => openModalWithAnimation(index)}
+                initial={{ opacity: 0, y: 40, scale: 0.95 }}
+                whileInView={{ opacity: 1, y: 0, scale: 1 }}
+                viewport={{ once: true, margin: "-30px" }}
+                transition={{ 
+                  delay: index * 0.15,
+                  duration: 0.7,
+                  ease: [0.215, 0.61, 0.355, 1],
+                  type: "spring",
+                  stiffness: 100,
+                  damping: 25
+                }}
+                whileHover={{ 
+                  y: -12, 
+                  scale: 1.04,
+                  transition: { duration: 0.3, ease: "easeOut" }
+                }}
+                className="glass-card-large p-8 group relative overflow-hidden"
               >
-                <div className="w-12 h-12 security-gradient-blue rounded-lg flex items-center justify-center mb-6 group-hover:scale-105 transition-transform duration-200">
-                  <feature.icon className="w-6 h-6 text-white" />
+                {/* Moderní glow efekt */}
+                <div className="absolute top-0 right-0 w-24 h-24 bg-blue-500/10 rounded-full blur-2xl group-hover:bg-blue-500/20 transition-colors"></div>
+                
+                <div className="relative z-10">
+                  <div className="glass-icon-box mb-6 group-hover:scale-110 group-hover:rotate-6 transition-all duration-500">
+                    <feature.icon className="h-7 w-7 text-blue-400" />
                 </div>
                 
-                <h3 className="text-xl font-semibold text-white mb-3">{feature.title}</h3>
-                <p className="text-gray-400 mb-4 leading-relaxed">{feature.description}</p>
-                
-                <div className="flex items-center justify-between">
-                  <span className="text-security-blue-400 font-semibold">{feature.stats}</span>
-                  <ArrowRight className="w-5 h-5 text-gray-400 group-hover:text-security-blue-400 transition-colors duration-200 group-hover:translate-x-1" />
+                  <h3 className="text-xl font-semibold text-white mb-3 group-hover:text-blue-50 transition-colors">
+                    {feature.title}
+                  </h3>
+                  <p className="text-gray-400 text-sm mb-6 leading-relaxed">
+                    {feature.description}
+                  </p>
+                  
+                  <div className="pt-4 border-t border-gray-800/30">
+                    <div className="text-3xl font-light bg-gradient-to-r from-blue-400 to-blue-300 bg-clip-text text-transparent">
+                      {feature.metric}
                 </div>
+                    <div className="text-xs text-gray-500 font-medium tracking-wide uppercase">
+                      {feature.metricLabel}
               </div>
+                  </div>
+                </div>
+              </motion.div>
             ))}
           </div>
         </div>
+        
+        {/* Oddělovač #3: Features → Gallery */}
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
+          <div className="h-px bg-gradient-to-r from-transparent via-white/20 to-transparent"></div>
+          <div className="absolute left-4 -top-2 text-xs text-white/50 bg-black/50 px-2 py-1 rounded">
+            #3: Features → Gallery
+          </div>
+        </div>
       </section>
 
-      {/* Modální okna s animacemi */}
-      {openModal !== null && (
-        <div 
-          className={`fixed inset-0 bg-black/60 backdrop-blur-md z-50 flex items-center justify-center p-4 transition-opacity duration-300 ${
-            isModalAnimating ? 'opacity-100' : 'opacity-0'
-          }`}
-          onClick={closeModalWithAnimation}
+      {/* Scroll-based Gallery - Optimized */}
+      <section className="py-20 relative overflow-hidden bg-black z-30" data-section="gallery">
+        {/* Oddělovač #4: Gallery Start */}
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-16 relative">
+          <div className="h-px bg-gradient-to-r from-transparent via-white/10 to-transparent"></div>
+          <div className="absolute left-4 -top-2 text-xs text-white/40 bg-black/50 px-2 py-1 rounded">
+            #4: Gallery Start
+          </div>
+        </div>
+        <motion.div 
+          initial={{ opacity: 0, y: 25 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: "-40px" }}
+          transition={{ 
+            duration: 0.9, 
+            ease: [0.25, 0.46, 0.45, 0.94],
+            type: "spring",
+            stiffness: 70,
+            damping: 25
+          }}
+          className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-12"
         >
-          <div 
-            className={`bg-black/40 backdrop-blur-xl border border-security-blue-600/30 rounded-2xl shadow-2xl max-w-4xl w-full max-h-[90vh] overflow-hidden transition-all duration-300 ${
-              isModalAnimating 
-                ? 'scale-100 opacity-100 translate-y-0' 
-                : 'scale-95 opacity-0 translate-y-4'
-            }`}
-            onClick={(e) => e.stopPropagation()}
+          <div className="text-center">
+            <h2 className="text-3xl lg:text-5xl font-light text-white mb-4">
+              {t('GALLERY_TITLE')} <span className="italic">{t('GALLERY_TITLE_ITALIC')}</span>
+            </h2>
+            <p className="text-gray-500 text-lg">
+              {t('GALLERY_SUBTITLE')}
+            </p>
+          </div>
+        </motion.div>
+
+        {/* Široká galerie s scroll-based animací */}
+        <div className="relative w-full overflow-hidden">
+          {/* Elegantní fade-out efekty do ztracena */}
+          <div className="absolute left-0 top-0 bottom-0 w-40 bg-gradient-to-r from-black via-black/95 via-black/80 via-black/50 to-transparent z-10 pointer-events-none"></div>
+          <div className="absolute right-0 top-0 bottom-0 w-40 bg-gradient-to-l from-black via-black/95 via-black/80 via-black/50 to-transparent z-10 pointer-events-none"></div>
+          
+          {/* První řada - pohyb podle scrollu zleva doprava */}
+          <motion.div 
+            style={{ 
+              x: useTransform(scrollYProgress, [0.2, 0.8], [-800, 200]),
+              willChange: 'transform'
+            }}
+            className="flex space-x-8 mb-5"
           >
-            
-            {/* Header */}
-            <div className={`relative p-8 border-b border-gray-700/50 transition-all duration-500 delay-100 ${
-              isModalAnimating ? 'translate-y-0 opacity-100' : 'translate-y-2 opacity-0'
-            }`}>
-              <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-security-blue-600 via-security-blue-400 to-security-blue-600"></div>
-              
-              <div className="flex items-start justify-between">
-                <div className="flex items-center space-x-4">
-                  <div className={`w-16 h-16 security-gradient-blue rounded-xl flex items-center justify-center shadow-lg transition-all duration-500 delay-200 ${
-                    isModalAnimating ? 'scale-100 rotate-0' : 'scale-75 rotate-12'
-                  }`}>
-                    {(() => {
-                      const IconComponent = features[openModal].icon;
-                      return <IconComponent className="w-8 h-8 text-white" />;
-                    })()}
-                  </div>
-                  <div className={`transition-all duration-500 delay-300 ${
-                    isModalAnimating ? 'translate-x-0 opacity-100' : 'translate-x-4 opacity-0'
-                  }`}>
-                    <h3 className="text-3xl font-bold text-white mb-2">
-                      {features[openModal].details.title}
-                    </h3>
-                    <p className="text-security-blue-400 font-medium">
-                      {features[openModal].details.subtitle}
-                    </p>
-                  </div>
-                </div>
-                
-                <button 
-                  onClick={closeModalWithAnimation}
-                  className={`w-10 h-10 rounded-full bg-gray-800/50 hover:bg-gray-700/50 flex items-center justify-center transition-all duration-200 hover:scale-110 hover:rotate-90 ${
-                    isModalAnimating ? 'scale-100 opacity-100' : 'scale-75 opacity-0'
-                  }`}
-                  style={{ transitionDelay: isModalAnimating ? '400ms' : '0ms' }}
-                >
-                  <svg className="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                  </svg>
-                </button>
+            {[...galleryImages.row1, ...galleryImages.row1, ...galleryImages.row1].map((img, index) => (
+              <div
+                key={index} 
+                className="relative flex-shrink-0 w-80 h-48 rounded-2xl overflow-hidden backdrop-blur-sm bg-white/8 border border-white/15 shadow-2xl shadow-black/50 transition-transform duration-300 hover:scale-105 hover:-translate-y-1"
+                style={{
+                  transform: 'translateZ(0)',
+                  backfaceVisibility: 'hidden'
+                }}
+              >
+                <img 
+                  src={img} 
+                  alt={`Gallery ${index}`}
+                  className="w-full h-full object-cover"
+                  loading="lazy"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent opacity-0 hover:opacity-100 transition-opacity duration-300" />
+                <div className="absolute inset-0 ring-1 ring-white/25 rounded-2xl pointer-events-none" />
               </div>
-            </div>
+            ))}
+          </motion.div>
 
-            {/* Content */}
-            <div className={`p-8 overflow-y-auto max-h-[calc(90vh-200px)] transition-all duration-500 delay-200 ${
-              isModalAnimating ? 'translate-y-0 opacity-100' : 'translate-y-4 opacity-0'
-            }`}>
-              <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-                
-                {/* Hlavní obsah */}
-                <div className="lg:col-span-2 space-y-6">
-                  <div>
-                    <h4 className={`text-xl font-semibold text-white mb-4 transition-all duration-500 delay-300 ${
-                      isModalAnimating ? 'translate-x-0 opacity-100' : 'translate-x-4 opacity-0'
-                    }`}>Co zahrnujeme:</h4>
-                    <div className="space-y-3">
-                      {features[openModal].details.content.map((item, index) => (
-                        <div 
-                          key={index} 
-                          className={`flex items-start space-x-3 transition-all duration-500 ${
-                            isModalAnimating ? 'translate-x-0 opacity-100' : 'translate-x-6 opacity-0'
-                          }`}
-                          style={{ transitionDelay: isModalAnimating ? `${400 + index * 100}ms` : '0ms' }}
-                        >
-                          <div className="w-2 h-2 bg-security-blue-400 rounded-full mt-2 flex-shrink-0"></div>
-                          <p className="text-gray-300 leading-relaxed">{item}</p>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                </div>
-
-                {/* Statistiky sidebar */}
-                <div className={`space-y-6 transition-all duration-500 delay-400 ${
-                  isModalAnimating ? 'translate-x-0 opacity-100' : 'translate-x-8 opacity-0'
-                }`}>
-                  <div className="bg-gradient-to-br from-security-blue-600/10 to-security-blue-400/10 rounded-xl p-6 border border-security-blue-600/20">
-                    <h4 className="text-lg font-semibold text-white mb-4">Klíčové údaje:</h4>
-                    <div className="space-y-4">
-                      {features[openModal].details.features.map((feature, index) => (
-                        <div 
-                          key={index} 
-                          className={`flex items-center space-x-3 transition-all duration-500 ${
-                            isModalAnimating ? 'scale-100 opacity-100' : 'scale-95 opacity-0'
-                          }`}
-                          style={{ transitionDelay: isModalAnimating ? `${500 + index * 100}ms` : '0ms' }}
-                        >
-                          <div className="w-8 h-8 bg-security-blue-600/30 rounded-lg flex items-center justify-center">
-                            <svg className="w-4 h-4 text-security-blue-400" fill="currentColor" viewBox="0 0 20 20">
-                              <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
-                            </svg>
-                          </div>
-                          <span className="text-gray-300 font-medium">{feature}</span>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-
-                  {/* CTA Button */}
-                  <button className={`w-full btn-security-primary text-center py-4 px-6 rounded-xl font-semibold transition-all duration-500 delay-700 hover:scale-105 ${
-                    isModalAnimating ? 'scale-100 opacity-100' : 'scale-95 opacity-0'
-                  }`}>
-                    Začít zdarma
-                    <ArrowRight className="w-5 h-5 ml-2 inline" />
-                  </button>
-                </div>
+          {/* Druhá řada - pohyb podle scrollu zprava doleva */}
+          <motion.div 
+            style={{ 
+              x: useTransform(scrollYProgress, [0.2, 0.8], [200, -800]),
+              willChange: 'transform'
+            }}
+            className="flex space-x-8"
+          >
+            {[...galleryImages.row2, ...galleryImages.row2, ...galleryImages.row2].map((img, index) => (
+              <div
+                key={index}
+                className="relative flex-shrink-0 w-80 h-48 rounded-2xl overflow-hidden backdrop-blur-sm bg-blue-500/10 border border-blue-400/25 shadow-2xl shadow-blue-500/25 transition-transform duration-300 hover:scale-105 hover:-translate-y-1"
+                style={{
+                  transform: 'translateZ(0)',
+                  backfaceVisibility: 'hidden'
+                }}
+              >
+                <img 
+                  src={img} 
+                  alt={`Galerie ${index}`}
+                  className="w-full h-full object-cover"
+                  loading="lazy"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-blue-900/50 via-transparent to-transparent opacity-0 hover:opacity-100 transition-opacity duration-300" />
+                <div className="absolute inset-0 ring-1 ring-blue-400/35 rounded-2xl pointer-events-none" />
               </div>
-            </div>
-          </div>
+            ))}
+          </motion.div>
         </div>
-      )}
-
-      {/* Animovaná galerie */}
-      <section className="py-24" data-section="gallery">
-        <div className={`max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 transition-opacity duration-500 ${
-          visibleSections.has('gallery') 
-            ? 'opacity-100' 
-            : 'opacity-0'
-        }`}>
-          <div className="text-center mb-16">
-            <h2 className="text-4xl font-bold text-white mb-6">
-              Naše <span className="gradient-text-blue">portfólio</span>
-            </h2>
-            <p className="text-xl text-gray-400 max-w-3xl mx-auto">
-              Kreativní galerie našich nejlepších projektů a realizací
-            </p>
-          </div>
-
-          {/* Animovaná galerie */}
-          <div className="relative overflow-hidden">
-            {/* Fade efekty po stranách - uvnitř kontejneru */}
-            <div className="absolute left-0 top-0 bottom-0 w-24 bg-gradient-to-r from-black via-black/50 to-transparent z-10 pointer-events-none"></div>
-            <div className="absolute right-0 top-0 bottom-0 w-24 bg-gradient-to-l from-black via-black/50 to-transparent z-10 pointer-events-none"></div>
-            
-            {/* Horní řada - pohyb doprava na scroll (smooth optimalizovaná) */}
-            <div 
-              className="mb-6 gallery-scroll-row"
-              style={{
-                transform: `translate3d(${-scrollY * 0.12}px, 0, 0)`,
-                width: '400%'
-              }}
-            >
-              <div className="flex space-x-6">
-                {/* Původní sada */}
-                <div className="gallery-item">
-                  <img src="https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=400&h=240&fit=crop" alt="Project 1" className="gallery-image" />
-                </div>
-                <div className="gallery-item">
-                  <img src="https://images.unsplash.com/photo-1516321318423-f06f85e504b3?w=400&h=240&fit=crop" alt="Project 2" className="gallery-image" />
-                </div>
-                <div className="gallery-item">
-                  <img src="https://images.unsplash.com/photo-1563013544-824ae1b704d3?w=400&h=240&fit=crop" alt="Project 3" className="gallery-image" />
-                </div>
-                <div className="gallery-item">
-                  <img src="https://images.unsplash.com/photo-1551650975-87deedd944c3?w=400&h=240&fit=crop" alt="Project 4" className="gallery-image" />
-                </div>
-                <div className="gallery-item">
-                  <img src="https://images.unsplash.com/photo-1518709268805-4e9042af2176?w=400&h=240&fit=crop" alt="Project 5" className="gallery-image" />
-                </div>
-                <div className="gallery-item">
-                  <img src="https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=400&h=240&fit=crop" alt="Project 6" className="gallery-image" />
-                </div>
-                
-                {/* Duplikace 1 - pro nekonečný efekt */}
-                <div className="gallery-item">
-                  <img src="https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=400&h=240&fit=crop" alt="Project 1" className="gallery-image" />
-                </div>
-                <div className="gallery-item">
-                  <img src="https://images.unsplash.com/photo-1516321318423-f06f85e504b3?w=400&h=240&fit=crop" alt="Project 2" className="gallery-image" />
-                </div>
-                <div className="gallery-item">
-                  <img src="https://images.unsplash.com/photo-1563013544-824ae1b704d3?w=400&h=240&fit=crop" alt="Project 3" className="gallery-image" />
-                </div>
-                <div className="gallery-item">
-                  <img src="https://images.unsplash.com/photo-1551650975-87deedd944c3?w=400&h=240&fit=crop" alt="Project 4" className="gallery-image" />
-                </div>
-                <div className="gallery-item">
-                  <img src="https://images.unsplash.com/photo-1518709268805-4e9042af2176?w=400&h=240&fit=crop" alt="Project 5" className="gallery-image" />
-                </div>
-                <div className="gallery-item">
-                  <img src="https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=400&h=240&fit=crop" alt="Project 6" className="gallery-image" />
-                </div>
-                
-                {/* Duplikace 2 - pro extra dlouhý scroll */}
-                <div className="gallery-item">
-                  <img src="https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=400&h=240&fit=crop" alt="Project 1" className="gallery-image" />
-                </div>
-                <div className="gallery-item">
-                  <img src="https://images.unsplash.com/photo-1516321318423-f06f85e504b3?w=400&h=240&fit=crop" alt="Project 2" className="gallery-image" />
-                </div>
-                <div className="gallery-item">
-                  <img src="https://images.unsplash.com/photo-1563013544-824ae1b704d3?w=400&h=240&fit=crop" alt="Project 3" className="gallery-image" />
-                </div>
-                <div className="gallery-item">
-                  <img src="https://images.unsplash.com/photo-1551650975-87deedd944c3?w=400&h=240&fit=crop" alt="Project 4" className="gallery-image" />
-                </div>
-                <div className="gallery-item">
-                  <img src="https://images.unsplash.com/photo-1518709268805-4e9042af2176?w=400&h=240&fit=crop" alt="Project 5" className="gallery-image" />
-                </div>
-                <div className="gallery-item">
-                  <img src="https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=400&h=240&fit=crop" alt="Project 6" className="gallery-image" />
-                </div>
-                    </div>
-                  </div>
-                  
-            {/* Spodní řada - pohyb doleva na scroll (smooth optimalizovaná) */}
-            <div 
-              className="gallery-scroll-row"
-              style={{
-                transform: `translate3d(${-1200 + scrollY * 0.08}px, 0, 0)`,
-                width: '400%'
-              }}
-            >
-              <div className="flex space-x-6">
-                {/* Původní sada */}
-                <div className="gallery-item">
-                  <img src="https://images.unsplash.com/photo-1504384764586-bb4cdc1707b0?w=400&h=240&fit=crop" alt="Project 7" className="gallery-image" />
-                </div>
-                <div className="gallery-item">
-                  <img src="https://images.unsplash.com/photo-1519389950473-47ba0277781c?w=400&h=240&fit=crop" alt="Project 8" className="gallery-image" />
-                </div>
-                <div className="gallery-item">
-                  <img src="https://images.unsplash.com/photo-1535378917042-10a22c95931a?w=400&h=240&fit=crop" alt="Project 9" className="gallery-image" />
-                </div>
-                <div className="gallery-item">
-                  <img src="https://images.unsplash.com/photo-1512486130939-2c4f79935e4f?w=400&h=240&fit=crop" alt="Project 10" className="gallery-image" />
-                </div>
-                <div className="gallery-item">
-                  <img src="https://images.unsplash.com/photo-1518709268805-4e9042af2176?w=400&h=240&fit=crop" alt="Project 11" className="gallery-image" />
-                  </div>
-                <div className="gallery-item">
-                  <img src="https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?w=400&h=240&fit=crop" alt="Project 12" className="gallery-image" />
-                </div>
-                
-                {/* Duplikace 1 - pro nekonečný efekt */}
-                <div className="gallery-item">
-                  <img src="https://images.unsplash.com/photo-1504384764586-bb4cdc1707b0?w=400&h=240&fit=crop" alt="Project 7" className="gallery-image" />
-                </div>
-                <div className="gallery-item">
-                  <img src="https://images.unsplash.com/photo-1519389950473-47ba0277781c?w=400&h=240&fit=crop" alt="Project 8" className="gallery-image" />
-                </div>
-                <div className="gallery-item">
-                  <img src="https://images.unsplash.com/photo-1535378917042-10a22c95931a?w=400&h=240&fit=crop" alt="Project 9" className="gallery-image" />
-                </div>
-                <div className="gallery-item">
-                  <img src="https://images.unsplash.com/photo-1512486130939-2c4f79935e4f?w=400&h=240&fit=crop" alt="Project 10" className="gallery-image" />
-                </div>
-                <div className="gallery-item">
-                  <img src="https://images.unsplash.com/photo-1518709268805-4e9042af2176?w=400&h=240&fit=crop" alt="Project 11" className="gallery-image" />
-                </div>
-                <div className="gallery-item">
-                  <img src="https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?w=400&h=240&fit=crop" alt="Project 12" className="gallery-image" />
-                  </div>
-                  
-                {/* Duplikace 2 - pro extra dlouhý scroll */}
-                <div className="gallery-item">
-                  <img src="https://images.unsplash.com/photo-1504384764586-bb4cdc1707b0?w=400&h=240&fit=crop" alt="Project 7" className="gallery-image" />
-                </div>
-                <div className="gallery-item">
-                  <img src="https://images.unsplash.com/photo-1519389950473-47ba0277781c?w=400&h=240&fit=crop" alt="Project 8" className="gallery-image" />
-                </div>
-                <div className="gallery-item">
-                  <img src="https://images.unsplash.com/photo-1535378917042-10a22c95931a?w=400&h=240&fit=crop" alt="Project 9" className="gallery-image" />
-                </div>
-                <div className="gallery-item">
-                  <img src="https://images.unsplash.com/photo-1512486130939-2c4f79935e4f?w=400&h=240&fit=crop" alt="Project 10" className="gallery-image" />
-                </div>
-                <div className="gallery-item">
-                  <img src="https://images.unsplash.com/photo-1518709268805-4e9042af2176?w=400&h=240&fit=crop" alt="Project 11" className="gallery-image" />
-                  </div>
-                <div className="gallery-item">
-                  <img src="https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?w=400&h=240&fit=crop" alt="Project 12" className="gallery-image" />
-                </div>
-              </div>
-            </div>
+        
+        {/* Oddělovač #5: Gallery → Process */}
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
+          <div className="h-px bg-gradient-to-r from-transparent via-white/20 to-transparent"></div>
+          <div className="absolute left-4 -top-2 text-xs text-white/50 bg-black/50 px-2 py-1 rounded">
+            #5: Gallery → Process
           </div>
         </div>
       </section>
 
-      {/* Moderní Testimonials Grid */}
-      <section className="py-24" data-section="testimonials">
-        <div className={`max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 transition-opacity duration-500 ${
-          visibleSections.has('testimonials') 
-            ? 'opacity-100' 
-            : 'opacity-0'
-        }`}>
-          
-          {/* Nadpis s moderním designem */}
-          <div className="text-center mb-20">
-            <div className="inline-flex items-center space-x-2 bg-gradient-to-r from-security-blue-600/10 to-purple-600/10 rounded-full px-6 py-3 mb-6">
-              <Star className="w-5 h-5 text-security-blue-400" />
-              <span className="text-security-blue-400 font-medium">Zákaznické recenze</span>
-            </div>
-            <h2 className="text-4xl md:text-5xl font-bold text-white mb-6">
-              Co říkají naši <span className="gradient-text-blue">klienti</span>
-            </h2>
-            <p className="text-xl text-gray-300 max-w-3xl mx-auto">
-              Přečtěte si zkušenosti našich spokojených zákazníků
-            </p>
+      {/* Process sekce v elegantním okně */}
+      <section className="py-20 relative overflow-hidden" data-section="process">
+        {/* Oddělovač #6: Process Start */}
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-16 relative">
+          <div className="h-px bg-gradient-to-r from-transparent via-white/10 to-transparent"></div>
+          <div className="absolute left-4 -top-2 text-xs text-white/40 bg-black/50 px-2 py-1 rounded">
+            #6: Process Start
           </div>
+        </div>
+        
+        {/* Okno s černým shadow efektem kolem */}
+        <div className="max-w-6xl mx-auto px-8">
+          <div
+            className="relative border border-white/20 rounded-3xl p-12 z-10"
+            style={{
+              boxShadow: `
+                0 0 0 500px black,
+                0 20px 40px -10px rgba(0, 0, 0, 0.8)
+              `
+            }}
+          >
+            <motion.div 
+              initial={{ opacity: 0, y: 35 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, margin: "-60px" }}
+              transition={{ 
+                duration: 1.0, 
+                ease: [0.215, 0.61, 0.355, 1],
+                type: "spring",
+                stiffness: 60,
+                damping: 25
+              }}
+              className="text-center mb-16"
+            >
+              <div className="text-blue-400 text-sm font-medium tracking-widest uppercase mb-4">
+                {t('PROCESS_BADGE')}
+              </div>
+              <h2 className="text-3xl lg:text-5xl font-light text-white mb-4">
+                {t('PROCESS_TITLE')} <span className="italic">{t('PROCESS_TITLE_ITALIC')}</span>
+              </h2>
+              <p className="text-gray-400 text-lg">
+                {t('PROCESS_SUBTITLE')}
+              </p>
+            </motion.div>
 
-          {/* 3D Carousel - 5 karet v řadě */}
-          <div className="relative max-w-6xl mx-auto h-80">
-            <div className="absolute inset-0 flex items-center justify-center perspective-1000">
-              <div className="relative w-full h-full">
-                {testimonials.map((testimonial, index) => {
-                  // Relativní pozice od aktivní karty
-                  const relativePosition = (index - currentTestimonial + testimonials.length) % testimonials.length
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            {            [
+              {
+                step: t('PROCESS_STEP_1'),
+                title: t('PROCESS_STEP_1_TITLE'),
+                description: t('PROCESS_STEP_1_DESC'),
+                icon: Eye,
+                animation: 'discover'
+              },
+              {
+                step: t('PROCESS_STEP_2'),
+                title: t('PROCESS_STEP_2_TITLE'),
+                description: t('PROCESS_STEP_2_DESC'),
+                icon: Database,
+                animation: 'build'
+              },
+              {
+                step: t('PROCESS_STEP_3'),
+                title: t('PROCESS_STEP_3_TITLE'),
+                description: t('PROCESS_STEP_3_DESC'),
+                icon: Target,
+                animation: 'optimize'
+              }
+            ].map((item, index) => (
+              <motion.div
+                key={index}
+                initial={{ opacity: 0, y: 45, scale: 0.9 }}
+                whileInView={{ opacity: 1, y: 0, scale: 1 }}
+                viewport={{ once: true, margin: "-40px" }}
+                transition={{ 
+                  delay: index * 0.25,
+                  duration: 0.8,
+                  ease: [0.25, 0.46, 0.45, 0.94],
+                  type: "spring",
+                  stiffness: 80,
+                  damping: 20
+                }}
+                whileHover={{
+                  y: -8,
+                  scale: 1.02,
+                  transition: { duration: 0.3, ease: "easeOut" }
+                }}
+                className="relative group"
+              >
+                <div className="glass-card p-8 h-full">
+                  <div className="text-gray-500 text-sm mb-4">{item.step}</div>
                   
-                  let transform = ''
-                  let zIndex = 1
-                  let opacity = 1
-                  let scale = 1
-                  
-                  // 5 pozic: -2, -1, 0 (střed), +1, +2
-                  if (relativePosition === 0) {
-                    // Střední karta (aktivní)
-                    transform = 'translateX(0px) translateZ(0px) rotateY(0deg) scale(1)'
-                    zIndex = 10
-                    opacity = 1
-                  } else if (relativePosition === 1 || relativePosition === testimonials.length - 1) {
-                    // Sousední karty (+1 a -1)
-                    const side = relativePosition === 1 ? 1 : -1
-                    transform = `translateX(${side * 200}px) translateZ(-50px) rotateY(${side * 18}deg) scale(0.85)`
-                    zIndex = 8
-                    opacity = 0.8
-                  } else if (relativePosition === 2 || relativePosition === testimonials.length - 2) {
-                    // Vnější karty (+2 a -2)  
-                    const side = relativePosition === 2 ? 1 : -1
-                    transform = `translateX(${side * 340}px) translateZ(-100px) rotateY(${side * 32}deg) scale(0.7)`
-                    zIndex = 6
-                    opacity = 0.6
-                  } else {
-                    // Skryté karty (nebudou vidět při 5 kartách)
-                    transform = `translateX(0px) translateZ(-300px) scale(0.3)`
-                    zIndex = 1
-                    opacity = 0
-                  }
-                  
-                  return (
-                    <div
-                      key={index}
-                      className="absolute inset-0 flex items-center justify-center transition-all duration-700 ease-in-out cursor-pointer"
-                      style={{
-                        transform,
-                        zIndex,
-                        opacity,
-                        transformStyle: 'preserve-3d'
-                      }}
-                      onClick={() => setCurrentTestimonial(index)}
-                    >
-                      <div className="w-72 h-56 group testimonial-card p-4 relative overflow-hidden will-change-transform">
-                        {/* Header s logem firmy */}
-                        <div className="flex items-center justify-between mb-4">
-                          {/* Logo firmy */}
-                          <img 
-                            src={testimonial.companyLogo} 
-                            alt={testimonial.company}
-                            className="w-16 h-10 object-cover rounded-lg shadow-md border border-gray-700/50"
-                            onError={(e) => {
-                              e.currentTarget.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(testimonial.company)}&background=1f2937&color=ffffff&size=200&length=2`
-                            }}
-                          />
-                          
-                          {/* Quote ikona */}
-                          <div className="w-6 h-6 bg-gradient-to-br from-security-blue-500 to-security-blue-600 rounded-lg flex items-center justify-center shadow-md">
-                            <Quote className="w-3 h-3 text-white" />
-                          </div>
-                        </div>
-                        
-                        {/* Recenze - největší část */}
-                        <div className="mb-4">
-                          <p className="text-gray-200 leading-relaxed italic text-sm min-h-[80px]">
-                            "{testimonial.text.length > 140 ? testimonial.text.substring(0, 140) + '...' : testimonial.text}"
-                          </p>
-                        </div>
-                        
-                        {/* Název firmy - decentní */}
-                        <div className="mb-3">
-                          <div className="text-security-blue-400 text-xs font-medium opacity-80">
-                            {testimonial.company}
-                          </div>
-                        </div>
-                        
-                        {/* Hodnocení hvězdičkami */}
-                        <div className="mb-3">
-                          <div className="flex items-center space-x-1">
-                      {[...Array(testimonial.rating)].map((_, i) => (
-                              <Star 
-                                key={i} 
-                                className="w-4 h-4 text-yellow-400 fill-current"
-                              />
-                      ))}
-                          </div>
-                    </div>
+                  {/* Animated Framer Motion window */}
+                  <div className="mb-6 h-48 glass-window rounded-xl p-6 relative overflow-hidden">
+                    <div className="absolute inset-0 bg-gradient-to-br from-blue-500/5 to-transparent" />
                     
-                        {/* Malý profilový obrázek uživatele dole */}
-                        <div className="flex items-center space-x-2">
-                          <img 
-                            src={testimonial.avatar} 
-                            alt={testimonial.author}
-                            className="w-8 h-8 rounded-full object-cover border border-security-blue-400/30 shadow-sm"
-                            onError={(e) => {
-                              e.currentTarget.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(testimonial.author)}&background=3b82f6&color=ffffff&size=80`
-                            }}
-                          />
-                    <div>
-                            <div className="text-white font-medium text-xs">
-                              {testimonial.author}
-                            </div>
-                            <div className="text-gray-400 text-xs">
-                              {testimonial.position}
-                    </div>
-                  </div>
+                    {/* Framer Motion text animation */}
+                    <motion.div
+                      animate={{
+                        opacity: [0.3, 1, 0.3],
+                        y: [0, -10, 0]
+                      }}
+                      transition={{
+                        duration: 3,
+                        repeat: Infinity,
+                        ease: "easeInOut"
+                      }}
+                      className="text-blue-400/50 font-mono text-sm mb-4"
+                    >
+                      Framer Motion
+                    </motion.div>
+                    
+                    {/* Animated code/process visualization */}
+                    {item.animation === 'discover' && (
+                      <motion.div className="space-y-2">
+                        <motion.div
+                          animate={{ width: ['0%', '80%', '60%'] }}
+                          transition={{ duration: 2, repeat: Infinity }}
+                          className="h-2 bg-blue-400/20 rounded"
+                        />
+                        <motion.div
+                          animate={{ width: ['0%', '60%', '90%'] }}
+                          transition={{ duration: 2, delay: 0.3, repeat: Infinity }}
+                          className="h-2 bg-blue-400/30 rounded"
+                        />
+                        <motion.div
+                          animate={{ width: ['0%', '90%', '70%'] }}
+                          transition={{ duration: 2, delay: 0.6, repeat: Infinity }}
+                          className="h-2 bg-blue-400/20 rounded"
+                        />
+                      </motion.div>
+                    )}
+                    
+                    {item.animation === 'build' && (
+                      <div className="flex justify-center items-center h-full">
+                        <motion.div
+                          animate={{ rotate: 360 }}
+                          transition={{ duration: 8, repeat: Infinity, ease: "linear" }}
+                          className="relative"
+                        >
+                          <Database className="w-16 h-16 text-blue-400/30" />
+                          <motion.div
+                            animate={{ scale: [1, 1.2, 1] }}
+                            transition={{ duration: 2, repeat: Infinity }}
+                            className="absolute inset-0 flex items-center justify-center"
+                          >
+                            <div className="w-8 h-8 bg-blue-400/20 rounded-full blur-xl" />
+                          </motion.div>
+                        </motion.div>
                 </div>
-                        
-                        {/* Glow pro aktivní kartu */}
-                        {relativePosition === 0 && (
-                          <div className="absolute inset-0 bg-gradient-to-br from-security-blue-600/10 to-security-blue-400/10 rounded-xl"></div>
-                        )}
-                      </div>
-                    </div>
-                  )
-                })}
-              </div>
-            </div>
-            
-            {/* Indikátory */}
-            <div className="absolute bottom-0 left-1/2 transform -translate-x-1/2 flex space-x-2">
-              {testimonials.map((_, index) => (
-                <button
-                  key={index}
-                  onClick={() => setCurrentTestimonial(index)}
-                  className={`w-2 h-2 rounded-full transition-all duration-300 ${
-                    currentTestimonial === index
-                      ? 'bg-security-blue-400 w-6'
-                      : 'bg-gray-600 hover:bg-security-blue-400/50'
-                  }`}
-                ></button>
-              ))}
-            </div>
-          </div>
-          
-          {/* Statistiky dolní */}
-          <div className="flex flex-wrap justify-center items-center gap-8 mt-20 pt-16 border-t border-gray-700/30">
-            <div className="text-center">
-              <div className="text-3xl font-bold text-white mb-1">500+</div>
-              <div className="text-gray-400 text-sm">Spokojených klientů</div>
-            </div>
-            <div className="w-px h-12 bg-gray-700/50"></div>
-            <div className="text-center">
-              <div className="text-3xl font-bold text-white mb-1">4.9/5</div>
-              <div className="text-gray-400 text-sm">Průměrné hodnocení</div>
-            </div>
-            <div className="w-px h-12 bg-gray-700/50"></div>
-            <div className="text-center">
-              <div className="text-3xl font-bold text-white mb-1">99%</div>
-              <div className="text-gray-400 text-sm">Míra spokojenosti</div>
+                    )}
+                    
+                    {item.animation === 'optimize' && (
+                      <div className="space-y-4">
+                        <motion.div
+                          animate={{ x: [-100, 100] }}
+                          transition={{ duration: 3, repeat: Infinity, repeatType: "reverse" }}
+                          className="flex items-center gap-2"
+                        >
+                          <div className="w-2 h-2 bg-blue-400 rounded-full" />
+                          <div className="flex-1 h-[1px] bg-gradient-to-r from-blue-400/50 to-transparent" />
+                        </motion.div>
+                        <motion.div
+                          animate={{ x: [100, -100] }}
+                          transition={{ duration: 3, repeat: Infinity, repeatType: "reverse" }}
+                          className="flex items-center gap-2"
+                        >
+                          <div className="flex-1 h-[1px] bg-gradient-to-l from-blue-400/50 to-transparent" />
+                          <div className="w-2 h-2 bg-blue-400 rounded-full" />
+                        </motion.div>
+                </div>
+                    )}
+                    
+                    <motion.div
+                      animate={{ opacity: [0.5, 1, 0.5] }}
+                      transition={{ duration: 2, repeat: Infinity }}
+                      className="absolute bottom-4 right-4"
+                    >
+                      <item.icon className="w-8 h-8 text-blue-400/20" />
+                    </motion.div>
+                </div>
+                
+                  <h3 className="text-xl font-medium text-white mb-3">{item.title}</h3>
+                  <p className="text-gray-400 text-sm">{item.description}</p>
+                </div>
+              </motion.div>
+            ))}
             </div>
           </div>
-          
-          {/* Dekorativní prvek */}
-          <div className="flex justify-center mt-16">
-            <div className="flex items-center space-x-2">
-              <div className="w-12 h-0.5 bg-gradient-to-r from-transparent to-security-blue-400"></div>
-              <div className="w-3 h-3 bg-security-blue-400 rounded-full animate-pulse"></div>
-              <div className="w-12 h-0.5 bg-gradient-to-l from-transparent to-security-blue-400"></div>
-            </div>
+        </div>
+        
+        {/* Oddělovač #7: Process → Stats */}
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
+          <div className="h-px bg-gradient-to-r from-transparent via-white/20 to-transparent"></div>
+          <div className="absolute left-4 -top-2 text-xs text-white/50 bg-black/50 px-2 py-1 rounded">
+            #7: Process → Stats
           </div>
         </div>
       </section>
 
-      {/* CTA sekce */}
-      <section className="py-24 relative overflow-hidden" data-section="cta">
-        <div className={`relative z-10 max-w-4xl mx-auto text-center px-4 sm:px-6 lg:px-8 transition-all duration-1000 ${
-          visibleSections.has('cta') 
-            ? 'opacity-100 translate-y-0' 
-            : 'opacity-0 translate-y-10'
-        }`}>
-          <h2 className="text-4xl lg:text-6xl font-bold text-white mb-6">
-            Připraveni <span className="gradient-text-blue">chránit</span> vaši firmu?
-          </h2>
-          <p className="text-xl text-gray-300 mb-8 leading-relaxed">
-            Začněte ještě dnes a zvyšte security awareness ve vaší organizaci
-          </p>
-          
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <button className="btn-security-primary text-lg px-8 py-4">
-              Začít zdarma
-              <ArrowRight className="w-6 h-6 ml-2" />
-            </button>
-            <button className="btn-security-outline text-lg px-8 py-4">
-              Kontaktovat nás
-            </button>
+      {/* Stats sekce v elegantním okně */}
+      <section className="py-20 relative overflow-hidden z-20" data-section="stats">
+        {/* Oddělovač #8: Stats Start */}
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-16 relative">
+          <div className="h-px bg-gradient-to-r from-transparent via-white/10 to-transparent"></div>
+          <div className="absolute left-4 -top-2 text-xs text-white/40 bg-black/50 px-2 py-1 rounded">
+            #8: Stats Start
           </div>
-          
-          <div className="mt-8 text-sm text-gray-400">
-            <CheckCircle className="w-4 h-4 inline mr-2 text-green-400" />
-            Bez závazků • 30 dní záruka vrácení peněz
+        </div>
+        
+        {/* Černý kontejner pouze kolem okna */}
+        <div className="max-w-6xl mx-auto px-8">
+          <div
+            className="relative border border-white/20 rounded-3xl p-12 z-10"
+            style={{
+              boxShadow: `
+                0 0 0 500px black,
+                0 20px 40px -10px rgba(0, 0, 0, 0.8)
+              `
+            }}
+          >
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
+            {            [
+              { value: t('STATS_SCANS_VALUE'), label: t('STATS_SCANS_LABEL'), icon: Shield },
+              { value: t('STATS_UPTIME_VALUE'), label: t('STATS_UPTIME_LABEL'), icon: Activity },
+              { value: t('STATS_USERS_VALUE'), label: t('STATS_USERS_LABEL'), icon: Users },
+              { value: t('STATS_RESPONSE_VALUE'), label: t('STATS_RESPONSE_LABEL'), icon: Zap }
+            ].map((stat, index) => (
+              <motion.div
+                key={index}
+                initial={{ opacity: 0, scale: 0.8, y: 30 }}
+                whileInView={{ opacity: 1, scale: 1, y: 0 }}
+                viewport={{ once: true, margin: "-30px" }}
+                transition={{ 
+                  delay: index * 0.2,
+                  duration: 0.6,
+                  ease: [0.215, 0.61, 0.355, 1],
+                  type: "spring",
+                  stiffness: 120,
+                  damping: 25
+                }}
+                whileHover={{
+                  scale: 1.05,
+                  y: -5,
+                  transition: { duration: 0.2, ease: "easeOut" }
+                }}
+                className="border border-white/20 rounded-2xl p-6 text-center group hover:border-white/30 transition-all duration-300"
+              >
+                <motion.div
+                  whileHover={{ rotate: 360 }}
+                  transition={{ duration: 0.5 }}
+                  className="w-12 h-12 border border-white/20 rounded-2xl flex items-center justify-center mx-auto mb-4 hover:border-blue-400/50 transition-all duration-300"
+                >
+                  <stat.icon className="w-6 h-6 text-blue-400" />
+                </motion.div>
+                <div className="text-3xl font-light text-transparent bg-gradient-to-r from-blue-400 to-blue-600 bg-clip-text mb-2">
+                  {stat.value}
+                </div>
+                <div className="text-sm text-gray-500">{stat.label}</div>
+              </motion.div>
+            ))}
+            </div>
+          </div>
+        </div>
+        
+        {/* Oddělovač #9: Stats → Success Stories */}
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
+          <div className="h-px bg-gradient-to-r from-transparent via-white/20 to-transparent"></div>
+          <div className="absolute left-4 -top-2 text-xs text-white/50 bg-black/50 px-2 py-1 rounded">
+            #9: Stats → Success Stories
           </div>
         </div>
       </section>
+
+      {/* Success Stories sekce - 3D Carousel */}
+      <section className="py-20 relative bg-black overflow-hidden" data-section="testimonials">
+        {/* Oddělovač #10: Success Stories Start */}
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-16 relative">
+          <div className="h-px bg-gradient-to-r from-transparent via-white/10 to-transparent"></div>
+          <div className="absolute left-4 -top-2 text-xs text-white/40 bg-black/50 px-2 py-1 rounded">
+            #10: Success Stories Start
+          </div>
+        </div>
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <motion.div 
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: "-50px" }}
+            transition={{ 
+              duration: 0.9, 
+              ease: [0.25, 0.46, 0.45, 0.94],
+              type: "spring",
+              stiffness: 75,
+              damping: 22
+            }}
+            className="text-center mb-16"
+          >
+            <div className="text-blue-400 text-sm font-medium tracking-widest uppercase mb-4">
+              {t('SUCCESS_STORIES_BADGE')}
+            </div>
+            <h2 className="text-3xl lg:text-5xl font-light text-white mb-4">
+              {t('SUCCESS_STORIES_TITLE')} <span className="italic">{t('SUCCESS_STORIES_TITLE_ITALIC')}</span>
+            </h2>
+            <p className="text-gray-500 text-lg">
+              {t('SUCCESS_STORIES_SUBTITLE')}
+            </p>
+          </motion.div>
+
+          <TestimonialsCarousel />
+        </div>
+      </section>
+
+      {/* Integrations sekce */}
+      <section className="py-20 relative overflow-hidden bg-black" data-section="integrations">
+        {/* Oddělovač #11: Success Stories → Integrations */}
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-16 relative">
+          <div className="h-px bg-gradient-to-r from-transparent via-white/20 to-transparent"></div>
+          <div className="absolute left-4 -top-2 text-xs text-white/50 bg-black/50 px-2 py-1 rounded">
+            #11: Success Stories → Integrations
+          </div>
+        </div>
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <motion.div 
+            initial={{ opacity: 0, y: 35 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: "-60px" }}
+            transition={{ 
+              duration: 0.8, 
+              ease: [0.215, 0.61, 0.355, 1],
+              type: "spring",
+              stiffness: 70,
+              damping: 25
+            }}
+            className="text-center mb-16"
+          >
+            <div className="text-blue-400 text-sm font-medium tracking-widest uppercase mb-4">
+              {t('INTEGRATIONS_BADGE')}
+            </div>
+            <h2 className="text-3xl lg:text-5xl font-light text-white mb-4">
+              {t('INTEGRATIONS_TITLE')} <span className="italic">{t('INTEGRATIONS_TITLE_ITALIC')}</span>
+            </h2>
+            <p className="text-gray-400 text-lg">
+              {t('INTEGRATIONS_SUBTITLE')}
+            </p>
+          </motion.div>
+
+          {/* Floating animation background */}
+          <div className="absolute inset-0 pointer-events-none">
+            {[
+              { x1: 15, y1: 25, x2: 85, y2: 75, duration: 8 },
+              { x1: 75, y1: 15, x2: 25, y2: 85, duration: 12 },
+              { x1: 45, y1: 80, x2: 65, y2: 20, duration: 10 },
+              { x1: 90, y1: 60, x2: 10, y2: 40, duration: 14 },
+              { x1: 20, y1: 45, x2: 80, y2: 55, duration: 9 },
+              { x1: 60, y1: 90, x2: 40, y2: 10, duration: 11 }
+            ].map((particle, i) => (
+              <motion.div
+                key={i}
+                className="absolute w-2 h-2 bg-blue-400/20 rounded-full"
+                initial={{ 
+                  x: particle.x1 + "%",
+                  y: particle.y1 + "%"
+                }}
+                animate={{
+                  x: [particle.x1 + "%", particle.x2 + "%"],
+                  y: [particle.y1 + "%", particle.y2 + "%"],
+                  scale: [1, 1.5, 1],
+                  opacity: [0.2, 0.8, 0.2]
+                }}
+                transition={{
+                  duration: particle.duration,
+                  repeat: Infinity,
+                  repeatType: "reverse",
+                  ease: "easeInOut"
+                }}
+              />
+            ))}
+          </div>
+
+          {/* 3D Grid integrations */}
+          <div className="relative max-w-5xl mx-auto">
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+              {[
+                { name: t('INTEGRATION_SLACK'), icon: Globe, color: "from-green-400 to-blue-500" },
+                { name: t('INTEGRATION_TEAMS'), icon: Users, color: "from-blue-400 to-purple-500" },
+                { name: t('INTEGRATION_GOOGLE'), icon: Cloud, color: "from-yellow-400 to-red-500" },
+                { name: t('INTEGRATION_JIRA'), icon: FileSearch, color: "from-blue-400 to-indigo-500" },
+                { name: t('INTEGRATION_GITHUB'), icon: GitBranch, color: "from-gray-400 to-gray-600" },
+                { name: t('INTEGRATION_OKTA'), icon: Lock, color: "from-indigo-400 to-purple-500" },
+                { name: t('INTEGRATION_SALESFORCE'), icon: Layers, color: "from-cyan-400 to-blue-500" },
+                { name: t('INTEGRATION_SPLUNK'), icon: BarChart3, color: "from-orange-400 to-red-500" }
+              ].map((integration, index) => {
+                const IconComponent = integration.icon;
+                return (
+                  <motion.div
+                    key={index}
+                    initial={{ opacity: 0, y: 40, scale: 0.9 }}
+                    whileInView={{ opacity: 1, y: 0, scale: 1 }}
+                    viewport={{ once: true, margin: "-40px" }}
+                    transition={{ 
+                      delay: index * 0.15,
+                      duration: 0.7,
+                      ease: [0.25, 0.46, 0.45, 0.94],
+                      type: "spring",
+                      stiffness: 90,
+                      damping: 25
+                    }}
+                    whileHover={{ 
+                      y: -12,
+                      scale: 1.05,
+                      transition: { duration: 0.3, ease: "easeOut" }
+                    }}
+                    className="group cursor-pointer"
+                    style={{ transformStyle: "preserve-3d" }}
+                  >
+                    <div className="relative bg-white/5 backdrop-blur-sm border border-white/10 rounded-2xl p-6 h-32 flex flex-col items-center justify-center transition-all duration-300 group-hover:bg-white/10 group-hover:border-white/20">
+                      {/* Gradient background on hover */}
+                      <div className={`absolute inset-0 bg-gradient-to-br ${integration.color} opacity-0 group-hover:opacity-10 rounded-2xl transition-opacity duration-300`} />
+                      
+                      {/* Icon */}
+                      <motion.div
+                        whileHover={{ rotate: 360, scale: 1.2 }}
+                        transition={{ duration: 0.6 }}
+                        className="mb-3"
+                      >
+                        <IconComponent className="w-8 h-8 text-white group-hover:text-white transition-colors duration-300" />
+                      </motion.div>
+                      
+                      {/* Name */}
+                      <p className="text-gray-400 group-hover:text-white text-sm font-medium text-center transition-colors duration-300">
+                        {integration.name}
+                      </p>
+
+                      {/* Hover glow effect */}
+                      <div className="absolute inset-0 rounded-2xl bg-white/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                    </div>
+                  </motion.div>
+                );
+              })}
+            </div>
+          </div>
+        </div>
+        
+        {/* Oddělovač #13: Integrations → FAQ */}
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
+          <div className="h-px bg-gradient-to-r from-transparent via-white/20 to-transparent"></div>
+          <div className="absolute left-4 -top-2 text-xs text-white/50 bg-black/50 px-2 py-1 rounded">
+            #13: Integrations → FAQ
+          </div>
+        </div>
+      </section>
+
+      {/* FAQ sekce */}
+      <section className="py-20 relative bg-black" data-section="faq">
+        {/* Oddělovač #13: Integrations → FAQ */}
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-16 relative">
+          <div className="h-px bg-gradient-to-r from-transparent via-white/20 to-transparent"></div>
+          <div className="absolute left-4 -top-2 text-xs text-white/50 bg-black/50 px-2 py-1 rounded">
+            #13: Integrations → FAQ
+          </div>
+        </div>
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 focus:outline-none">
+          <motion.div 
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: "-50px" }}
+            transition={{ 
+              duration: 0.8, 
+              ease: [0.25, 0.46, 0.45, 0.94],
+              type: "spring",
+              stiffness: 80,
+              damping: 20
+            }}
+            className="text-center mb-16"
+          >
+            <div className="text-blue-400 text-sm font-medium tracking-widest uppercase mb-4">
+              {t('FAQ_BADGE')}
+            </div>
+            <h2 className="text-3xl lg:text-5xl font-light text-white mb-4">
+              {t('FAQ_TITLE')} <span className="italic">{t('FAQ_TITLE_ITALIC')}</span>
+            </h2>
+            <p className="text-gray-400 text-lg">
+              {t('FAQ_SUBTITLE')}
+            </p>
+          </motion.div>
+
+          <div className="divide-y divide-white/10" style={{ outline: 'none' }}>
+            {[
+              {
+                question: t('FAQ_1_QUESTION'),
+                answer: t('FAQ_1_ANSWER')
+              },
+              {
+                question: t('FAQ_2_QUESTION'),
+                answer: t('FAQ_2_ANSWER')
+              },
+              {
+                question: t('FAQ_3_QUESTION'),
+                answer: t('FAQ_3_ANSWER')
+              },
+              {
+                question: t('FAQ_4_QUESTION'),
+                answer: t('FAQ_4_ANSWER')
+              },
+              {
+                question: t('FAQ_5_QUESTION'),
+                answer: t('FAQ_5_ANSWER')
+              },
+              {
+                question: t('FAQ_6_QUESTION'),
+                answer: t('FAQ_6_ANSWER')
+              }
+            ].map((item, index) => {
+              const isOpen = openFAQs.has(index)
+              
+              return (
+                <motion.div
+                  key={index}
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ 
+                    delay: index * 0.05,
+                    duration: 0.4
+                  }}
+                  className=""
+                >
+                  <button
+                    onClick={() => {
+                      setOpenFAQs(isOpen ? new Set() : new Set([index]))
+                    }}
+                    className="w-full py-6 text-left flex items-center justify-between focus:outline-none"
+                  >
+                    <h3 className="text-base font-medium text-white pr-4">
+                      {item.question}
+                    </h3>
+                    <motion.div
+                      animate={{ 
+                        rotate: isOpen ? 90 : 0
+                      }}
+                      transition={{ duration: 0.15, ease: "easeInOut" }}
+                      className="flex-shrink-0"
+                    >
+                      <ChevronRight className="w-5 h-5 text-gray-400" />
+                    </motion.div>
+                  </button>
+                  
+                  <AnimatePresence mode="wait">
+                    {isOpen && (
+                      <motion.div
+                        initial={{ height: 0, opacity: 0 }}
+                        animate={{ height: "auto", opacity: 1 }}
+                        exit={{ height: 0, opacity: 0 }}
+                        transition={{ 
+                          duration: 0.2,
+                          ease: "easeInOut"
+                        }}
+                        className="overflow-hidden"
+                      >
+                        <motion.div
+                          initial={{ opacity: 0 }}
+                          animate={{ opacity: 1 }}
+                          exit={{ opacity: 0 }}
+                          transition={{ duration: 0.15 }}
+                          className="pb-6 pr-8"
+                        >
+                          <p className="text-sm text-gray-400 leading-relaxed">{item.answer}</p>
+                        </motion.div>
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
+                </motion.div>
+              )
+            })}
+          </div>
+        </div>
+        
+        {/* Oddělovač #15: FAQ → CTA */}
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
+          <div className="h-px bg-gradient-to-r from-transparent via-white/20 to-transparent"></div>
+          <div className="absolute left-4 -top-2 text-xs text-white/50 bg-black/50 px-2 py-1 rounded">
+            #15: FAQ → CTA
+          </div>
+        </div>
+      </section>
+
+             {/* CTA sekce - Gradient to Black */}
+       <section className="py-32 relative bg-gradient-to-b from-black via-black/50 to-transparent" data-section="cta">
+         <div className="max-w-4xl mx-auto text-center px-4 sm:px-6 lg:px-8">
+           <motion.div
+             initial={{ opacity: 0, y: 30 }}
+             whileInView={{ opacity: 1, y: 0 }}
+             viewport={{ once: true }}
+             transition={{ duration: 0.8, ease: "easeOut" }}
+           >
+             <motion.h2 
+               initial={{ opacity: 0 }}
+               whileInView={{ opacity: 1 }}
+               viewport={{ once: true }}
+               transition={{ delay: 0.2, duration: 0.8 }}
+               className="text-5xl lg:text-6xl font-light text-white mb-6 leading-tight"
+             >
+               {t('CTA_FINAL_TITLE_1')}
+               <br />
+               <span className="font-medium text-white">{t('CTA_FINAL_TITLE_2')}</span>
+             </motion.h2>
+             
+             <motion.p 
+               initial={{ opacity: 0 }}
+               whileInView={{ opacity: 1 }}
+               viewport={{ once: true }}
+               transition={{ delay: 0.4, duration: 0.8 }}
+               className="text-xl text-gray-400 mb-12 max-w-2xl mx-auto leading-relaxed"
+             >
+               {t('CTA_FINAL_SUBTITLE')}
+             </motion.p>
+             
+             <motion.div
+               initial={{ opacity: 0, y: 20 }}
+               whileInView={{ opacity: 1, y: 0 }}
+               viewport={{ once: true }}
+               transition={{ delay: 0.6, duration: 0.8 }}
+             >
+               <motion.button 
+                 whileHover={{ 
+                   scale: 1.05,
+                   boxShadow: "0 20px 40px rgba(59, 130, 246, 0.3)"
+                 }}
+                 whileTap={{ scale: 0.95 }}
+                 transition={{ duration: 0.2 }}
+                 className="bg-blue-600 hover:bg-blue-700 text-white px-12 py-4 rounded-2xl text-lg font-medium shadow-xl transition-all duration-300"
+               >
+                 {t('CTA_FINAL_BUTTON')}
+               </motion.button>
+             </motion.div>
+           </motion.div>
+         </div>
+       </section>
     </Layout>
   )
 } 
