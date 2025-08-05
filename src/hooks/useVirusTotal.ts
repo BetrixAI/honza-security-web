@@ -19,7 +19,7 @@ import {
   Timestamp,
   writeBatch
 } from 'firebase/firestore'
-import { db } from '@/lib/firebaseClient'
+import { getFirebaseFirestore } from '@/lib/firebaseClient'
 import type { VTScanResult, VTScanStatus } from '@/types'
 
 const MAX_FILE_SIZE = 32 * 1024 * 1024 // 32MB
@@ -48,7 +48,7 @@ export function useVirusTotal() {
     }
 
     const scansQuery = query(
-      collection(db, 'virusTotalScans'),
+      collection(getFirebaseFirestore(), 'virusTotalScans'),
       where('uid', '==', user.uid),
       orderBy('createdAt', 'desc'),
       limit(50)
@@ -124,7 +124,7 @@ export function useVirusTotal() {
       for (const scanFile of newScanFiles) {
         try {
           // Create Firestore entry first
-          const scanDoc = await addDoc(collection(db, 'virusTotalScans'), {
+          const scanDoc = await addDoc(collection(getFirebaseFirestore(), 'virusTotalScans'), {
             uid: user.uid,
             fileName: scanFile.file.name,
             status: 'queued' as VTScanStatus,
@@ -228,7 +228,7 @@ export function useVTStats() {
     }
 
     const scansQuery = query(
-      collection(db, 'virusTotalScans'),
+      collection(getFirebaseFirestore(), 'virusTotalScans'),
       where('uid', '==', user.uid)
     )
 

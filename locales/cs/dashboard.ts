@@ -170,7 +170,6 @@ export const dashboardCs = {
   TOTAL_SCANS: "Celkem skenů",
   MALWARE_DETECTED: "Malware detekován", 
   CLEAN_FILES: "Čisté soubory",
-  THIS_MONTH: "Tento měsíc",
   RECENT_SCANS: "Nedávné skeny",
   NO_SCANS_YET: "Zatím žádné skeny...",
   COMING_SOON: "Již brzy",

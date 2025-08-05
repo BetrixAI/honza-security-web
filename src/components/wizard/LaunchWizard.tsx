@@ -59,13 +59,14 @@ export default function LaunchWizard({ isOpen, onClose, onComplete }: LaunchWiza
             <h3 className="text-lg font-semibold text-txt-primary">Vyberte typ kampaně</h3>
             <div className="grid grid-cols-2 gap-4">
               {['Falešné faktury', 'IT podpora', 'COVID-19', 'Obecný phishing'].map(type => (
-                <Card key={type} className={`cursor-pointer transition-all ${
-                  wizardData.campaignType === type ? 'ring-2 ring-brand-mid' : ''
-                }`}>
-                  <CardContent 
-                    className="p-4 text-center"
-                    onClick={() => setWizardData({...wizardData, campaignType: type})}
-                  >
+                <Card 
+                  key={type} 
+                  className={`cursor-pointer transition-all ${
+                    wizardData.campaignType === type ? 'ring-2 ring-brand-mid' : ''
+                  }`}
+                  onClick={() => setWizardData({...wizardData, campaignType: type})}
+                >
+                  <CardContent className="p-4 text-center">
                     <Mail className="w-6 h-6 mx-auto mb-2 text-brand-mid" />
                     <div className="text-sm font-medium text-txt-primary">{type}</div>
                   </CardContent>

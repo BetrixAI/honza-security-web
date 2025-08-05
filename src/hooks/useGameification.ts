@@ -19,6 +19,39 @@ import { doc, onSnapshot, collection, query, where, orderBy, limit } from 'fireb
 import { getFirebaseFirestore } from '@/lib/firebaseClient'
 import type { User, Badge, LessonProgress } from '@/types'
 
+// Hook pro získání custom User dat z Firestore
+export function useUserData() {
+  const { user: authUser } = useAuth()
+  const [userData, setUserData] = useState<User | null>(null)
+  const [isLoading, setIsLoading] = useState(true)
+
+  useEffect(() => {
+    if (!authUser?.uid) {
+      setIsLoading(false)
+      return
+    }
+
+    const db = getFirebaseFirestore()
+    const userDocRef = doc(db, 'users', authUser.uid)
+    
+    const unsubscribe = onSnapshot(userDocRef, (doc) => {
+      if (doc.exists()) {
+        setUserData(doc.data() as User)
+      } else {
+        setUserData(null)
+      }
+      setIsLoading(false)
+    }, (error) => {
+      console.error('Error fetching user data:', error)
+      setIsLoading(false)
+    })
+
+    return unsubscribe
+  }, [authUser?.uid])
+
+  return { userData, isLoading }
+}
+
 interface UserStats {
   completedLessons: number
   longestStreak: number
@@ -177,13 +210,13 @@ export function useUserStats() {
 
 // Hook for company leaderboard
 export function useLeaderboard(limit_param = 10) {
-  const { user } = useAuth()
+  const { userData } = useUserData()
   const [leaderboard, setLeaderboard] = useState<LeaderboardEntry[]>([])
   const [userRank, setUserRank] = useState<number | null>(null)
   const [isLoading, setIsLoading] = useState(true)
   
   useEffect(() => {
-    if (!user?.companyId) {
+    if (!userData?.companyId) {
       setIsLoading(false)
       return
     }
@@ -191,7 +224,7 @@ export function useLeaderboard(limit_param = 10) {
     const db = getFirebaseFirestore()
     const leaderboardQuery = query(
       collection(db, 'users'),
-      where('companyId', '==', user.companyId),
+      where('companyId', '==', userData.companyId),
       orderBy('xp', 'desc'),
       limit(limit_param)
     )
@@ -210,7 +243,7 @@ export function useLeaderboard(limit_param = 10) {
           photoURL: userData.photoURL
         })
         
-        if (userData.uid === user.uid) {
+        if (userData.uid === userData.uid) {
           setUserRank(rank)
         }
         rank++
@@ -224,7 +257,7 @@ export function useLeaderboard(limit_param = 10) {
     })
 
     return unsubscribe
-  }, [user?.companyId, user?.uid, limit_param])
+  }, [userData?.companyId, userData?.uid, limit_param])
 
   return {
     leaderboard,
@@ -235,13 +268,13 @@ export function useLeaderboard(limit_param = 10) {
 
 // Hook for checking new badge eligibility
 export function useBadgeChecker() {
-  const { user } = useAuth()
+  const { userData } = useUserData()
   const { userXP, userLevel } = useUserXP()
   const { stats } = useUserStats()
   const { earnedBadgeIds } = useUserBadges()
   
   const checkNewBadges = () => {
-    if (!user) return []
+    if (!userData) return []
     
     const newBadges: string[] = []
     
@@ -251,7 +284,7 @@ export function useBadgeChecker() {
       
       // Check eligibility
       const isEligible = checkBadgeEligibility(
-        { ...user, level: userLevel, xp: userXP },
+        { ...userData, level: userLevel, xp: userXP },
         badgeData.criteria,
         stats
       )

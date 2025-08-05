@@ -3,7 +3,7 @@ import { cn } from '@/lib/utils'
 
 interface CardProps {
   children: React.ReactNode
-  variant?: 'primary' | 'subtle' | 'danger' | 'success' | 'warning' | 'alt'
+  variant?: 'primary' | 'subtle' | 'danger' | 'success' | 'warning' | 'alt' | 'default'
   className?: string
   onClick?: () => void
   hover?: boolean

@@ -170,7 +170,6 @@ export const dashboardEn = {
   TOTAL_SCANS: "Total Scans",
   MALWARE_DETECTED: "Malware Detected", 
   CLEAN_FILES: "Clean Files",
-  THIS_MONTH: "This Month",
   RECENT_SCANS: "Recent Scans",
   NO_SCANS_YET: "No scans yet...",
   COMING_SOON: "Coming Soon",

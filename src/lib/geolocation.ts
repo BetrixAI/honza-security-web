@@ -1,10 +1,10 @@
 /**
- * IP Geolocation service using ipgeolocation.io API
- * Automatic language detection and user location tracking
- * Owner: Shared - i18n and analytics system
+ * IP Geolocation utilities for automatic locale detection
+ * Owner: Shared - i18n system
  */
 
-import type { IPGeolocationResponse, UserGeolocation, SupportedLocale } from '@/types';
+import type { IPGeolocationResponse, UserGeolocation } from '@/types';
+import type { SupportedLocale } from '../../locales';
 import { serverTimestamp } from 'firebase/firestore';
 
 const IPGEOLOCATION_API_KEY = process.env.NEXT_PUBLIC_IPGEOLOCATION_API_KEY;

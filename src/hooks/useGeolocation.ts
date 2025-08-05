@@ -16,7 +16,8 @@ import {
   mapToUserGeolocation,
   isGeolocationFresh 
 } from '@/lib/geolocation'
-import type { IPGeolocationResponse, UserGeolocation, SupportedLocale } from '@/types'
+import type { IPGeolocationResponse, UserGeolocation } from '@/types'
+import type { SupportedLocale } from '../../locales'
 
 interface UseGeolocationReturn {
   geolocation: UserGeolocation | null

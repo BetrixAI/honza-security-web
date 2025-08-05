@@ -21,7 +21,7 @@ export async function middleware(request: NextRequest) {
                request.headers.get('cf-ipcity')
   const region = request.headers.get('x-vercel-ip-country-region') ||
                  request.headers.get('cf-region')
-  const ip = request.ip || request.headers.get('x-forwarded-for') || 
+  const ip = request.headers.get('x-forwarded-for') || 
              request.headers.get('x-real-ip')
   
   // Czech and Slovak users -> Czech locale

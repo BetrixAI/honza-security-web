@@ -41,7 +41,8 @@ export function AnimatedCard({
         scale: 1.01,
         boxShadow: '0 0 25px rgba(66, 165, 255, 0.4), 0 0 50px rgba(66, 165, 255, 0.1)',
         transition: { duration: 0.4, ease: 'easeOut' }
-      }
+      },
+      whileTap: { scale: 0.99 }
     },
     tilt: {
       whileHover: { 
@@ -51,7 +52,8 @@ export function AnimatedCard({
         y: -6,
         boxShadow: '0 12px 30px rgba(0, 0, 0, 0.2)',
         transition: { duration: 0.4, ease: 'easeOut' }
-      }
+      },
+      whileTap: { scale: 0.99 }
     },
     lift: {
       whileHover: { 
@@ -59,15 +61,16 @@ export function AnimatedCard({
         scale: 1.01,
         boxShadow: '0 20px 40px rgba(0, 0, 0, 0.25)',
         transition: { duration: 0.3, ease: 'easeOut' }
-      }
+      },
+      whileTap: { scale: 0.99 }
     }
   }
 
   return (
     <motion.div
       className={className}
-      variants={variants}
-      {...variants[variant]}
+      whileHover={variants[variant].whileHover}
+      whileTap={'whileTap' in variants[variant] ? variants[variant].whileTap : undefined}
     >
       {children}
     </motion.div>
@@ -101,19 +104,22 @@ export function AnimatedButton({
       whileHover: { 
         scale: [1, 1.05, 1],
         transition: { duration: 0.6, repeat: Infinity }
-      }
+      },
+      whileTap: { scale: 0.95 }
     },
     glow: {
       whileHover: { 
         boxShadow: '0 0 25px rgba(66, 165, 255, 0.6)',
         transition: { duration: 0.3 }
-      }
+      },
+      whileTap: { scale: 0.95 }
     },
     ripple: {
       whileTap: { 
         scale: 0.95,
         transition: { duration: 0.1 }
-      }
+      },
+      whileHover: { scale: 1.02 }
     }
   }
 
@@ -121,8 +127,8 @@ export function AnimatedButton({
     <motion.button
       className={`${className} ${disabled ? 'cursor-not-allowed opacity-50' : 'cursor-pointer'}`}
       onClick={disabled ? undefined : onClick}
-      variants={variants}
-      {...variants[variant]}
+      whileHover={variants[variant].whileHover}
+      whileTap={variants[variant].whileTap}
       disabled={disabled}
     >
       {children}

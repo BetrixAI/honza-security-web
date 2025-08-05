@@ -6,7 +6,7 @@
 'use client'
 
 import { useEffect, useState } from 'react'
-import { useAuth } from '@/contexts/AuthContext'
+import { useUserData } from './useGameification'
 import type { SupportedLocale } from '../../locales'
 
 // Import all translations
@@ -28,16 +28,15 @@ const translations = {
 } as const
 
 type TranslationNamespace = keyof typeof translations['cs']
-type TranslationKey<T extends TranslationNamespace> = keyof typeof translations['cs'][T]
 
 export function useTranslation(namespace: TranslationNamespace = 'common') {
-  const { user } = useAuth()
+  const { userData } = useUserData()
   const [locale, setLocale] = useState<SupportedLocale>('cs')
   
   useEffect(() => {
     // Get locale from user preference, URL, or browser
-    if (user?.locale) {
-      setLocale(user.locale)
+    if (userData?.locale) {
+      setLocale(userData.locale)
     } else if (typeof window !== 'undefined') {
       // Check URL path for locale - support both /en and /cz prefixes
       const pathname = window.location.pathname
@@ -53,7 +52,7 @@ export function useTranslation(namespace: TranslationNamespace = 'common') {
         setLocale(shouldUseCzech ? 'cs' : 'en')
       }
     }
-  }, [user?.locale])
+  }, [userData?.locale])
 
   // Listen for URL changes to update locale
   useEffect(() => {
@@ -79,16 +78,16 @@ export function useTranslation(namespace: TranslationNamespace = 'common') {
     }
   }, [])
   
-  const t = <T extends TranslationNamespace>(
-    key: TranslationKey<T>,
-    targetNamespace?: T
+  const t = (
+    key: string,
+    targetNamespace?: TranslationNamespace
   ): string => {
     const ns = targetNamespace || namespace
-    const translation = translations[locale]?.[ns]?.[key as string]
+    const translation = (translations[locale]?.[ns] as any)?.[key]
     
     if (!translation) {
-      console.warn(`Translation missing: ${locale}.${ns}.${key as string}`)
-      return key as string
+      console.warn(`Translation missing: ${locale}.${ns}.${key}`)
+      return key
     }
     
     return translation as string
