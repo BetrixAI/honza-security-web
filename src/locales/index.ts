@@ -5,17 +5,17 @@
 
 // Czech translations
 import { cs } from './cs/common';
-import { dashboardCs } from './cs/dashboard';
-import { landingCs } from './cs/landing';
-import { authCs } from './cs/auth';
-import { lessonsCs } from './cs/lessons';
+import { dashboard as dashboardCs } from './cs/dashboard';
+import { landing as landingCs } from './cs/landing';
+import { auth as authCs } from './cs/auth';
+import { lessons as lessonsCs } from './cs/lessons';
 
 // English translations  
 import { en } from './en/common';
-import { dashboardEn } from './en/dashboard';
-import { landingEn } from './en/landing';
-import { authEn } from './en/auth';
-import { lessonsEn } from './en/lessons';
+import { dashboard as dashboardEn } from './en/dashboard';
+import { landing as landingEn } from './en/landing';
+import { auth as authEn } from './en/auth';
+import { lessons as lessonsEn } from './en/lessons';
 
 // Combined translation objects
 export const translations = {

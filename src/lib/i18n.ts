@@ -14,7 +14,7 @@ import {
   addLocaleToPath,
   defaultLocale,
   czechLocale
-} from '../../locales';
+} from '@/locales';
 
 // Client-side locale detection
 export function detectClientLocale(): SupportedLocale {

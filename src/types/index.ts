@@ -4,7 +4,7 @@
  */
 
 import { Timestamp } from 'firebase/firestore';
-import type { SupportedLocale } from '../../locales';
+import type { SupportedLocale } from '@/locales';
 
 // ===== AUTHENTICATION & USERS =====
 

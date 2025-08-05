@@ -1,7 +1,7 @@
 'use client'
 
 import React, { createContext, useContext, useEffect, useState, ReactNode } from 'react'
-import { User, onAuthStateChanged, signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut as firebaseSignOut, IdTokenResult } from 'firebase/auth'
+import { User, onAuthStateChanged, signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut as firebaseSignOut, sendPasswordResetEmail, IdTokenResult } from 'firebase/auth'
 import { getFirebaseAuth } from '@/lib/firebaseClient'
 
 // Typy pro AuthContext
@@ -11,6 +11,7 @@ interface AuthContextType {
   signIn: (email: string, password: string) => Promise<void>
   signUp: (email: string, password: string) => Promise<void>
   signOut: () => Promise<void>
+  resetPassword: (email: string) => Promise<void>
   getIdToken: () => Promise<string | null>
   isAuthenticated: boolean
 }
@@ -101,6 +102,17 @@ export function AuthProvider({ children }: AuthProviderProps) {
     }
   }
 
+  // Reset hesla
+  const resetPassword = async (email: string): Promise<void> => {
+    try {
+      const auth = getFirebaseAuth()
+      await sendPasswordResetEmail(auth, email)
+    } catch (error) {
+      console.error('Reset password error:', error)
+      throw error
+    }
+  }
+
   // Získání ID tokenu
   const getIdToken = async (): Promise<string | null> => {
     if (!user) return null
@@ -122,6 +134,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
     signIn,
     signUp,
     signOut,
+    resetPassword,
     getIdToken,
     isAuthenticated
   }

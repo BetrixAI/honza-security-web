@@ -3,7 +3,7 @@
  * Owner: El.Daniel - auth pages & flows
  */
 
-export const authEn = {
+export const auth = {
   // Login Page
   LOGIN_TITLE: "Sign in to SecureHero",
   LOGIN_SUBTITLE: "Sign in to your account",
@@ -58,9 +58,43 @@ export const authEn = {
   ERROR_NETWORK: "Network error, please try again",
   ERROR_ACCOUNT_DISABLED: "Account has been disabled",
   
+  // Additional Firebase Errors
+  ERROR_PASSWORD_MISMATCH: "Passwords don't match",
+  ERROR_PASSWORD_TOO_SHORT: "Password must be at least 6 characters",
+  ERROR_UNEXPECTED: "An unexpected error occurred",
+  ERROR_USER_NOT_FOUND: "User not found",
+  ERROR_WRONG_PASSWORD: "Incorrect password",
+  ERROR_EMAIL_IN_USE: "Email is already in use",
+  ERROR_TOO_MANY_REQUESTS: "Too many attempts. Please try again later.",
+  
   // Success Messages
   SUCCESS_REGISTERED: "Registration successful",
   SUCCESS_LOGGED_IN: "Sign in successful",
   SUCCESS_PASSWORD_RESET: "Password reset successful",
   SUCCESS_EMAIL_VERIFIED: "Email verified successfully",
+  SUCCESS_RESET_EMAIL_SENT: "Password reset email has been sent. Please check your inbox.",
+  
+  // Missing auth keys
+  AUTH_CHECKING: "Checking authentication...",
+  AUTH_WELCOME_BACK: "Welcome back",
+  AUTH_START_JOURNEY: "Start your journey",
+  AUTH_RESET_PASSWORD: "Reset password",
+  AUTH_LOGIN_SUBTITLE: "Sign in to your SecurityShield account",
+  AUTH_REGISTER_SUBTITLE: "Create an account and start protecting your company",
+  AUTH_RESET_SUBTITLE: "Enter your email to reset password",
+  AUTH_LOGIN_TAB: "Sign In",
+  AUTH_REGISTER_TAB: "Register",
+  AUTH_FIRST_NAME: "First Name",
+  AUTH_LAST_NAME: "Last Name",
+  AUTH_COMPANY: "Company",
+  AUTH_EMAIL: "Email",
+  AUTH_PASSWORD: "Password",
+  AUTH_CONFIRM_PASSWORD: "Confirm Password",
+  AUTH_REMEMBER_ME: "Remember me",
+  AUTH_FORGOT_PASSWORD: "Forgot password?",
+  AUTH_LOGIN_BUTTON: "Sign In",
+  AUTH_REGISTER_BUTTON: "Create Account",
+  AUTH_RESET_BUTTON: "Send Reset Link",
+  AUTH_BACK_TO_LOGIN: "Back to Sign In",
+  AUTH_BACK_BUTTON: "Back",
 };

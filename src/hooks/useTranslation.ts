@@ -6,77 +6,61 @@
 'use client'
 
 import { useEffect, useState } from 'react'
-import { useUserData } from './useGameification'
-import type { SupportedLocale } from '../../locales'
+import { useAuth } from '@/contexts/AuthContext'
+import type { SupportedLocale } from '@/locales'
 
 // Import all translations
-import { dashboardCs } from '../../locales/cs/dashboard'
-import { dashboardEn } from '../../locales/en/dashboard'
-import { cs as commonCs } from '../../locales/cs/common'
-import { en as commonEn } from '../../locales/en/common'
+import { dashboard as dashboardCs } from '@/locales/cs/dashboard'
+import { dashboard as dashboardEn } from '@/locales/en/dashboard'
+import { cs as commonCs } from '@/locales/cs/common'
+import { en as commonEn } from '@/locales/en/common'
+import { landing as landingCs } from '@/locales/cs/landing'
+import { landing as landingEn } from '@/locales/en/landing'
+import { auth as authCs } from '@/locales/cs/auth'
+import { auth as authEn } from '@/locales/en/auth'
+import { lessons as lessonsCs } from '@/locales/cs/lessons'
+import { lessons as lessonsEn } from '@/locales/en/lessons'
 
 // Translation collections
 const translations = {
   cs: {
     common: commonCs,
     dashboard: dashboardCs,
+    landing: landingCs,
+    auth: authCs,
+    lessons: lessonsCs,
   },
   en: {
     common: commonEn,
     dashboard: dashboardEn,
+    landing: landingEn,
+    auth: authEn,
+    lessons: lessonsEn,
   }
 } as const
 
 type TranslationNamespace = keyof typeof translations['cs']
 
 export function useTranslation(namespace: TranslationNamespace = 'common') {
-  const { userData } = useUserData()
+  const { user } = useAuth()
   const [locale, setLocale] = useState<SupportedLocale>('cs')
   
   useEffect(() => {
-    // Get locale from user preference, URL, or browser
-    if (userData?.locale) {
-      setLocale(userData.locale)
-    } else if (typeof window !== 'undefined') {
-      // Check URL path for locale - support both /en and /cz prefixes
-      const pathname = window.location.pathname
-      if (pathname.startsWith('/en')) {
-        setLocale('en')
-      } else if (pathname.startsWith('/cz')) {
-        setLocale('cs')
+    // Get locale from URL, localStorage, or default to Czech
+    if (typeof window !== 'undefined') {
+      // Check URL path for locale
+      const pathLocale = window.location.pathname.startsWith('/en') ? 'en' : 'cs'
+      
+      // Check localStorage for saved preference
+      const savedLocale = localStorage.getItem('language') as SupportedLocale
+      
+      if (savedLocale && ['cs', 'en'].includes(savedLocale)) {
+        setLocale(savedLocale)
       } else {
-        // Default fallback based on geolocation headers or browser
-        const detectedCountry = document.querySelector('meta[name="detected-country"]')?.getAttribute('content')
-        const czechCountries = ['CZ', 'SK']
-        const shouldUseCzech = czechCountries.includes(detectedCountry || '')
-        setLocale(shouldUseCzech ? 'cs' : 'en')
+        setLocale(pathLocale)
       }
     }
-  }, [userData?.locale])
-
-  // Listen for URL changes to update locale
-  useEffect(() => {
-    if (typeof window === 'undefined') return
-
-    const handleUrlChange = () => {
-      const pathname = window.location.pathname
-      if (pathname.startsWith('/en')) {
-        setLocale('en')
-      } else if (pathname.startsWith('/cz')) {
-        setLocale('cs')
-      }
-    }
-
-    // Listen for popstate (back/forward navigation)
-    window.addEventListener('popstate', handleUrlChange)
-    
-    // Also check on mount
-    handleUrlChange()
-
-    return () => {
-      window.removeEventListener('popstate', handleUrlChange)
-    }
-  }, [])
+  }, [user])
   
   const t = (
     key: string,
@@ -94,28 +78,12 @@ export function useTranslation(namespace: TranslationNamespace = 'common') {
   }
   
   const changeLocale = (newLocale: SupportedLocale) => {
-    if (typeof window === 'undefined') return
-
     setLocale(newLocale)
-    
-    // Update URL path
-    const currentPath = window.location.pathname
-    const newPath = newLocale === 'cs' ? 
-      currentPath.replace(/^\/en/, '/cz') :
-      currentPath.replace(/^\/cz/, '/en')
-    
-    if (newPath !== currentPath) {
-      // Use router.push for client-side navigation
-      window.history.pushState({}, '', newPath)
-      
-      // Trigger a custom event to notify other components
-      window.dispatchEvent(new CustomEvent('localeChanged', { 
-        detail: { locale: newLocale } 
-      }))
+    // Save to localStorage
+    if (typeof window !== 'undefined') {
+      localStorage.setItem('language', newLocale)
     }
-    
     // TODO: Update user preference in Firestore
-    console.log(`🌍 Locale changed to: ${newLocale}`)
   }
   
   return {

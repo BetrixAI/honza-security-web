@@ -3,7 +3,7 @@
  * Owner: El.Daniel - auth pages & flows
  */
 
-export const authCs = {
+export const auth = {
   // Login Page
   LOGIN_TITLE: "Přihlášení do SecureHero",
   LOGIN_SUBTITLE: "Přihlaste se ke svému účtu",
@@ -58,9 +58,43 @@ export const authCs = {
   ERROR_NETWORK: "Chyba sítě, zkuste to znovu",
   ERROR_ACCOUNT_DISABLED: "Účet byl deaktivován",
   
+  // Additional Firebase Errors
+  ERROR_PASSWORD_MISMATCH: "Hesla se neshodují",
+  ERROR_PASSWORD_TOO_SHORT: "Heslo musí mít alespoň 6 znaků",
+  ERROR_UNEXPECTED: "Nastala neočekávaná chyba",
+  ERROR_USER_NOT_FOUND: "Uživatel nenalezen",
+  ERROR_WRONG_PASSWORD: "Nesprávné heslo",
+  ERROR_EMAIL_IN_USE: "Email je již používán",
+  ERROR_TOO_MANY_REQUESTS: "Příliš mnoho pokusů. Zkuste to později.",
+  
   // Success Messages
   SUCCESS_REGISTERED: "Registrace byla úspěšná",
   SUCCESS_LOGGED_IN: "Přihlášení bylo úspěšné",
   SUCCESS_PASSWORD_RESET: "Heslo bylo obnoveno",
   SUCCESS_EMAIL_VERIFIED: "E-mail byl ověřen",
+  SUCCESS_RESET_EMAIL_SENT: "Email pro obnovení hesla byl odeslán. Zkontrolujte svou poštovní schránku.",
+  
+  // Missing auth keys
+  AUTH_CHECKING: "Kontroluji autentifikaci...",
+  AUTH_WELCOME_BACK: "Vítejte zpět",
+  AUTH_START_JOURNEY: "Začněte svou cestu",
+  AUTH_RESET_PASSWORD: "Obnovit heslo",
+  AUTH_LOGIN_SUBTITLE: "Přihlaste se do svého SecurityShield účtu",
+  AUTH_REGISTER_SUBTITLE: "Vytvořte si účet a začněte chránit svou společnost",
+  AUTH_RESET_SUBTITLE: "Zadejte svůj email pro obnovení hesla",
+  AUTH_LOGIN_TAB: "Přihlášení",
+  AUTH_REGISTER_TAB: "Registrace",
+  AUTH_FIRST_NAME: "Jméno",
+  AUTH_LAST_NAME: "Příjmení",
+  AUTH_COMPANY: "Společnost",
+  AUTH_EMAIL: "Email",
+  AUTH_PASSWORD: "Heslo",
+  AUTH_CONFIRM_PASSWORD: "Potvrdit heslo",
+  AUTH_REMEMBER_ME: "Zapamatovat si mě",
+  AUTH_FORGOT_PASSWORD: "Zapomenuté heslo?",
+  AUTH_LOGIN_BUTTON: "Přihlásit se",
+  AUTH_REGISTER_BUTTON: "Vytvořit účet",
+  AUTH_RESET_BUTTON: "Odeslat odkaz pro obnovení",
+  AUTH_BACK_TO_LOGIN: "Zpět na přihlášení",
+  AUTH_BACK_BUTTON: "Zpět",
 };

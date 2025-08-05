@@ -4,7 +4,7 @@
  */
 
 import type { IPGeolocationResponse, UserGeolocation } from '@/types';
-import type { SupportedLocale } from '../../locales';
+import type { SupportedLocale } from '@/locales';
 import { serverTimestamp } from 'firebase/firestore';
 
 const IPGEOLOCATION_API_KEY = process.env.NEXT_PUBLIC_IPGEOLOCATION_API_KEY;

@@ -4,7 +4,7 @@ import React, { useState, useEffect } from 'react'
 import Layout from '@/components/Layout'
 import { motion, AnimatePresence, useScroll, useTransform } from 'framer-motion'
 import GalaxyBackground from '@/components/GalaxyBackground'
-import SplineModel from '@/components/SplineModel'
+
 import { useLanguage } from '@/contexts/LanguageContext'
 import { 
   Shield, 
@@ -28,7 +28,12 @@ import {
   GitBranch,
   Terminal,
   Code,
-  Sparkles
+  Sparkles,
+  Mail,
+  Phone,
+  CheckCircle,
+  Calendar,
+  X
 } from 'lucide-react'
 
 
@@ -144,8 +149,8 @@ function TestimonialsCarousel() {
             transition={{ duration: 0.8, ease: "easeInOut" }}
             className={`absolute w-80 h-48 rounded-xl p-4 ${
               isCenter 
-                ? 'border border-white/20 bg-white/10 backdrop-blur-md shadow-2xl shadow-black/30 z-50' 
-                : 'border border-white/5 bg-white/5 backdrop-blur-sm z-10'
+                ? 'border border-blue-400/30 bg-blue-900/10 backdrop-blur-xl shadow-2xl shadow-blue-500/20 z-50' 
+                : 'border border-blue-500/15 bg-blue-950/5 backdrop-blur-lg z-10'
             }`}
             style={{ 
               transformStyle: "preserve-3d",
@@ -158,29 +163,29 @@ function TestimonialsCarousel() {
                 alt={testimonial.name}
                 className={`rounded-full border-2 flex-shrink-0 ${
                   isCenter 
-                    ? 'w-10 h-10 border-white/30' 
-                    : 'w-8 h-8 border-white/20'
+                    ? 'w-10 h-10 border-blue-400/40' 
+                    : 'w-8 h-8 border-blue-500/30'
                 }`}
               />
               <div className="flex-1 min-w-0">
                 <h4 className={`font-medium leading-tight ${
                   isCenter 
-                    ? 'text-white text-sm' 
-                    : 'text-white/80 text-xs'
+                    ? 'text-blue-100 text-sm' 
+                    : 'text-blue-200/80 text-xs'
                 }`}>
                   {testimonial.name}
                 </h4>
                 <p className={`leading-tight ${
                   isCenter 
-                    ? 'text-gray-300 text-xs' 
-                    : 'text-gray-400 text-xs'
+                    ? 'text-blue-200 text-xs' 
+                    : 'text-blue-300/60 text-xs'
                 }`}>
                   {testimonial.role}
                 </p>
                 <p className={`font-medium leading-tight ${
                   isCenter 
-                    ? 'text-gray-300 text-xs' 
-                    : 'text-gray-400/70 text-xs'
+                    ? 'text-blue-200 text-xs' 
+                    : 'text-blue-300/50 text-xs'
                 }`}>
                   {testimonial.company}
                 </p>
@@ -189,8 +194,8 @@ function TestimonialsCarousel() {
             
             <p className={`italic leading-snug ${
               isCenter 
-                ? 'text-white text-sm font-light' 
-                : 'text-gray-300/60 text-xs'
+                ? 'text-blue-100 text-sm font-light' 
+                : 'text-blue-200/40 text-xs'
             }`}>
               "{testimonial.text}"
             </p>
@@ -202,7 +207,7 @@ function TestimonialsCarousel() {
 }
 
 // Typewriter Text komponenta
-function TypewriterText() {
+function TypewriterText({ setIsContactModalOpen }: { setIsContactModalOpen: (value: boolean) => void }) {
   const [currentTextIndex, setCurrentTextIndex] = useState(0)
   const [currentText, setCurrentText] = useState('')
   const [isTyping, setIsTyping] = useState(true)
@@ -222,7 +227,7 @@ function TypewriterText() {
       // Píše znak po znaku
       const timeout = setTimeout(() => {
         setCurrentText(currentFullText.substring(0, currentText.length + 1))
-      }, 100)
+      }, 70)
       return () => clearTimeout(timeout)
     } 
     
@@ -231,7 +236,7 @@ function TypewriterText() {
       const timeout = setTimeout(() => {
         setIsTyping(false)
         setIsVisible(false)
-      }, 3000)
+      }, 800)
       return () => clearTimeout(timeout)
     }
 
@@ -241,8 +246,8 @@ function TypewriterText() {
         setCurrentText('')
         setCurrentTextIndex((prev) => (prev + 1) % texts.length)
         setIsTyping(true)
-        setIsVisible(true)
-      }, 1000)
+    setIsVisible(true)
+      }, 500)
       return () => clearTimeout(timeout)
     }
   }, [currentText, isTyping, isVisible, currentTextIndex, texts])
@@ -290,19 +295,59 @@ function TypewriterText() {
         </p>
       </motion.div>
 
-      {/* CTA tlačítka */}
+      {/* CTA tlačítko */}
       <motion.div
         initial={{ opacity: 0, y: 30 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 1.2, duration: 0.8 }}
-        className="flex flex-col sm:flex-row gap-6 justify-center mb-16 sm:mb-24 md:mb-32 lg:mb-40 xl:mb-48"
+        className="flex justify-center mb-16 sm:mb-24 md:mb-32 lg:mb-40 xl:mb-48"
       >
-        <button className="backdrop-blur-md bg-blue-500/20 hover:bg-blue-500/30 border border-blue-400/30 hover:border-blue-400/50 text-white px-10 py-4 rounded-xl font-semibold text-lg transition-all duration-300 hover:shadow-lg hover:shadow-blue-500/25">
-          {t('HERO_CTA_PRIMARY')} →
-        </button>
-        <button className="backdrop-blur-md bg-white/5 hover:bg-white/10 border border-white/20 hover:border-white/30 text-white px-10 py-4 rounded-xl font-semibold text-lg transition-all duration-300">
-          {t('HERO_CTA_SECONDARY')}
-        </button>
+        <motion.button
+          onClick={() => setIsContactModalOpen(true)}
+          whileHover={{ scale: 1.05 }}
+          whileTap={{ scale: 0.98 }}
+          className="group relative overflow-hidden text-white px-12 py-4 rounded-xl font-semibold text-lg shadow-lg shadow-blue-500/20 hover:shadow-blue-500/30 transition-all duration-300 focus:outline-none"
+        >
+          {/* Animovaný gradient pozadí s dýchací animací */}
+          <motion.div
+            className="absolute inset-0 bg-gradient-to-r from-blue-600 via-blue-800 via-slate-900 to-blue-700"
+            animate={{
+              backgroundPosition: ['0% 50%', '100% 50%', '0% 50%'],
+              scale: [1, 1.05, 1],
+              opacity: [0.9, 1, 0.9],
+            }}
+            transition={{
+              backgroundPosition: {
+                duration: 4,
+                repeat: Infinity,
+                ease: "easeInOut"
+              },
+              scale: {
+                duration: 2.5,
+                repeat: Infinity,
+                ease: "easeInOut"
+              },
+              opacity: {
+                duration: 2,
+                repeat: Infinity,
+                ease: "easeInOut"
+              }
+            }}
+            style={{
+              backgroundSize: '300% 100%',
+            }}
+          />
+          
+          {/* Overlay pro interakci */}
+          <div className="absolute inset-0 bg-gradient-to-r from-blue-400/30 to-slate-700/30 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+          
+          {/* Obsah tlačítka */}
+          <div className="relative z-10 flex items-center gap-3">
+            <Sparkles className="w-5 h-5" />
+            {t('HERO_CTA_PRIMARY')}
+            <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform duration-300" />
+          </div>
+        </motion.button>
       </motion.div>
     </div>
   )
@@ -312,9 +357,16 @@ export default function HomePage() {
   const [isVisible, setIsVisible] = useState(false)
   const [visibleSections, setVisibleSections] = useState<Set<string>>(new Set())
   const [openFAQs, setOpenFAQs] = useState<Set<number>>(new Set())
+  const [isContactModalOpen, setIsContactModalOpen] = useState(false)
+  const [currentStep, setCurrentStep] = useState(1)
   const { scrollYProgress } = useScroll()
   const backgroundY = useTransform(scrollYProgress, [0, 1], ['0%', '100%'])
   const { t } = useLanguage()
+
+  const closeModal = () => {
+    setIsContactModalOpen(false)
+    setCurrentStep(1)
+  }
 
   useEffect(() => {
     setIsVisible(true)
@@ -414,7 +466,7 @@ export default function HomePage() {
                  {/* Ještě větší černý pruh dole pro úplné zadelání mezery */}
          <div className="absolute -bottom-16 left-0 right-0 pointer-events-none z-50">
            <div className="w-full h-32 bg-black"></div>
-         </div>
+              </div>
         <div className="absolute bottom-0 left-0 right-0 pointer-events-none z-50 overflow-hidden">
           <svg 
             className="w-[120%] h-[600px] -ml-[10%]" 
@@ -450,22 +502,16 @@ export default function HomePage() {
               <path id="Rounded-Corner-copy-2" fill="#000000" fillRule="evenodd" stroke="none" filter="url(#filter3)" d="M 1800.222046 2474.016846 C 4125.210938 2474.016846 6010 589.227661 6010 -1735.760986 L 5194.151367 -1735.760986 C 5194.151367 138.648682 3674.631836 1658.168457 1800.222046 1658.168457 Z"/>
             </g>
           </svg>
-        </div>
+              </div>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-20 text-center flex-1 flex items-center justify-center">
           {/* Animovaný typewriter text */}
           <div className="w-full">
-            <TypewriterText />
-          </div>
-        </div>
+            <TypewriterText setIsContactModalOpen={setIsContactModalOpen} />
+                  </div>
+              </div>
       </section>
 
-      {/* Oddělovač #1: Hero → Features */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
-        <div className="h-px bg-gradient-to-r from-transparent via-white/20 to-transparent"></div>
-        <div className="absolute left-4 -top-2 text-xs text-white/50 bg-black/50 px-2 py-1 rounded">
-          #1: Hero → Features
-        </div>
-      </div>
+
 
       {/* Features sekce - Glass cards */}
       <section className="py-20 relative bg-black" data-section="features">
@@ -473,8 +519,8 @@ export default function HomePage() {
         {/* Ještě větší černý pruh nahoru pro úplné zadelání mezery */}
         <div className="absolute -top-16 left-0 right-0 pointer-events-none z-10">
           <div className="w-full h-32 bg-black"></div>
-        </div>
-        
+            </div>
+
         {/* SVG otočené o 180° dolů od #2 - posazené na malém černém kousku */}
         <div className="absolute top-4 left-0 right-0 pointer-events-none z-10 overflow-hidden">
           <svg 
@@ -511,27 +557,14 @@ export default function HomePage() {
               <path id="Rounded-Corner-copy-2-features" fill="#000000" fillRule="evenodd" stroke="none" filter="url(#filter3-features)" d="M 1800.222046 2474.016846 C 4125.210938 2474.016846 6010 589.227661 6010 -1735.760986 L 5194.151367 -1735.760986 C 5194.151367 138.648682 3674.631836 1658.168457 1800.222046 1658.168457 Z"/>
             </g>
           </svg>
-        </div>
+                </div>
         
-        {/* Oddělovač #2: Features Start */}
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-16 relative z-20">
-          <div className="h-px bg-gradient-to-r from-transparent via-white/10 to-transparent"></div>
-          <div className="absolute left-4 -top-2 text-xs text-white/40 bg-black/50 px-2 py-1 rounded">
-            #2: Features Start
-          </div>
-        </div>
+
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-20">
           <motion.div 
-            initial={{ opacity: 0, y: 30 }}
+            initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, margin: "-50px" }}
-            transition={{ 
-              duration: 0.8, 
-              ease: [0.25, 0.46, 0.45, 0.94],
-              type: "spring",
-              stiffness: 80,
-              damping: 20
-            }}
+            viewport={{ once: true }}
             className="text-center mb-16"
           >
             <div className="text-blue-400 text-sm font-medium tracking-widest uppercase mb-4">
@@ -549,22 +582,11 @@ export default function HomePage() {
             {features.map((feature, index) => (
               <motion.div
                 key={index} 
-                initial={{ opacity: 0, y: 40, scale: 0.95 }}
-                whileInView={{ opacity: 1, y: 0, scale: 1 }}
-                viewport={{ once: true, margin: "-30px" }}
-                transition={{ 
-                  delay: index * 0.15,
-                  duration: 0.7,
-                  ease: [0.215, 0.61, 0.355, 1],
-                  type: "spring",
-                  stiffness: 100,
-                  damping: 25
-                }}
-                whileHover={{ 
-                  y: -12, 
-                  scale: 1.04,
-                  transition: { duration: 0.3, ease: "easeOut" }
-                }}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: index * 0.1 }}
+                whileHover={{ y: -8, scale: 1.03 }}
                 className="glass-card-large p-8 group relative overflow-hidden"
               >
                 {/* Moderní glow efekt */}
@@ -595,137 +617,122 @@ export default function HomePage() {
             ))}
           </div>
         </div>
-        
-        {/* Oddělovač #3: Features → Gallery */}
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
-          <div className="h-px bg-gradient-to-r from-transparent via-white/20 to-transparent"></div>
-          <div className="absolute left-4 -top-2 text-xs text-white/50 bg-black/50 px-2 py-1 rounded">
-            #3: Features → Gallery
-          </div>
-        </div>
+
       </section>
 
       {/* Scroll-based Gallery - Optimized */}
       <section className="py-20 relative overflow-hidden bg-black z-30" data-section="gallery">
-        {/* Oddělovač #4: Gallery Start */}
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-16 relative">
-          <div className="h-px bg-gradient-to-r from-transparent via-white/10 to-transparent"></div>
-          <div className="absolute left-4 -top-2 text-xs text-white/40 bg-black/50 px-2 py-1 rounded">
-            #4: Gallery Start
-          </div>
-        </div>
+
         <motion.div 
-          initial={{ opacity: 0, y: 25 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: "-40px" }}
-          transition={{ 
-            duration: 0.9, 
-            ease: [0.25, 0.46, 0.45, 0.94],
-            type: "spring",
-            stiffness: 70,
-            damping: 25
-          }}
+          initial={{ opacity: 0 }}
+          whileInView={{ opacity: 1 }}
+          viewport={{ once: true }}
           className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-12"
         >
           <div className="text-center">
-            <h2 className="text-3xl lg:text-5xl font-light text-white mb-4">
-              {t('GALLERY_TITLE')} <span className="italic">{t('GALLERY_TITLE_ITALIC')}</span>
+            <div className="text-blue-400 text-sm font-medium tracking-widest uppercase mb-4">
+              {t('GALLERY_BADGE')}
+                  </div>
+            <h2 className="text-3xl lg:text-5xl font-light text-blue-50 mb-4">
+              {t('GALLERY_TITLE')} <span className="italic text-blue-200">{t('GALLERY_TITLE_ITALIC')}</span>
             </h2>
-            <p className="text-gray-500 text-lg">
+            <p className="text-blue-300/70 text-lg">
               {t('GALLERY_SUBTITLE')}
-            </p>
-          </div>
+                    </p>
+                  </div>
         </motion.div>
 
         {/* Široká galerie s scroll-based animací */}
-        <div className="relative w-full overflow-hidden">
-          {/* Elegantní fade-out efekty do ztracena */}
-          <div className="absolute left-0 top-0 bottom-0 w-40 bg-gradient-to-r from-black via-black/95 via-black/80 via-black/50 to-transparent z-10 pointer-events-none"></div>
-          <div className="absolute right-0 top-0 bottom-0 w-40 bg-gradient-to-l from-black via-black/95 via-black/80 via-black/50 to-transparent z-10 pointer-events-none"></div>
+        <div className="relative w-full overflow-hidden" style={{ contain: 'layout style paint', transform: 'translateZ(0)' }}>
+          {/* Elegantní fade-out efekty do ztracena - rozšířené pro lepší mizení */}
+          <div className="absolute left-0 top-0 bottom-0 w-96 bg-gradient-to-r from-black via-black/99 via-black/95 via-black/85 via-black/65 via-black/35 to-transparent z-10 pointer-events-none"></div>
+          <div className="absolute right-0 top-0 bottom-0 w-96 bg-gradient-to-l from-black via-black/99 via-black/95 via-black/85 via-black/65 via-black/35 to-transparent z-10 pointer-events-none"></div>
           
           {/* První řada - pohyb podle scrollu zleva doprava */}
           <motion.div 
             style={{ 
-              x: useTransform(scrollYProgress, [0.2, 0.8], [-800, 200]),
-              willChange: 'transform'
+              x: useTransform(scrollYProgress, [0.1, 0.6], [-600, 150], { clamp: false }),
+              willChange: 'transform',
+              transform: 'translateZ(0)',
+              backfaceVisibility: 'hidden'
             }}
             className="flex space-x-8 mb-5"
+            transition={{ type: "tween", ease: "linear" }}
           >
             {[...galleryImages.row1, ...galleryImages.row1, ...galleryImages.row1].map((img, index) => (
-              <div
-                key={index} 
-                className="relative flex-shrink-0 w-80 h-48 rounded-2xl overflow-hidden backdrop-blur-sm bg-white/8 border border-white/15 shadow-2xl shadow-black/50 transition-transform duration-300 hover:scale-105 hover:-translate-y-1"
+                        <div 
+                          key={index} 
+                className="relative flex-shrink-0 w-80 h-48 rounded-2xl overflow-hidden backdrop-blur-lg bg-black/30 shadow-xl shadow-black/60 transition-all duration-500 hover:scale-[1.02] hover:-translate-y-1 hover:shadow-black/80"
                 style={{
                   transform: 'translateZ(0)',
                   backfaceVisibility: 'hidden'
                 }}
               >
-                <img 
-                  src={img} 
-                  alt={`Gallery ${index}`}
-                  className="w-full h-full object-cover"
-                  loading="lazy"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent opacity-0 hover:opacity-100 transition-opacity duration-300" />
-                <div className="absolute inset-0 ring-1 ring-white/25 rounded-2xl pointer-events-none" />
-              </div>
+                {/* Obrázek wrapper s overflow-hidden pro zoom efekt */}
+                <div className="w-full h-full overflow-hidden">
+                  <img 
+                    src={img} 
+                    alt={`Gallery ${index}`}
+                    className="w-full h-full object-cover filter brightness-75 contrast-110 saturate-90 transition-all duration-700 hover:brightness-100 hover:contrast-100 hover:saturate-100 hover:scale-110"
+                    loading="lazy"
+                  />
+                        </div>
+                {/* Tmavší overlay pro lepší integraci */}
+                <div className="absolute inset-0 bg-black/30 mix-blend-multiply transition-opacity duration-500 hover:opacity-0" />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent opacity-60 hover:opacity-0 transition-opacity duration-500" />
+                    </div>
             ))}
           </motion.div>
 
           {/* Druhá řada - pohyb podle scrollu zprava doleva */}
           <motion.div 
             style={{ 
-              x: useTransform(scrollYProgress, [0.2, 0.8], [200, -800]),
-              willChange: 'transform'
+              x: useTransform(scrollYProgress, [0.1, 0.6], [-300, -900], { clamp: false }),
+              willChange: 'transform',
+              transform: 'translateZ(0)',
+              backfaceVisibility: 'hidden'
             }}
             className="flex space-x-8"
+            transition={{ type: "tween", ease: "linear" }}
           >
             {[...galleryImages.row2, ...galleryImages.row2, ...galleryImages.row2].map((img, index) => (
-              <div
-                key={index}
-                className="relative flex-shrink-0 w-80 h-48 rounded-2xl overflow-hidden backdrop-blur-sm bg-blue-500/10 border border-blue-400/25 shadow-2xl shadow-blue-500/25 transition-transform duration-300 hover:scale-105 hover:-translate-y-1"
+                        <div 
+                          key={index} 
+                className="relative flex-shrink-0 w-80 h-48 rounded-2xl overflow-hidden backdrop-blur-lg bg-black/35 shadow-xl shadow-black/70 transition-all duration-500 hover:scale-[1.02] hover:-translate-y-1 hover:shadow-black/90"
                 style={{
                   transform: 'translateZ(0)',
                   backfaceVisibility: 'hidden'
                 }}
               >
-                <img 
-                  src={img} 
-                  alt={`Galerie ${index}`}
-                  className="w-full h-full object-cover"
-                  loading="lazy"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-blue-900/50 via-transparent to-transparent opacity-0 hover:opacity-100 transition-opacity duration-300" />
-                <div className="absolute inset-0 ring-1 ring-blue-400/35 rounded-2xl pointer-events-none" />
-              </div>
-            ))}
+                {/* Obrázek wrapper s overflow-hidden pro zoom efekt */}
+                <div className="w-full h-full overflow-hidden">
+                  <img 
+                    src={img} 
+                    alt={`Galerie ${index}`}
+                    className="w-full h-full object-cover filter brightness-70 contrast-115 saturate-85 transition-all duration-700 hover:brightness-100 hover:contrast-100 hover:saturate-100 hover:scale-110"
+                    loading="lazy"
+                  />
+                          </div>
+                {/* Tmavší overlay pro lepší integraci */}
+                <div className="absolute inset-0 bg-black/35 mix-blend-multiply transition-opacity duration-500 hover:opacity-0" />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/25 to-transparent opacity-65 hover:opacity-0 transition-opacity duration-500" />
+                        </div>
+                      ))}
           </motion.div>
-        </div>
-        
-        {/* Oddělovač #5: Gallery → Process */}
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
-          <div className="h-px bg-gradient-to-r from-transparent via-white/20 to-transparent"></div>
-          <div className="absolute left-4 -top-2 text-xs text-white/50 bg-black/50 px-2 py-1 rounded">
-            #5: Gallery → Process
-          </div>
-        </div>
+                  </div>
+
+
       </section>
 
       {/* Process sekce v elegantním okně */}
       <section className="py-20 relative overflow-hidden" data-section="process">
-        {/* Oddělovač #6: Process Start */}
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-16 relative">
-          <div className="h-px bg-gradient-to-r from-transparent via-white/10 to-transparent"></div>
-          <div className="absolute left-4 -top-2 text-xs text-white/40 bg-black/50 px-2 py-1 rounded">
-            #6: Process Start
-          </div>
-        </div>
+
         
         {/* Okno s černým shadow efektem kolem */}
         <div className="max-w-6xl mx-auto px-8">
           <div
             className="relative border border-white/20 rounded-3xl p-12 z-10"
-            style={{
+              style={{
               boxShadow: `
                 0 0 0 500px black,
                 0 20px 40px -10px rgba(0, 0, 0, 0.8)
@@ -733,21 +740,14 @@ export default function HomePage() {
             }}
           >
             <motion.div 
-              initial={{ opacity: 0, y: 35 }}
+              initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, margin: "-60px" }}
-              transition={{ 
-                duration: 1.0, 
-                ease: [0.215, 0.61, 0.355, 1],
-                type: "spring",
-                stiffness: 60,
-                damping: 25
-              }}
+              viewport={{ once: true }}
               className="text-center mb-16"
             >
               <div className="text-blue-400 text-sm font-medium tracking-widest uppercase mb-4">
                 {t('PROCESS_BADGE')}
-              </div>
+                </div>
               <h2 className="text-3xl lg:text-5xl font-light text-white mb-4">
                 {t('PROCESS_TITLE')} <span className="italic">{t('PROCESS_TITLE_ITALIC')}</span>
               </h2>
@@ -782,22 +782,10 @@ export default function HomePage() {
             ].map((item, index) => (
               <motion.div
                 key={index}
-                initial={{ opacity: 0, y: 45, scale: 0.9 }}
-                whileInView={{ opacity: 1, y: 0, scale: 1 }}
-                viewport={{ once: true, margin: "-40px" }}
-                transition={{ 
-                  delay: index * 0.25,
-                  duration: 0.8,
-                  ease: [0.25, 0.46, 0.45, 0.94],
-                  type: "spring",
-                  stiffness: 80,
-                  damping: 20
-                }}
-                whileHover={{
-                  y: -8,
-                  scale: 1.02,
-                  transition: { duration: 0.3, ease: "easeOut" }
-                }}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: index * 0.2 }}
                 className="relative group"
               >
                 <div className="glass-card p-8 h-full">
@@ -820,7 +808,7 @@ export default function HomePage() {
                       }}
                       className="text-blue-400/50 font-mono text-sm mb-4"
                     >
-                      Framer Motion
+                      {t('PROCESS_ANIMATION_TEXT')}
                     </motion.div>
                     
                     {/* Animated code/process visualization */}
@@ -898,34 +886,22 @@ export default function HomePage() {
                 </div>
               </motion.div>
             ))}
-            </div>
-          </div>
-        </div>
-        
-        {/* Oddělovač #7: Process → Stats */}
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
-          <div className="h-px bg-gradient-to-r from-transparent via-white/20 to-transparent"></div>
-          <div className="absolute left-4 -top-2 text-xs text-white/50 bg-black/50 px-2 py-1 rounded">
-            #7: Process → Stats
-          </div>
-        </div>
+                </div>
+                    </div>
+                  </div>
+                  
+
       </section>
 
       {/* Stats sekce v elegantním okně */}
       <section className="py-20 relative overflow-hidden z-20" data-section="stats">
-        {/* Oddělovač #8: Stats Start */}
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-16 relative">
-          <div className="h-px bg-gradient-to-r from-transparent via-white/10 to-transparent"></div>
-          <div className="absolute left-4 -top-2 text-xs text-white/40 bg-black/50 px-2 py-1 rounded">
-            #8: Stats Start
-          </div>
-        </div>
+
         
         {/* Černý kontejner pouze kolem okna */}
         <div className="max-w-6xl mx-auto px-8">
           <div
             className="relative border border-white/20 rounded-3xl p-12 z-10"
-            style={{
+              style={{
               boxShadow: `
                 0 0 0 500px black,
                 0 20px 40px -10px rgba(0, 0, 0, 0.8)
@@ -941,22 +917,10 @@ export default function HomePage() {
             ].map((stat, index) => (
               <motion.div
                 key={index}
-                initial={{ opacity: 0, scale: 0.8, y: 30 }}
-                whileInView={{ opacity: 1, scale: 1, y: 0 }}
-                viewport={{ once: true, margin: "-30px" }}
-                transition={{ 
-                  delay: index * 0.2,
-                  duration: 0.6,
-                  ease: [0.215, 0.61, 0.355, 1],
-                  type: "spring",
-                  stiffness: 120,
-                  damping: 25
-                }}
-                whileHover={{
-                  scale: 1.05,
-                  y: -5,
-                  transition: { duration: 0.2, ease: "easeOut" }
-                }}
+                initial={{ opacity: 0, scale: 0.5 }}
+                whileInView={{ opacity: 1, scale: 1 }}
+                viewport={{ once: true }}
+                transition={{ delay: index * 0.1 }}
                 className="border border-white/20 rounded-2xl p-6 text-center group hover:border-white/30 transition-all duration-300"
               >
                 <motion.div
@@ -972,87 +936,55 @@ export default function HomePage() {
                 <div className="text-sm text-gray-500">{stat.label}</div>
               </motion.div>
             ))}
-            </div>
-          </div>
-        </div>
+                </div>
+                </div>
+                </div>
         
-        {/* Oddělovač #9: Stats → Success Stories */}
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
-          <div className="h-px bg-gradient-to-r from-transparent via-white/20 to-transparent"></div>
-          <div className="absolute left-4 -top-2 text-xs text-white/50 bg-black/50 px-2 py-1 rounded">
-            #9: Stats → Success Stories
-          </div>
-        </div>
+
       </section>
 
       {/* Success Stories sekce - 3D Carousel */}
       <section className="py-20 relative bg-black overflow-hidden" data-section="testimonials">
-        {/* Oddělovač #10: Success Stories Start */}
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-16 relative">
-          <div className="h-px bg-gradient-to-r from-transparent via-white/10 to-transparent"></div>
-          <div className="absolute left-4 -top-2 text-xs text-white/40 bg-black/50 px-2 py-1 rounded">
-            #10: Success Stories Start
-          </div>
-        </div>
+
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <motion.div 
-            initial={{ opacity: 0, y: 30 }}
+            initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, margin: "-50px" }}
-            transition={{ 
-              duration: 0.9, 
-              ease: [0.25, 0.46, 0.45, 0.94],
-              type: "spring",
-              stiffness: 75,
-              damping: 22
-            }}
+            viewport={{ once: true }}
             className="text-center mb-16"
           >
             <div className="text-blue-400 text-sm font-medium tracking-widest uppercase mb-4">
               {t('SUCCESS_STORIES_BADGE')}
-            </div>
-            <h2 className="text-3xl lg:text-5xl font-light text-white mb-4">
-              {t('SUCCESS_STORIES_TITLE')} <span className="italic">{t('SUCCESS_STORIES_TITLE_ITALIC')}</span>
+                  </div>
+            <h2 className="text-3xl lg:text-5xl font-light text-blue-50 mb-4">
+              {t('SUCCESS_STORIES_TITLE')} <span className="italic text-blue-200">{t('SUCCESS_STORIES_TITLE_ITALIC')}</span>
             </h2>
-            <p className="text-gray-500 text-lg">
+            <p className="text-blue-300/70 text-lg">
               {t('SUCCESS_STORIES_SUBTITLE')}
             </p>
           </motion.div>
 
           <TestimonialsCarousel />
-        </div>
+                </div>
       </section>
 
       {/* Integrations sekce */}
       <section className="py-20 relative overflow-hidden bg-black" data-section="integrations">
-        {/* Oddělovač #11: Success Stories → Integrations */}
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-16 relative">
-          <div className="h-px bg-gradient-to-r from-transparent via-white/20 to-transparent"></div>
-          <div className="absolute left-4 -top-2 text-xs text-white/50 bg-black/50 px-2 py-1 rounded">
-            #11: Success Stories → Integrations
-          </div>
-        </div>
+
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <motion.div 
-            initial={{ opacity: 0, y: 35 }}
+            initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, margin: "-60px" }}
-            transition={{ 
-              duration: 0.8, 
-              ease: [0.215, 0.61, 0.355, 1],
-              type: "spring",
-              stiffness: 70,
-              damping: 25
-            }}
+            viewport={{ once: true }}
             className="text-center mb-16"
           >
             <div className="text-blue-400 text-sm font-medium tracking-widest uppercase mb-4">
               {t('INTEGRATIONS_BADGE')}
-            </div>
-            <h2 className="text-3xl lg:text-5xl font-light text-white mb-4">
-              {t('INTEGRATIONS_TITLE')} <span className="italic">{t('INTEGRATIONS_TITLE_ITALIC')}</span>
+                </div>
+            <h2 className="text-3xl lg:text-5xl font-light text-blue-50 mb-4">
+              {t('INTEGRATIONS_TITLE')} <span className="italic text-blue-200">{t('INTEGRATIONS_TITLE_ITALIC')}</span>
             </h2>
-            <p className="text-gray-400 text-lg">
+            <p className="text-blue-300/70 text-lg">
               {t('INTEGRATIONS_SUBTITLE')}
             </p>
           </motion.div>
@@ -1069,7 +1001,7 @@ export default function HomePage() {
             ].map((particle, i) => (
               <motion.div
                 key={i}
-                className="absolute w-2 h-2 bg-blue-400/20 rounded-full"
+                className="absolute w-2 h-2 bg-blue-400/30 rounded-full"
                 initial={{ 
                   x: particle.x1 + "%",
                   y: particle.y1 + "%"
@@ -1088,8 +1020,8 @@ export default function HomePage() {
                 }}
               />
             ))}
-          </div>
-
+                  </div>
+                  
           {/* 3D Grid integrations */}
           <div className="relative max-w-5xl mx-auto">
             <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
@@ -1107,83 +1039,58 @@ export default function HomePage() {
                 return (
                   <motion.div
                     key={index}
-                    initial={{ opacity: 0, y: 40, scale: 0.9 }}
-                    whileInView={{ opacity: 1, y: 0, scale: 1 }}
-                    viewport={{ once: true, margin: "-40px" }}
+                    initial={{ opacity: 0, y: 50, rotateX: -30 }}
+                    whileInView={{ opacity: 1, y: 0, rotateX: 0 }}
+                    viewport={{ once: true }}
                     transition={{ 
-                      delay: index * 0.15,
-                      duration: 0.7,
-                      ease: [0.25, 0.46, 0.45, 0.94],
-                      type: "spring",
-                      stiffness: 90,
-                      damping: 25
+                      delay: index * 0.1,
+                      duration: 0.6,
+                      ease: "easeOut"
                     }}
                     whileHover={{ 
-                      y: -12,
-                      scale: 1.05,
-                      transition: { duration: 0.3, ease: "easeOut" }
+                      y: -10,
+                      rotateY: 15,
+                      scale: 1.05
                     }}
                     className="group cursor-pointer"
                     style={{ transformStyle: "preserve-3d" }}
                   >
-                    <div className="relative bg-white/5 backdrop-blur-sm border border-white/10 rounded-2xl p-6 h-32 flex flex-col items-center justify-center transition-all duration-300 group-hover:bg-white/10 group-hover:border-white/20">
-                      {/* Gradient background on hover */}
-                      <div className={`absolute inset-0 bg-gradient-to-br ${integration.color} opacity-0 group-hover:opacity-10 rounded-2xl transition-opacity duration-300`} />
-                      
+                    <div className="relative bg-blue-950/10 backdrop-blur-xl border border-blue-500/20 rounded-2xl p-6 h-32 flex flex-col items-center justify-center transition-all duration-300 group-hover:bg-blue-900/15 group-hover:border-blue-400/40 group-hover:shadow-lg group-hover:shadow-blue-500/20 group-hover:backdrop-blur-2xl">
                       {/* Icon */}
                       <motion.div
                         whileHover={{ rotate: 360, scale: 1.2 }}
                         transition={{ duration: 0.6 }}
                         className="mb-3"
                       >
-                        <IconComponent className="w-8 h-8 text-white group-hover:text-white transition-colors duration-300" />
+                        <IconComponent className="w-8 h-8 text-blue-200 group-hover:text-blue-100 transition-colors duration-300" />
                       </motion.div>
                       
                       {/* Name */}
-                      <p className="text-gray-400 group-hover:text-white text-sm font-medium text-center transition-colors duration-300">
+                      <p className="text-blue-300/80 group-hover:text-blue-100 text-sm font-medium text-center transition-colors duration-300">
                         {integration.name}
                       </p>
 
                       {/* Hover glow effect */}
-                      <div className="absolute inset-0 rounded-2xl bg-white/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-                    </div>
+                      <div className="absolute inset-0 rounded-2xl bg-blue-400/5 backdrop-blur-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                </div>
                   </motion.div>
                 );
               })}
-            </div>
-          </div>
-        </div>
+                </div>
+                </div>
+                </div>
         
-        {/* Oddělovač #13: Integrations → FAQ */}
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
-          <div className="h-px bg-gradient-to-r from-transparent via-white/20 to-transparent"></div>
-          <div className="absolute left-4 -top-2 text-xs text-white/50 bg-black/50 px-2 py-1 rounded">
-            #13: Integrations → FAQ
-          </div>
-        </div>
+
       </section>
 
       {/* FAQ sekce */}
       <section className="py-20 relative bg-black" data-section="faq">
-        {/* Oddělovač #13: Integrations → FAQ */}
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-16 relative">
-          <div className="h-px bg-gradient-to-r from-transparent via-white/20 to-transparent"></div>
-          <div className="absolute left-4 -top-2 text-xs text-white/50 bg-black/50 px-2 py-1 rounded">
-            #13: Integrations → FAQ
-          </div>
-        </div>
+
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 focus:outline-none">
           <motion.div 
-            initial={{ opacity: 0, y: 30 }}
+            initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, margin: "-50px" }}
-            transition={{ 
-              duration: 0.8, 
-              ease: [0.25, 0.46, 0.45, 0.94],
-              type: "spring",
-              stiffness: 80,
-              damping: 20
-            }}
+            viewport={{ once: true }}
             className="text-center mb-16"
           >
             <div className="text-blue-400 text-sm font-medium tracking-widest uppercase mb-4">
@@ -1225,10 +1132,10 @@ export default function HomePage() {
               }
             ].map((item, index) => {
               const isOpen = openFAQs.has(index)
-              
-              return (
+                  
+                  return (
                 <motion.div
-                  key={index}
+                      key={index}
                   initial={{ opacity: 0, y: 20 }}
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true }}
@@ -1288,13 +1195,7 @@ export default function HomePage() {
           </div>
         </div>
         
-        {/* Oddělovač #15: FAQ → CTA */}
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
-          <div className="h-px bg-gradient-to-r from-transparent via-white/20 to-transparent"></div>
-          <div className="absolute left-4 -top-2 text-xs text-white/50 bg-black/50 px-2 py-1 rounded">
-            #15: FAQ → CTA
-          </div>
-        </div>
+
       </section>
 
              {/* CTA sekce - Gradient to Black */}
@@ -1335,20 +1236,307 @@ export default function HomePage() {
                transition={{ delay: 0.6, duration: 0.8 }}
              >
                <motion.button 
-                 whileHover={{ 
-                   scale: 1.05,
-                   boxShadow: "0 20px 40px rgba(59, 130, 246, 0.3)"
-                 }}
-                 whileTap={{ scale: 0.95 }}
-                 transition={{ duration: 0.2 }}
-                 className="bg-blue-600 hover:bg-blue-700 text-white px-12 py-4 rounded-2xl text-lg font-medium shadow-xl transition-all duration-300"
+                 onClick={() => setIsContactModalOpen(true)}
+                 whileHover={{ scale: 1.05 }}
+                 whileTap={{ scale: 0.98 }}
+                 className="group relative overflow-hidden text-white px-12 py-4 rounded-xl font-semibold text-lg shadow-lg shadow-blue-500/20 hover:shadow-blue-500/30 transition-all duration-300 focus:outline-none"
                >
-                 {t('CTA_FINAL_BUTTON')}
+                 {/* Animovaný gradient pozadí s dýchací animací */}
+                 <motion.div
+                   className="absolute inset-0 bg-gradient-to-r from-blue-600 via-blue-800 via-slate-900 to-blue-700"
+                   animate={{
+                     backgroundPosition: ['0% 50%', '100% 50%', '0% 50%'],
+                     scale: [1, 1.05, 1],
+                     opacity: [0.9, 1, 0.9],
+                   }}
+                   transition={{
+                     backgroundPosition: {
+                       duration: 4,
+                       repeat: Infinity,
+                       ease: "easeInOut"
+                     },
+                     scale: {
+                       duration: 2.5,
+                       repeat: Infinity,
+                       ease: "easeInOut"
+                     },
+                     opacity: {
+                       duration: 2,
+                       repeat: Infinity,
+                       ease: "easeInOut"
+                     }
+                   }}
+                   style={{
+                     backgroundSize: '300% 100%',
+                   }}
+                 />
+                 
+                 {/* Overlay pro interakci */}
+                 <div className="absolute inset-0 bg-gradient-to-r from-blue-400/30 to-slate-700/30 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                 
+                 {/* Obsah tlačítka */}
+                 <div className="relative z-10 flex items-center gap-3">
+                   {t('CTA_FINAL_BUTTON')}
+                          </div>
                </motion.button>
              </motion.div>
            </motion.div>
-         </div>
+                        </div>
        </section>
+
+      {/* Contact Modal - 2 Steps */}
+      <AnimatePresence>
+        {isContactModalOpen && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 bg-black/60 backdrop-blur-sm z-[9999] flex items-center justify-center p-4"
+            onClick={closeModal}
+          >
+            <motion.div
+              initial={{ opacity: 0, scale: 0.9, y: 20 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.9, y: 20 }}
+              transition={{ type: "spring", damping: 25, stiffness: 300 }}
+              className="bg-black/90 backdrop-blur-xl border border-blue-500/20 rounded-2xl p-6 max-w-3xl w-full shadow-2xl shadow-blue-500/20 h-[580px] flex flex-col"
+              onClick={(e) => e.stopPropagation()}
+            >
+              {/* Header */}
+              <div className="flex items-center justify-between mb-4">
+                <h2 className="text-xl font-light text-white flex items-center gap-2">
+                  <Mail className="w-5 h-5 text-blue-400" />
+                  {t('CONTACT_TITLE')}
+                </h2>
+                <button
+                  onClick={closeModal}
+                  className="p-2 text-gray-400 hover:text-white transition-colors rounded-lg hover:bg-white/10"
+                >
+                  <X className="w-4 h-4" />
+                </button>
+                        </div>
+                        
+              {/* Progress Steps */}
+              <div className="flex items-center justify-center mb-4">
+                <div className="bg-blue-500/10 rounded-lg p-2 border border-blue-500/20">
+                  <div className="flex items-center justify-center space-x-6">
+                    {[
+                      { number: 1, title: t('CONTACT_HOW_IT_WORKS'), icon: Users },
+                      { number: 2, title: t('CONTACT_FORM_TITLE'), icon: Mail }
+                    ].map((step, index) => (
+                      <div key={step.number} className="flex items-center">
+                        <div className="flex flex-col items-center text-center">
+                          <div className={`w-7 h-7 rounded-lg flex items-center justify-center font-medium transition-all duration-300 ${
+                            currentStep >= step.number 
+                              ? 'bg-blue-500 text-white shadow-lg shadow-blue-500/30' 
+                              : 'bg-white/10 text-gray-400'
+                          }`}>
+                            <step.icon className="w-3.5 h-3.5" />
+                          </div>
+                          <span className={`mt-1 text-xs font-medium transition-colors ${
+                            currentStep >= step.number ? 'text-blue-300' : 'text-gray-500'
+                          }`}>
+                            {step.title}
+                          </span>
+                        </div>
+                        {index < 1 && (
+                          <div className={`w-12 h-0.5 mx-4 transition-all duration-300 ${
+                            currentStep > step.number ? 'bg-blue-500' : 'bg-white/10'
+                          }`} />
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                          </div>
+                    </div>
+                    
+              {/* Step Content */}
+              <div className="flex-1 flex flex-col">
+                <AnimatePresence mode="wait">
+                  {currentStep === 1 && (
+                    <motion.div
+                      key="step1"
+                      initial={{ opacity: 0, x: 20 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      exit={{ opacity: 0, x: -20 }}
+                      className="text-center flex-1 flex flex-col justify-center"
+                    >
+                      <div className="mb-4">
+                        <h3 className="text-2xl font-light text-white mb-3">{t('CONTACT_COOPERATION_TITLE')}</h3>
+                        <p className="text-gray-300 leading-relaxed max-w-xl mx-auto mb-4">
+                          {t('CONTACT_COOPERATION_SUBTITLE')}
+                        </p>
+                            </div>
+                      
+                      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+                        <div className="bg-gradient-to-br from-blue-500/10 to-blue-600/5 rounded-lg p-4 border border-blue-500/20">
+                          <div className="bg-blue-500 w-10 h-10 rounded-lg flex items-center justify-center mx-auto mb-3 shadow-lg shadow-blue-500/30">
+                            <Phone className="w-5 h-5 text-white" />
+                    </div>
+                          <h4 className="text-white font-semibold mb-2">{t('CONTACT_INITIAL_CONTACT')}</h4>
+                          <p className="text-gray-300 text-xs leading-relaxed">
+                            {t('CONTACT_INITIAL_DESC')}
+                          </p>
+                  </div>
+                        <div className="bg-gradient-to-br from-blue-500/10 to-blue-600/5 rounded-lg p-4 border border-blue-500/20">
+                          <div className="bg-blue-500 w-10 h-10 rounded-lg flex items-center justify-center mx-auto mb-3 shadow-lg shadow-blue-500/30">
+                            <Calendar className="w-5 h-5 text-white" />
+                </div>
+                          <h4 className="text-white font-semibold mb-2">{t('CONTACT_CONSULTATION')}</h4>
+                          <p className="text-gray-300 text-xs leading-relaxed">
+                            {t('CONTACT_CONSULTATION_DESC')}
+                          </p>
+                      </div>
+                        <div className="bg-gradient-to-br from-blue-500/10 to-blue-600/5 rounded-lg p-4 border border-blue-500/20">
+                          <div className="bg-blue-500 w-10 h-10 rounded-lg flex items-center justify-center mx-auto mb-3 shadow-lg shadow-blue-500/30">
+                            <CheckCircle className="w-5 h-5 text-white" />
+                    </div>
+                          <h4 className="text-white font-semibold mb-2">{t('CONTACT_IMPLEMENTATION')}</h4>
+                          <p className="text-gray-300 text-xs leading-relaxed">
+                            {t('CONTACT_IMPLEMENTATION_DESC')}
+                          </p>
+              </div>
+            </div>
+            
+                      <div className="bg-gradient-to-r from-blue-500/10 to-blue-600/5 border border-blue-500/15 rounded-lg p-3">
+                        <div className="flex items-center justify-center gap-2 text-blue-300">
+                          <ArrowRight className="w-4 h-4" />
+                          <span className="text-xs font-medium">
+                            {t('CONTACT_CONTINUE_TEXT')}
+                          </span>
+            </div>
+          </div>
+                    </motion.div>
+                  )}
+
+                  {currentStep === 2 && (
+                    <motion.div
+                      key="step2"
+                      initial={{ opacity: 0, x: 20 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      exit={{ opacity: 0, x: -20 }}
+                      className="flex-1 flex flex-col justify-center"
+                    >
+                      <div className="text-center mb-4">
+                        <h3 className="text-2xl font-light text-white mb-3">{t('CONTACT_REQUEST_TITLE')}</h3>
+                        <p className="text-gray-300 max-w-xl mx-auto">
+                          {t('CONTACT_REQUEST_SUBTITLE')}
+                        </p>
+            </div>
+
+                      <div className="bg-gradient-to-br from-blue-500/10 to-blue-600/5 rounded-lg p-4 border border-blue-500/20">
+                        <form className="space-y-3">
+                          <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                            <div>
+                              <label className="block text-xs font-semibold text-white mb-1">
+                                {t('CONTACT_PERSON')} *
+                              </label>
+                              <input
+                                type="text"
+                                required
+                                className="w-full px-3 py-2 bg-black/40 border border-blue-500/30 rounded-lg text-white placeholder-gray-400 focus:border-blue-400/50 focus:outline-none focus:bg-black/60 transition-all duration-300 text-sm"
+                                placeholder={t('CONTACT_PERSON')}
+                              />
+            </div>
+                            <div>
+                              <label className="block text-xs font-semibold text-white mb-1">
+                                {t('CONTACT_BUSINESS_EMAIL')} *
+                              </label>
+                              <input
+                                type="email"
+                                required
+                                className="w-full px-3 py-2 bg-black/40 border border-blue-500/30 rounded-lg text-white placeholder-gray-400 focus:border-blue-400/50 focus:outline-none focus:bg-black/60 transition-all duration-300 text-sm"
+                                placeholder={t('CONTACT_BUSINESS_EMAIL')}
+                              />
+            </div>
+          </div>
+          
+                          <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                            <div>
+                              <label className="block text-xs font-semibold text-white mb-1">
+                                {t('CONTACT_ORGANIZATION')} *
+                              </label>
+                              <input
+                                type="text"
+                                required
+                                className="w-full px-3 py-2 bg-black/40 border border-blue-500/30 rounded-lg text-white placeholder-gray-400 focus:border-blue-400/50 focus:outline-none focus:bg-black/60 transition-all duration-300 text-sm"
+                                placeholder={t('CONTACT_ORGANIZATION')}
+                              />
+            </div>
+                            <div>
+                              <label className="block text-xs font-semibold text-white mb-1">
+                                {t('CONTACT_ORG_SIZE')} *
+                              </label>
+                              <select 
+                                required
+                                className="w-full px-3 py-2 bg-black/40 border border-blue-500/30 rounded-lg text-white focus:border-blue-400/50 focus:outline-none focus:bg-black/60 transition-all duration-300 text-sm"
+                              >
+                                <option value="" className="bg-black">{t('CONTACT_ORG_SIZE_PLACEHOLDER')}</option>
+                                <option value="1-25" className="bg-black">{t('CONTACT_ORG_SIZE_1_25')}</option>
+                                <option value="26-100" className="bg-black">{t('CONTACT_ORG_SIZE_26_100')}</option>
+                                <option value="101-500" className="bg-black">{t('CONTACT_ORG_SIZE_101_500')}</option>
+                                <option value="500+" className="bg-black">{t('CONTACT_ORG_SIZE_500_PLUS')}</option>
+                              </select>
+          </div>
+        </div>
+
+                          <div>
+                            <label className="block text-xs font-semibold text-white mb-1">
+                              {t('CONTACT_DESCRIPTION')}
+                            </label>
+                            <textarea
+                              rows={2}
+                              className="w-full px-3 py-2 bg-black/40 border border-blue-500/30 rounded-lg text-white placeholder-gray-400 focus:border-blue-400/50 focus:outline-none focus:bg-black/60 transition-all duration-300 resize-none text-sm"
+                              placeholder={t('CONTACT_DESCRIPTION_PLACEHOLDER')}
+                            />
+                          </div>
+                        </form>
+                      </div>
+                    </motion.div>
+                  )}
+              </AnimatePresence>
+
+                {/* Navigation Buttons */}
+                <div className="flex items-center justify-between pt-3 mt-3 border-t border-blue-500/15">
+                  {currentStep > 1 ? (
+                    <button
+                      onClick={() => setCurrentStep(currentStep - 1)}
+                      className="px-3 py-2 text-gray-300 bg-white/5 border border-white/10 rounded-lg hover:bg-white/10 hover:text-white transition-all duration-300 flex items-center gap-1 text-xs"
+                    >
+                      <ArrowRight className="w-3 h-3 rotate-180" />
+                      {t('CONTACT_BACK_TO_OVERVIEW')}
+            </button>
+                  ) : (
+                    <div></div>
+                  )}
+                  
+                  {currentStep < 2 ? (
+                    <motion.button
+                      onClick={() => setCurrentStep(currentStep + 1)}
+                      whileHover={{ scale: 1.02 }}
+                      whileTap={{ scale: 0.98 }}
+                      className="px-5 py-2.5 bg-gradient-to-r from-blue-500 to-blue-600 text-white rounded-lg font-semibold shadow-lg shadow-blue-500/20 hover:shadow-blue-500/30 transition-all duration-300 flex items-center gap-2 text-sm"
+                    >
+                      {t('CONTACT_FILL_REQUEST')}
+                      <ArrowRight className="w-4 h-4" />
+                    </motion.button>
+                  ) : (
+                    <motion.button
+                      type="submit"
+                      whileHover={{ scale: 1.02 }}
+                      whileTap={{ scale: 0.98 }}
+                      className="px-5 py-2.5 bg-gradient-to-r from-blue-500 to-blue-600 text-white rounded-lg font-semibold shadow-lg shadow-blue-500/20 hover:shadow-blue-500/30 transition-all duration-300 flex items-center gap-2 text-sm"
+                    >
+                      <Mail className="w-4 h-4" />
+                      {t('CONTACT_SEND_REQUEST')}
+                    </motion.button>
+                  )}
+          </div>
+        </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </Layout>
   )
 } 

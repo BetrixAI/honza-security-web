@@ -1,7 +1,7 @@
 'use client'
 
 import React, { createContext, useContext, useState, useEffect } from 'react'
-import { translations, SupportedLocale, getTranslation } from '../../locales/index'
+import { translations, SupportedLocale, getTranslation } from '@/locales/index'
 
 interface LanguageContextType {
   language: SupportedLocale
@@ -24,6 +24,8 @@ export const LanguageProvider: React.FC<{ children: React.ReactNode }> = ({ chil
   const handleSetLanguage = (lang: SupportedLocale) => {
     setLanguage(lang)
     localStorage.setItem('language', lang)
+    // Refresh stránky pro aplikaci změny jazyka
+    window.location.reload()
   }
 
   const t = (key: string, namespace: string = 'landing'): string => {

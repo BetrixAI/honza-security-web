@@ -3,7 +3,7 @@
  * Owner: Shared - lessons & training content
  */
 
-export const lessonsCs = {
+export const lessons = {
   // Lesson Categories
   CATEGORY_PHISHING: "Phishing",
   CATEGORY_PASSWORDS: "Hesla",
