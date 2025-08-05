@@ -73,9 +73,11 @@ export function AuthProvider({ children }: AuthProviderProps) {
   const signIn = async (email: string, password: string): Promise<void> => {
     try {
       const auth = getFirebaseAuth()
+      console.log('🔐 Attempting sign in with:', { email, authDomain: auth.config.authDomain })
       await signInWithEmailAndPassword(auth, email, password)
+      console.log('✅ Sign in successful')
     } catch (error) {
-      console.error('Sign in error:', error)
+      console.error('❌ Sign in error:', error)
       throw error
     }
   }

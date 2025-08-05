@@ -7,6 +7,7 @@ import Logo from './Logo'
 import { Menu, X, Sparkles, ArrowRight, Mail, Phone, CheckCircle, Users, CreditCard, Calendar } from 'lucide-react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { useLanguage } from '@/contexts/LanguageContext'
+import { useAuth } from '@/contexts/AuthContext'
 
 export default function Header() {
   const [isScrolled, setIsScrolled] = useState(false)
@@ -15,6 +16,7 @@ export default function Header() {
   const [currentStep, setCurrentStep] = useState(1)
   const pathname = usePathname()
   const { t } = useLanguage()
+  const { user } = useAuth()
 
   const navigation = [
     { name: t('NAV_HOME'), section: 'hero' },
@@ -171,12 +173,64 @@ export default function Header() {
 
               {/* CTA Buttons */}
               <div className="flex items-center space-x-3">
-                <Link href="/auth" className="text-base text-gray-300 hover:text-white transition-all duration-300 px-4 py-2 rounded-xl hover:bg-white/8 backdrop-blur-sm flex items-center gap-2">
-                  <Users className="w-4 h-4" />
-                  {t('AUTH_SIGNIN')}
-                </Link>
-                
-                <button onClick={() => setIsContactModalOpen(true)} className="group focus:outline-none">
+                {user ? (
+                  // Přihlášený uživatel - zobrazit Dashboard tlačítko
+                  <Link href="/dashboard" className="group focus:outline-none">
+                    <motion.div
+                      whileHover={{ scale: 1.02 }}
+                      whileTap={{ scale: 0.98 }}
+                      className="relative overflow-hidden text-white px-6 py-2.5 rounded-xl text-base font-medium flex items-center gap-2 shadow-lg shadow-blue-500/20 hover:shadow-blue-500/30 transition-all duration-300"
+                    >
+                      {/* Animovaný gradient pozadí */}
+                      <motion.div
+                        className="absolute inset-0 bg-gradient-to-r from-blue-600 via-blue-800 via-slate-900 to-blue-700"
+                        animate={{
+                          backgroundPosition: ['0% 50%', '100% 50%', '0% 50%'],
+                          scale: [1, 1.05, 1],
+                          opacity: [0.9, 1, 0.9],
+                        }}
+                        transition={{
+                          backgroundPosition: {
+                            duration: 4,
+                            repeat: Infinity,
+                            ease: "easeInOut"
+                          },
+                          scale: {
+                            duration: 2.5,
+                            repeat: Infinity,
+                            ease: "easeInOut"
+                          },
+                          opacity: {
+                            duration: 2,
+                            repeat: Infinity,
+                            ease: "easeInOut"
+                          }
+                        }}
+                        style={{
+                          backgroundSize: '300% 100%',
+                        }}
+                      />
+                      
+                      {/* Overlay pro interakci */}
+                      <div className="absolute inset-0 bg-gradient-to-r from-blue-400/30 to-slate-700/30 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                      
+                      {/* Obsah tlačítka */}
+                      <div className="relative z-10 flex items-center gap-2">
+                        <Sparkles className="w-4 h-4" />
+                        Dashboard
+                        <ArrowRight className="w-4 h-4 group-hover:translate-x-0.5 transition-transform" />
+                      </div>
+                    </motion.div>
+                  </Link>
+                ) : (
+                  // Nepřihlášený uživatel - zobrazit původní tlačítka
+                  <>
+                    <Link href="/auth" className="text-base text-gray-300 hover:text-white transition-all duration-300 px-4 py-2 rounded-xl hover:bg-white/8 backdrop-blur-sm flex items-center gap-2">
+                      <Users className="w-4 h-4" />
+                      {t('AUTH_SIGNIN')}
+                    </Link>
+                    
+                    <button onClick={() => setIsContactModalOpen(true)} className="group focus:outline-none">
                   <motion.div
                     whileHover={{ scale: 1.02 }}
                     whileTap={{ scale: 0.98 }}
@@ -223,6 +277,8 @@ export default function Header() {
                     </div>
                   </motion.div>
                 </button>
+                  </>
+                )}
               </div>
             </div>
 
@@ -273,15 +329,27 @@ export default function Header() {
               </Link>
 
               {/* Mobile CTA */}
-              <Link href="/auth">
-                <motion.div
-                  whileTap={{ scale: 0.9 }}
-                  className="text-gray-300 hover:text-white transition-all duration-300 px-3 py-2.5 rounded-xl hover:bg-white/8 backdrop-blur-sm flex items-center gap-2"
-                >
-                  <Users className="w-4 h-4" />
-                  {t('AUTH_SIGNIN')}
-                </motion.div>
-              </Link>
+              {user ? (
+                <Link href="/dashboard">
+                  <motion.div
+                    whileTap={{ scale: 0.9 }}
+                    className="text-white hover:text-blue-200 transition-all duration-300 px-3 py-2.5 rounded-xl hover:bg-blue-500/20 backdrop-blur-sm flex items-center gap-2"
+                  >
+                    <Sparkles className="w-4 h-4" />
+                    Dashboard
+                  </motion.div>
+                </Link>
+              ) : (
+                <Link href="/auth">
+                  <motion.div
+                    whileTap={{ scale: 0.9 }}
+                    className="text-gray-300 hover:text-white transition-all duration-300 px-3 py-2.5 rounded-xl hover:bg-white/8 backdrop-blur-sm flex items-center gap-2"
+                  >
+                    <Users className="w-4 h-4" />
+                    {t('AUTH_SIGNIN')}
+                  </motion.div>
+                </Link>
+              )}
             </div>
           </div>
         </div>

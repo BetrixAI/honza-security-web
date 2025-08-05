@@ -24,13 +24,21 @@ const initializeFirebase = () => {
   // Kontrola zda je Firebase již inicializován
   if (getApps().length === 0) {
     // Validace konfigurace
+    console.log('🔧 Firebase config:', {
+      apiKey: firebaseConfig.apiKey ? '✅ Set' : '❌ Missing',
+      projectId: firebaseConfig.projectId ? '✅ Set' : '❌ Missing',
+      authDomain: firebaseConfig.authDomain ? '✅ Set' : '❌ Missing'
+    })
+    
     if (!firebaseConfig.apiKey || !firebaseConfig.projectId) {
       throw new Error('Firebase configuration is missing required fields')
     }
     
     app = initializeApp(firebaseConfig)
+    console.log('✅ Firebase initialized successfully')
   } else {
     app = getApps()[0]
+    console.log('✅ Using existing Firebase app')
   }
   
   // Inicializace služeb pouze pokud ještě nejsou inicializované
