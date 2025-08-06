@@ -27,7 +27,11 @@ export default function LanguageSwitcher({ isCollapsed = false }: LanguageSwitch
   return (
     <div className="relative group">
       <button
-        onClick={() => changeLocale(locale === 'cs' ? 'en' : 'cs')}
+        onClick={() => {
+          const newLocale = locale === 'cs' ? 'en' : 'cs'
+          changeLocale(newLocale)
+          console.log('Language switched to:', newLocale)
+        }}
         className={clsx(
           'flex items-center gap-2 rounded-lg transition-all duration-300',
           'bg-bg-card-alt/50 hover:bg-bg-card-alt border border-border-subtle/40',

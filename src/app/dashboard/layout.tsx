@@ -5,6 +5,9 @@ import Sidebar from '@/components/layout/Sidebar'
 import MobileSidebar from '@/components/layout/MobileSidebar'
 import ToastProvider from '@/components/toast/ToastProvider'
 import SidebarProvider, { useSidebar } from '@/contexts/SidebarContext'
+import { AuthProvider, useRequireAuth } from '@/contexts/AuthContext'
+import { DashboardLoadingSpinner } from '@/components/ui/LoadingSpinner'
+import AuthError from '@/components/ui/AuthError'
 
 interface DashboardLayoutProps {
   children: React.ReactNode
@@ -13,6 +16,9 @@ interface DashboardLayoutProps {
 function DashboardLayoutInner({ children }: DashboardLayoutProps) {
   const { isCollapsed, setCollapsed } = useSidebar()
   const [mobileSidebarOpen, setMobileSidebarOpen] = React.useState(false)
+  
+  // Ochrana dashboardu - přesměrování na /auth pokud není uživatel přihlášený
+  const { user, loading, error } = useRequireAuth()
 
   // Auto-collapse na obrazovkách < 1024px podle specifikace
   useEffect(() => {
@@ -36,6 +42,26 @@ function DashboardLayoutInner({ children }: DashboardLayoutProps) {
       }
     }
   }, [])
+
+  // Zobrazení loading stavu během kontroly autentifikace
+  if (loading) {
+    return <DashboardLoadingSpinner />
+  }
+
+  // Zobrazení chyby autentifikace
+  if (error) {
+    return (
+      <AuthError 
+        error={error}
+        onRetry={() => window.location.reload()}
+      />
+    )
+  }
+
+  // Pokud není uživatel přihlášený, useRequireAuth už přesměroval na /auth
+  if (!user) {
+    return null
+  }
 
   return (
     <div className="min-h-screen bg-bg-page flex">
@@ -70,11 +96,13 @@ function DashboardLayoutInner({ children }: DashboardLayoutProps) {
 
 export default function DashboardLayout({ children }: DashboardLayoutProps) {
   return (
-    <SidebarProvider>
-      <ToastProvider>
-        <DashboardLayoutInner>{children}</DashboardLayoutInner>
-      </ToastProvider>
-    </SidebarProvider>
+    <AuthProvider>
+      <SidebarProvider>
+        <ToastProvider>
+          <DashboardLayoutInner>{children}</DashboardLayoutInner>
+        </ToastProvider>
+      </SidebarProvider>
+    </AuthProvider>
   )
 }
  

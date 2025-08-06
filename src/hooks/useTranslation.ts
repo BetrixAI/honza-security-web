@@ -61,6 +61,20 @@ export function useTranslation(namespace: TranslationNamespace = 'common') {
       }
     }
   }, [user])
+
+  useEffect(() => {
+    // Listen for locale changes from other components
+    const handleLocaleChange = (event: CustomEvent) => {
+      setLocale(event.detail.locale)
+    }
+
+    if (typeof window !== 'undefined') {
+      window.addEventListener('localeChanged', handleLocaleChange as EventListener)
+      return () => {
+        window.removeEventListener('localeChanged', handleLocaleChange as EventListener)
+      }
+    }
+  }, [])
   
   const t = (
     key: string,
@@ -82,6 +96,18 @@ export function useTranslation(namespace: TranslationNamespace = 'common') {
     // Save to localStorage
     if (typeof window !== 'undefined') {
       localStorage.setItem('language', newLocale)
+      
+      // Update URL path
+      const currentPath = window.location.pathname
+      const newPath = newLocale === 'cs' 
+        ? currentPath.replace('/en', '') || '/cz'
+        : currentPath.replace('/cz', '') || '/en'
+      
+      // Update URL without page reload
+      window.history.pushState({}, '', newPath)
+      
+      // Dispatch custom event to notify other components
+      window.dispatchEvent(new CustomEvent('localeChanged', { detail: { locale: newLocale } }))
     }
     // TODO: Update user preference in Firestore
   }

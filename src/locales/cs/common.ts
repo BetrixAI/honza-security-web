@@ -24,10 +24,24 @@ export const cs = {
   
   // Status & Messages
   LOADING: "Načítání...",
+  CHECKING_AUTHENTICATION: "Kontroluji přihlášení...",
   SUCCESS: "Úspěch",
   ERROR: "Chyba", 
   WARNING: "Varování",
   INFO: "Informace",
+  
+  // Authentication
+  AUTHENTICATION_ERROR: "Chyba přihlášení",
+  AUTHENTICATION_ERROR_DESCRIPTION: "Nepodařilo se ověřit vaše přihlášení. Zkuste se přihlásit znovu.",
+  RETRY: "Zkusit znovu",
+  GO_TO_LOGIN: "Jít na přihlášení",
+  
+  // User Profile
+  USER: "Uživatel",
+  EMAIL: "E-mail",
+  NAME: "Jméno",
+  ACCOUNT_TYPE: "Typ účtu",
+  FREE_ACCOUNT: "Zdarma",
   
   // Forms
   FORM_EMAIL: "E-mail",

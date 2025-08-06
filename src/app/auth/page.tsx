@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { useAuth } from '@/contexts/AuthContext'
-import { useLanguage } from '@/contexts/LanguageContext'
+import { useTranslation } from '@/hooks/useTranslation'
 import { motion } from 'framer-motion'
 import GalaxyBackground from '@/components/GalaxyBackground'
 import { 
@@ -34,7 +34,7 @@ export default function AuthPage() {
   const [error, setError] = useState<string | null>(null)
   
   const { signIn, signUp, resetPassword, user, loading } = useAuth()
-  const { t } = useLanguage()
+  const { t } = useTranslation('auth')
   const router = useRouter()
 
   // Přesměrování pokud je uživatel již přihlášen
@@ -61,7 +61,7 @@ export default function AuthPage() {
         // Reset hesla
         await resetPassword(formData.email)
         // Zobrazit success zprávu
-        alert(t('SUCCESS_RESET_EMAIL_SENT', 'auth'))
+        alert(t('SUCCESS_RESET_EMAIL_SENT'))
         setIsResetPassword(false)
       } else if (isLogin) {
         // Přihlášení
@@ -69,11 +69,11 @@ export default function AuthPage() {
       } else {
         // Registrace
         if (formData.password !== formData.confirmPassword) {
-          throw new Error(t('ERROR_PASSWORD_MISMATCH', 'auth'))
+          throw new Error(t('ERROR_PASSWORD_MISMATCH'))
         }
         
         if (formData.password.length < 6) {
-          throw new Error(t('ERROR_PASSWORD_TOO_SHORT', 'auth'))
+          throw new Error(t('ERROR_PASSWORD_TOO_SHORT'))
         }
         
         await signUp(formData.email, formData.password)
@@ -83,23 +83,23 @@ export default function AuthPage() {
     } catch (error: any) {
       console.error('Auth error:', error)
       
-          // Překládat Firebase chybové zprávy
-    let errorMessage = t('ERROR_UNEXPECTED', 'auth')
+      // Překládat Firebase chybové zprávy
+      let errorMessage = t('ERROR_UNEXPECTED')
       
       if (error.code === 'auth/user-not-found') {
-        errorMessage = t('ERROR_USER_NOT_FOUND', 'auth')
+        errorMessage = t('ERROR_USER_NOT_FOUND')
       } else if (error.code === 'auth/wrong-password') {
-        errorMessage = t('ERROR_WRONG_PASSWORD', 'auth')
+        errorMessage = t('ERROR_WRONG_PASSWORD')
       } else if (error.code === 'auth/invalid-credential') {
-        errorMessage = t('ERROR_INVALID_CREDENTIALS', 'auth')
+        errorMessage = t('ERROR_INVALID_CREDENTIALS')
       } else if (error.code === 'auth/email-already-in-use') {
-        errorMessage = t('ERROR_EMAIL_IN_USE', 'auth')
+        errorMessage = t('ERROR_EMAIL_IN_USE')
       } else if (error.code === 'auth/weak-password') {
-        errorMessage = t('ERROR_WEAK_PASSWORD', 'auth')
+        errorMessage = t('ERROR_WEAK_PASSWORD')
       } else if (error.code === 'auth/invalid-email') {
-        errorMessage = t('ERROR_INVALID_EMAIL', 'auth')
+        errorMessage = t('ERROR_INVALID_EMAIL')
       } else if (error.code === 'auth/too-many-requests') {
-        errorMessage = t('ERROR_TOO_MANY_REQUESTS', 'auth')
+        errorMessage = t('ERROR_TOO_MANY_REQUESTS')
       } else if (error.message) {
         errorMessage = error.message
       }
@@ -151,7 +151,7 @@ export default function AuthPage() {
       <div className="min-h-screen flex items-center justify-center bg-black">
         <div className="text-center">
           <div className="w-8 h-8 mx-auto mb-4 border-2 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
-          <p className="text-gray-400">{t('AUTH_CHECKING', 'auth')}</p>
+          <p className="text-gray-400">{t('AUTH_CHECKING')}</p>
         </div>
       </div>
     )
@@ -172,7 +172,7 @@ export default function AuthPage() {
         <div className="bg-white/10 backdrop-blur-xl border border-white/20 rounded-xl px-4 py-3 shadow-2xl shadow-black/20 hover:bg-white/15 hover:border-white/30 transition-all duration-300 flex items-center gap-2">
           <ArrowLeft className="w-5 h-5 text-white group-hover:text-blue-200 transition-colors duration-300" />
           <span className="text-white group-hover:text-blue-200 transition-colors duration-300 font-medium">
-            {t('AUTH_BACK_BUTTON', 'auth')}
+            {t('AUTH_BACK_BUTTON')}
           </span>
         </div>
       </motion.button>
@@ -251,14 +251,14 @@ export default function AuthPage() {
           {/* Header */}
           <div className="text-center">
             <h2 className="text-3xl font-bold text-white mb-2">
-              {isResetPassword ? t('AUTH_RESET_PASSWORD', 'auth') : isLogin ? t('AUTH_WELCOME_BACK', 'auth') : t('AUTH_START_JOURNEY', 'auth')}
+              {isResetPassword ? t('AUTH_RESET_PASSWORD') : isLogin ? t('AUTH_WELCOME_BACK') : t('AUTH_START_JOURNEY')}
             </h2>
             <p className="text-gray-400">
               {isResetPassword
-                ? t('AUTH_RESET_SUBTITLE', 'auth')
+                ? t('AUTH_RESET_SUBTITLE')
                 : isLogin 
-                  ? t('AUTH_LOGIN_SUBTITLE', 'auth')
-                  : t('AUTH_REGISTER_SUBTITLE', 'auth')
+                  ? t('AUTH_LOGIN_SUBTITLE')
+                  : t('AUTH_REGISTER_SUBTITLE')
               }
             </p>
           </div>
@@ -277,7 +277,7 @@ export default function AuthPage() {
                     : 'text-gray-400 hover:text-white'
                 }`}
               >
-                {t('AUTH_LOGIN_TAB', 'auth')}
+                {t('AUTH_LOGIN_TAB')}
               </button>
               <button
                 onClick={() => {
@@ -290,7 +290,7 @@ export default function AuthPage() {
                     : 'text-gray-400 hover:text-white'
                 }`}
               >
-                {t('AUTH_REGISTER_TAB', 'auth')}
+                {t('AUTH_REGISTER_TAB')}
               </button>
             </div>
           )}
@@ -313,7 +313,7 @@ export default function AuthPage() {
                   <div className="grid grid-cols-2 gap-4">
                     <div>
                       <label className="block text-sm font-medium text-gray-300 mb-2">
-                        {t('AUTH_FIRST_NAME', 'auth')}
+                        {t('AUTH_FIRST_NAME')}
                       </label>
                       <div className="relative">
                         <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
@@ -327,7 +327,7 @@ export default function AuthPage() {
                           className="w-full pl-10 pr-4 py-3 bg-white/5 border border-white/20 rounded-lg 
                                    text-white placeholder-gray-400 focus:border-blue-500 
                                    focus:ring-2 focus:ring-blue-500/20 transition-all duration-300 backdrop-blur-sm"
-                          placeholder={t('AUTH_FIRST_NAME', 'auth')}
+                          placeholder={t('AUTH_FIRST_NAME')}
                           required={!isLogin}
                         />
                       </div>
@@ -335,7 +335,7 @@ export default function AuthPage() {
                     
                     <div>
                       <label className="block text-sm font-medium text-gray-300 mb-2">
-                        {t('AUTH_LAST_NAME', 'auth')}
+                        {t('AUTH_LAST_NAME')}
                       </label>
                       <div className="relative">
                         <input
@@ -346,7 +346,7 @@ export default function AuthPage() {
                           className="w-full px-4 py-3 bg-white/5 border border-white/20 rounded-lg 
                                    text-white placeholder-gray-400 focus:border-blue-500 
                                    focus:ring-2 focus:ring-blue-500/20 transition-all duration-300 backdrop-blur-sm"
-                          placeholder={t('AUTH_LAST_NAME', 'auth')}
+                          placeholder={t('AUTH_LAST_NAME')}
                           required={!isLogin}
                         />
                       </div>
@@ -355,7 +355,7 @@ export default function AuthPage() {
 
                   <div>
                     <label className="block text-sm font-medium text-gray-300 mb-2">
-                      {t('AUTH_COMPANY', 'auth')}
+                      {t('AUTH_COMPANY')}
                     </label>
                     <input
                       type="text"
@@ -365,7 +365,7 @@ export default function AuthPage() {
                       className="w-full px-4 py-3 bg-white/5 border border-white/20 rounded-lg 
                                text-white placeholder-gray-400 focus:border-blue-500 
                                focus:ring-2 focus:ring-blue-500/20 transition-all duration-300 backdrop-blur-sm"
-                      placeholder={t('AUTH_COMPANY', 'auth')}
+                      placeholder={t('AUTH_COMPANY')}
                     />
                   </div>
                 </>
@@ -374,7 +374,7 @@ export default function AuthPage() {
               {/* Email */}
               <div>
                 <label className="block text-sm font-medium text-gray-300 mb-2">
-                  {t('AUTH_EMAIL', 'auth')}
+                  {t('AUTH_EMAIL')}
                 </label>
                 <div className="relative">
                   <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
@@ -388,7 +388,7 @@ export default function AuthPage() {
                     className="w-full pl-10 pr-4 py-3 bg-white/5 border border-white/20 rounded-lg 
                              text-white placeholder-gray-400 focus:border-blue-500 
                              focus:ring-2 focus:ring-blue-500/20 transition-all duration-300 backdrop-blur-sm"
-                    placeholder={t('AUTH_EMAIL', 'auth')}
+                    placeholder={t('AUTH_EMAIL')}
                     required
                   />
                 </div>
@@ -398,7 +398,7 @@ export default function AuthPage() {
               {!isResetPassword && (
                 <div>
                   <label className="block text-sm font-medium text-gray-300 mb-2">
-                    {t('AUTH_PASSWORD', 'auth')}
+                    {t('AUTH_PASSWORD')}
                   </label>
                   <div className="relative">
                     <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
@@ -430,7 +430,7 @@ export default function AuthPage() {
               {!isLogin && !isResetPassword && (
                 <div>
                   <label className="block text-sm font-medium text-gray-300 mb-2">
-                    {t('AUTH_CONFIRM_PASSWORD', 'auth')}
+                    {t('AUTH_CONFIRM_PASSWORD')}
                   </label>
                   <div className="relative">
                     <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
@@ -460,14 +460,14 @@ export default function AuthPage() {
                       className="w-4 h-4 rounded border-white/20 bg-white/5 text-blue-600 
                                focus:ring-blue-500 focus:ring-2 focus:ring-offset-2 focus:ring-offset-black"
                     />
-                    <span className="ml-2 text-sm text-gray-400">{t('AUTH_REMEMBER_ME', 'auth')}</span>
+                    <span className="ml-2 text-sm text-gray-400">{t('AUTH_REMEMBER_ME')}</span>
                   </label>
                   <button
                     type="button"
                     onClick={() => setIsResetPassword(true)}
                     className="text-sm text-blue-400 hover:text-blue-300 transition-colors duration-300"
                   >
-                    {t('AUTH_FORGOT_PASSWORD', 'auth')}
+                    {t('AUTH_FORGOT_PASSWORD')}
                   </button>
                 </div>
               )}
@@ -482,7 +482,7 @@ export default function AuthPage() {
                   <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
                 ) : (
                   <>
-                    {isResetPassword ? t('AUTH_RESET_BUTTON', 'auth') : isLogin ? t('AUTH_LOGIN_BUTTON', 'auth') : t('AUTH_REGISTER_BUTTON', 'auth')}
+                    {isResetPassword ? t('AUTH_RESET_BUTTON') : isLogin ? t('AUTH_LOGIN_BUTTON') : t('AUTH_REGISTER_BUTTON')}
                     <ArrowRight className="w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform duration-300" />
                   </>
                 )}
@@ -498,7 +498,7 @@ export default function AuthPage() {
                   }}
                   className="w-full text-gray-400 hover:text-white transition-colors duration-300 text-center py-2"
                 >
-                  {t('AUTH_BACK_TO_LOGIN', 'auth')}
+                  {t('AUTH_BACK_TO_LOGIN')}
                 </button>
               )}
             </div>

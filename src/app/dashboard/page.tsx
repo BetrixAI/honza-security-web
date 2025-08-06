@@ -23,26 +23,26 @@ export default function DashboardPage() {
   }
 
   const recentActivities = [
-    { icon: CheckCircle, text: 'Dokončil jste "Základy phishingu"', time: '2 hodiny', color: 'text-success' },
-    { icon: Mail, text: 'Nahlásili jste podezřelý email', time: '1 den', color: 'text-warning' },
-    { icon: Award, text: 'Získali jste certifikát "Email Security"', time: '3 dny', color: 'text-brand' },
-    { icon: Play, text: 'Spustili jste kurz "Pokročilé sociální inženýrství"', time: '5 dní', color: 'text-brand' }
+    { icon: CheckCircle, text: `${t('COMPLETED_COURSE')} "${t('PHISHING_BASICS')}"`, time: `2 ${t('HOURS_AGO')}`, color: 'text-success' },
+    { icon: Mail, text: t('REPORTED_SUSPICIOUS_EMAIL'), time: `1 ${t('DAYS_AGO')}`, color: 'text-warning' },
+    { icon: Award, text: `${t('EARNED_CERTIFICATE')} "${t('EMAIL_SECURITY')}"`, time: `3 ${t('DAYS_AGO')}`, color: 'text-brand' },
+    { icon: Play, text: `${t('STARTED_COURSE')} "${t('ADVANCED_SOCIAL_ENGINEERING')}"`, time: `5 ${t('DAYS_AGO')}`, color: 'text-brand' }
   ]
 
   const recommendedCourses = [
     {
       id: '1',
-      title: 'Bezpečnost hesel a autentifikace',
-      description: 'Best practices pro vytváření a správu bezpečných hesel',
-      duration: '30 min',
-      level: 'Začátečník',
+      title: t('PASSWORD_SECURITY_AUTH'),
+      description: t('PASSWORD_SECURITY_DESC'),
+      duration: `30 ${t('MINUTES_SHORT')}`,
+      level: t('BEGINNER'),
     },
     {
       id: '2',
-      title: 'Malware a ransomware',
-      description: 'Jak rozpoznat a předcházet malwarovým útokům',
-      duration: '50 min',
-      level: 'Pokročilý',
+      title: t('MALWARE_RANSOMWARE'),
+      description: t('MALWARE_DESC'),
+      duration: `50 ${t('MINUTES_SHORT')}`,
+      level: t('ADVANCED'),
     }
   ]
 
@@ -82,8 +82,8 @@ export default function DashboardPage() {
                       <CheckCircle className="w-8 h-8 text-success flex-shrink-0" />
                       <div className="flex-1">
                         <div className="text-2xl font-bold text-txt-primary">{stats.coursesCompleted}</div>
-                        <div className="text-sm text-txt-muted">{t('COMPLETED_TRAINING')}</div>
-                        <div className="text-xs text-success mt-1">+3 {t('LAST_WEEK')}</div>
+                        <div className="text-sm text-txt-muted">{t('COMPLETED_TRAININGS')}</div>
+                        <div className="text-xs text-success mt-1">+3 {t('FROM_LAST_WEEK')}</div>
                       </div>
                     </div>
                   </CardContent>
@@ -98,7 +98,7 @@ export default function DashboardPage() {
                       <Mail className="w-8 h-8 text-warning flex-shrink-0" />
                       <div className="flex-1">
                         <div className="text-2xl font-bold text-txt-primary">{stats.phishingDetected}</div>
-                        <div className="text-sm text-txt-muted">{t('PHISHING_SUCCESS')}</div>
+                        <div className="text-sm text-txt-muted">{t('PHISHING_SUCCESS_RATE')}</div>
                         <div className="text-xs text-success mt-1">+5% {t('SUCCESS_RATE')}</div>
                       </div>
                     </div>
@@ -115,7 +115,7 @@ export default function DashboardPage() {
                       <div className="flex-1">
                         <div className="text-2xl font-bold text-txt-primary">5</div>
                         <div className="text-sm text-txt-muted">{t('LEVEL')}</div>
-                        <div className="text-xs text-brand-light mt-1">350 {t('NEXT_LEVEL_XP')}</div>
+                        <div className="text-xs text-brand-light mt-1">350 {t('XP_TO_NEXT')}</div>
                       </div>
                     </div>
                   </CardContent>
@@ -161,7 +161,7 @@ export default function DashboardPage() {
                         <activity.icon className={`w-4 h-4 ${activity.color} group-hover:scale-110 transition-transform duration-300`} />
                         <p className="text-txt-primary text-sm font-medium group-hover:text-brand-light transition-colors duration-300">{activity.text}</p>
                       </div>
-                      <p className="text-txt-muted text-xs group-hover:text-txt-primary transition-colors duration-300">Před {activity.time}</p>
+                      <p className="text-txt-muted text-xs group-hover:text-txt-primary transition-colors duration-300">{t('BEFORE')} {activity.time}</p>
                     </div>
                   </div>
                 ))}

@@ -24,10 +24,24 @@ export const en = {
   
   // Status & Messages
   LOADING: "Loading...",
+  CHECKING_AUTHENTICATION: "Checking authentication...",
   SUCCESS: "Success",
   ERROR: "Error",
   WARNING: "Warning", 
   INFO: "Information",
+  
+  // Authentication
+  AUTHENTICATION_ERROR: "Authentication Error",
+  AUTHENTICATION_ERROR_DESCRIPTION: "Failed to verify your authentication. Please try logging in again.",
+  RETRY: "Retry",
+  GO_TO_LOGIN: "Go to Login",
+  
+  // User Profile
+  USER: "User",
+  EMAIL: "Email",
+  NAME: "Name",
+  ACCOUNT_TYPE: "Account Type",
+  FREE_ACCOUNT: "Free",
   
   // Forms
   FORM_EMAIL: "Email",

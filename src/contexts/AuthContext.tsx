@@ -8,12 +8,14 @@ import { getFirebaseAuth } from '@/lib/firebaseClient'
 interface AuthContextType {
   user: User | null
   loading: boolean
+  error: string | null
   signIn: (email: string, password: string) => Promise<void>
   signUp: (email: string, password: string) => Promise<void>
   signOut: () => Promise<void>
   resetPassword: (email: string) => Promise<void>
   getIdToken: () => Promise<string | null>
   isAuthenticated: boolean
+  clearError: () => void
 }
 
 // Vytvoření Context
@@ -28,6 +30,7 @@ interface AuthProviderProps {
 export function AuthProvider({ children }: AuthProviderProps) {
   const [user, setUser] = useState<User | null>(null)
   const [loading, setLoading] = useState(true)
+  const [error, setError] = useState<string | null>(null)
 
   // Inicializace Firebase Auth a sledování změn stavu
   useEffect(() => {
@@ -35,6 +38,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
     
     const unsubscribe = onAuthStateChanged(auth, async (user) => {
       setUser(user)
+      setError(null) // Clear any previous errors
       
       // Pokud je uživatel přihlášen, nastavíme token do cookies
       if (user) {
@@ -51,6 +55,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
           })
         } catch (error) {
           console.error('Error setting auth token:', error)
+          setError('Chyba při nastavení autentifikace')
         }
       } else {
         // Vymazání cookie při odhlášení
@@ -64,6 +69,10 @@ export function AuthProvider({ children }: AuthProviderProps) {
       }
       
       setLoading(false)
+    }, (error) => {
+      console.error('Auth state change error:', error)
+      setError('Chyba při kontrole přihlášení')
+      setLoading(false)
     })
 
     return () => unsubscribe()
@@ -72,12 +81,14 @@ export function AuthProvider({ children }: AuthProviderProps) {
   // Přihlášení
   const signIn = async (email: string, password: string): Promise<void> => {
     try {
+      setError(null)
       const auth = getFirebaseAuth()
       console.log('🔐 Attempting sign in with:', { email, authDomain: auth.config.authDomain })
       await signInWithEmailAndPassword(auth, email, password)
       console.log('✅ Sign in successful')
-    } catch (error) {
+    } catch (error: any) {
       console.error('❌ Sign in error:', error)
+      setError(error.message || 'Chyba při přihlášení')
       throw error
     }
   }
@@ -85,10 +96,12 @@ export function AuthProvider({ children }: AuthProviderProps) {
   // Registrace
   const signUp = async (email: string, password: string): Promise<void> => {
     try {
+      setError(null)
       const auth = getFirebaseAuth()
       await createUserWithEmailAndPassword(auth, email, password)
-    } catch (error) {
+    } catch (error: any) {
       console.error('Sign up error:', error)
+      setError(error.message || 'Chyba při registraci')
       throw error
     }
   }
@@ -96,10 +109,12 @@ export function AuthProvider({ children }: AuthProviderProps) {
   // Odhlášení
   const signOut = async (): Promise<void> => {
     try {
+      setError(null)
       const auth = getFirebaseAuth()
       await firebaseSignOut(auth)
-    } catch (error) {
+    } catch (error: any) {
       console.error('Sign out error:', error)
+      setError(error.message || 'Chyba při odhlášení')
       throw error
     }
   }
@@ -107,10 +122,12 @@ export function AuthProvider({ children }: AuthProviderProps) {
   // Reset hesla
   const resetPassword = async (email: string): Promise<void> => {
     try {
+      setError(null)
       const auth = getFirebaseAuth()
       await sendPasswordResetEmail(auth, email)
-    } catch (error) {
+    } catch (error: any) {
       console.error('Reset password error:', error)
+      setError(error.message || 'Chyba při resetování hesla')
       throw error
     }
   }
@@ -130,15 +147,20 @@ export function AuthProvider({ children }: AuthProviderProps) {
   // Kontrola zda je uživatel autentifikovaný
   const isAuthenticated = user !== null
 
+  // Vymazání chyby
+  const clearError = () => setError(null)
+
   const value: AuthContextType = {
     user,
     loading,
+    error,
     signIn,
     signUp,
     signOut,
     resetPassword,
     getIdToken,
-    isAuthenticated
+    isAuthenticated,
+    clearError
   }
 
   return (
@@ -161,7 +183,7 @@ export function useAuth(): AuthContextType {
 
 // Pomocný hook pro kontrolu autentifikace
 export function useRequireAuth() {
-  const { user, loading } = useAuth()
+  const { user, loading, error } = useAuth()
   
   useEffect(() => {
     if (!loading && !user) {
@@ -170,5 +192,5 @@ export function useRequireAuth() {
     }
   }, [user, loading])
   
-  return { user, loading }
+  return { user, loading, error }
 }
