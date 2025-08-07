@@ -47,7 +47,7 @@ export const dashboard = {
   PASSWORD_SECURITY_AUTH: "Bezpečnost hesel a autentifikace",
   PASSWORD_SECURITY_DESC: "Best practices pro vytváření a správu bezpečných hesel",
   MALWARE_RANSOMWARE: "Malware a ransomware",
-  MALWARE_DESC: "Jak rozpoznat a předcházet malwarovým útokům",
+  MALWARE_RANSOMWARE_DESC: "Jak rozpoznat a předcházet malwarovým útokům",
 
   BEGINNER: "Začátečník",
   ADVANCED: "Pokročilý",

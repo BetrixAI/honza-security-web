@@ -47,7 +47,7 @@ export const dashboardEn = {
   PASSWORD_SECURITY_AUTH: "Password Security and Authentication",
   PASSWORD_SECURITY_DESC: "Best practices for creating and managing secure passwords",
   MALWARE_RANSOMWARE: "Malware and Ransomware",
-  MALWARE_DESC: "How to recognize and prevent malware attacks",
+  MALWARE_RANSOMWARE_DESC: "How to recognize and prevent malware attacks",
   MINUTES: "min",
   BEGINNER: "Beginner",
   ADVANCED: "Advanced",

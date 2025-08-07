@@ -1,0 +1,189 @@
+---
+description:
+globs:
+alwaysApply: false
+---
+######################################################################
+#  .cursorrules – SecurityShield (v2) → DETAILNÍ DESIGN GUIDELINE     #
+#  Cíl: 1 : 1 sjednocení UI/UX s landing page, A11y, výkon, čistota   #
+#  Formát: 7 fází, KAŽDÁ ≈ mini-spec (délka ~500-800 řádků kódu)      #
+#  Kodex: BEZ EMOJI v UI, primární font Montserrat všude.            #
+######################################################################
+
+======================================================================
+🔥 PREAMBULE (platí globálně)
+======================================================================
+P-01  Každý PR musí implementovat celou dílčí kapitolu (step) dané fáze.
+P-02  Do `commit` zpráv přidávej prefix `[phase-x][step-y]`.
+P-03  Každý komponent = samostatný Storybook story + Jest/RTL test.
+P-04  Montserrat je defaultní font (import přes `@fontsource/montserrat`).
+P-05  Neužívej 🐛 emoji ani jiné grafické emotikony. Ikony = `lucide-react`.
+P-06  Dodrž pascalCase pro komponenty, camelCase pro hooky.
+P-07  Všechny Tailwind utility musí vycházet z proměnných v `tailwind.config.js`.
+P-08  Maximální CLS < 0.05, LCP < 2.5 s (na 3G slow, Chrome devtools).
+
+======================================================================
+🛫  FÁZE 0  —  „BOOTSTRAP“
+======================================================================
+**Cíl:** připravit repo, tokeny, Tailwind, Storybook, CI.
+
+0-01  Ordnerová struktura
+|— src
+|   |— app         # pages + routing
+|   |— components  # atoms, molecules, organisms
+|   |— theme       # tokeny, hooks
+|   |— utils       # helpers, api
+|— tests           # jest setup
+|— .storybook
+0-02  `tailwind.config.js`
+    module.exports = {
+      theme: {
+        fontFamily: {
+          sans: ['"Montserrat"', 'sans-serif'],
+        },
+        colors: {
+          bg:    { main: '#0f172a', card: '#111827' },
+          text:  { main: '#F9FAFB', sec: '#9CA3AF', hint:'#6B7280' },
+          brand: { base:'#3B82F6', hover:'#2563EB' },
+          state: { success:'#10B981', warning:'#F59E0B', danger:'#EF4444' }
+        },
+        borderRadius: { sm:'6px', DEFAULT:'12px', lg:'18px' },
+        boxShadow: {
+          card:'0 0 15px rgba(0,0,0,.35)',
+          glow:'0 0 20px rgba(59,130,246,.45)',
+        },
+      },
+      plugins:[require('@tailwindcss/forms'),require('@tailwindcss/typography')],
+    };
+0-03  `theme/tokens.ts`
+    export const tokens = { … stejná data jako v Tailwind … };
+0-04  Storybook + Chromatic + Percy viz diffs.
+0-05  GitHub Action: build, test, storybook deploy, lighthouse.
+
+======================================================================
+🔵  FÁZE 1  —  „GLOBAL STYLE SHEET“
+======================================================================
+**Cíl:** vytvořit globální layout, definovat utility třídy, reset.
+
+1-01 `src/theme/globals.css`
+    • CSS reset (modern-normalize)
+    • `body { @apply bg-bg-main text-text-main font-sans antialiased; }`
+    • Scrollbar styling: width 6 px, track #0f1a2e, thumb brand/hover.
+1-02  Utility klasa `.container-main` → `max-w-[1440px] mx-auto px-4 md:px-6`.
+1-03  `.surface-card` → @apply bg-bg-card rounded-lg border border-white/5 shadow-card.
+1-04  `.focus-ring`   → ring-2 ring-brand-base ring-offset-2 ring-offset-bg-main.
+1-05  A11y: `html` attr `lang` dynamic via i18n.
+
+======================================================================
+🟣  FÁZE 2  —  „LAYOUT & NAV“
+======================================================================
+**Cíl:** Sidebar, Header (AnnouncementBar), Page shell.
+
+Step 2-1 **Sidebar**
+    • Width 260 px, fixed, overflow-y-auto, backdrop-blur-md 6 px.
+    • Item component `<NavItem icon label to />`
+        - active: @apply bg-brand-base/10 text-brand-base border-l-4 border-brand-base.
+        - hover:  @apply bg-white/5 text-white.
+    • Expand / collapse icon (doubleChevronLeft) – animace Framer Motion.
+
+Step 2-2 **TopBar**
+    • `<AnnouncementBar>` height 36 px, gradient `bg-gradient-to-r from-brand-base/80 to-brand-hover/60`.
+    • text-xs tracking-wide, icon `Lock`.
+    • hidden on `print`.
+
+Step 2-3 **PageShell**
+    ```tsx
+    <PageShell>
+      <Sidebar />
+      <main className="flex-1 container-main py-8">{children}</main>
+    </PageShell>
+    ```
+
+======================================================================
+🟢  FÁZE 3  —  „DESIGN SYSTEM – ATOMS / MOLECULES“
+======================================================================
+*(Každý bod = samostatný PR + Storybook + tests)*
+
+3-A `<Button>` props {variant:'primary'|'secondary'|'ghost'|'danger', size:'sm'|'md'}
+     variant map:
+       primary  → bg-brand-base text-white shadow-glow hover:bg-brand-hover
+       secondary→ bg-white/5 text-text-main hover:bg-white/10
+       ghost    → text-brand-base hover:bg-brand-base/5
+       danger   → bg-state-danger text-white hover:bg-[#dc2626]
+
+3-B `<Badge>` props {tone:'success'|'warning'|'danger'|'info'}
+     @apply text-xs font-medium px-2 py-[2px] rounded bg-[tone]/10 text-[tone]
+
+3-C `<Card>`: `.surface-card p-6 transition hover:-translate-y-1 hover:shadow-glow`.
+
+3-D `<Field>`: input w/ label, error state (red ring, small error text).
+
+3-E `<ProgressBar value>`: `<div class="h-1 w-full bg-white/10 rounded-full"><div style={{width:`${value}%`}} class="h-full rounded-full bg-gradient-to-r from-brand-hover to-brand-base"></div></div>`.
+
+3-F `<Icon>` wrapper – lucide-react, size props 16/20/24.
+
+======================================================================
+🔴  FÁZE 4  —  „ADVANCED ORGANISMS & ANIMACE“
+======================================================================
+4-1 `<Timeline>` (threat feed)
+     Grid cols-[14px 1fr], css before-line: `::before absolute left-[6px] top-0 w-[2px] h-full bg-gradient-to-b from-[color]`.
+     Pro severity (critical/high/medium/low) měň gradient bar + dot barvy.
+
+4-2 `<DonutProgress>` – victory Pie, central label, brand color gradient.
+
+4-3 Animace: 
+     * Cards – fade & translateY 8px on mount (Framer).
+     * Sidebar items – subtle scale 1.05 on hover.
+     * Drag-and-drop zone – animate-pulse border-brand-base.
+
+======================================================================
+🟡  FÁZE 5  —  „PAGE IMPLEMENTATION DETAILS“
+======================================================================
+┌──────────────────────────────────────────────────────────────┐
+│ 5-1  `/dashboard`                                            │
+│      • Hero XP panel → 2-grid (info left, total XP right).   │
+│      • RecentAchievements list (max 4) inside Card w/ glow.  │
+│      • Stat-grid = 4 cols md:2 cols sm:1 col.                │
+│                                                              │
+│ 5-2  `/scanner` PREMIUM DETAIL                               │
+│      • `<DropZone>` 400×220 px dashed border-brand,           │
+│        overlay icon Upload (line), h2 “Nahraj soubor…”.      │
+│      • On dragOver: border becomes solid, shadow-glow.       │
+│      • Right stats card — metric rows, each row flex between │
+│        label & value, value color by tokens success/danger.  │
+│      • Recent scans Table: columns fileName | date | result  │
+│        — result Badge (success/danger).                      │
+│                                                              │
+│ 5-3  `/training`                                             │
+│      • CourseCard: ProgressBar + small category badge.       │
+│                                                              │
+│ 5-4  `/threats`                                              │
+│      • Filter pills segmented control brand-base active.     │
+│      • Timeline feed from 4-1.                               │
+│                                                              │
+│ … (phishing, cert, reports, settings) – viz README-pages.md  │
+└──────────────────────────────────────────────────────────────┘
+
+======================================================================
+🟤  FÁZE 6  —  „ACCESSIBILITY & PERFORMANCE“
+======================================================================
+6-A Lighthouse PWA ≥ 90 všude.  
+6-B `prefers-reduced-motion` respect – disable translate anim.  
+6-C ARIA live regions pro progress & toast.  
+6-D Keyboard nav: Tab order, Esc close modals, F-6 skip sidebar.
+
+======================================================================
+⚪  FÁZE 7  —  „FUTURE / NICE-TO-HAVE“  (blokováno CI)
+======================================================================
+7-1 Theme light mode (CSS vars), 7-2 dynamic wallpapers, 7-3 E2E tests (Playwright), 7-4 plugin architektura.
+
+======================================================================
+✔  DOD (Definition of Done) pro KAŽDÝ task
+======================================================================
+• Unit + RTL test coverage 100 % lines touched.  
+• Storybook snapshot vis diff < 0.1 %.  
+• ESLint, Prettier, Type-check = 0 warn.  
+• PR description obsahuje “Closes #ticket-ID, Phase-X, Step-Y”.  
+• Reviewer potvrzuje checklist.
+
+######################   KONEC SOUBORU  ##############################
